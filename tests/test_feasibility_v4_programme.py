@@ -4,7 +4,7 @@ from datetime import datetime, timedelta, timezone
 from decimal import Decimal
 
 from quant_system.research.feasibility_archive_v2 import FeasibilityBar, FeasibilityFunding
-from quant_system.research.feasibility_v4_programme import V4Bar, V4Month, run_v4_campaign
+from quant_system.research.feasibility_v4_programme import V4Bar, V4Month, programme_next_action, run_v4_campaign
 from quant_system.research.feasibility_v4_strategies import BasisFeature
 
 
@@ -147,3 +147,11 @@ def test_locked_oos_and_imputation_fail_closed():
         assert "coverage policy" in str(exc)
     else:
         raise AssertionError("imputation unexpectedly accepted")
+
+
+def test_programme_exit_rule_fires_after_final_prefrozen_campaign():
+    first={"campaign_number":1,"programme_exit_rule":{"maximum_campaigns":2,"on_no_candidate":"STOP_V4_AND_REVIEW_SCOPE_WITHOUT_TUNING"}}
+    final={"campaign_number":2,"programme_exit_rule":{"maximum_campaigns":2,"on_no_candidate":"STOP_V4_AND_REVIEW_SCOPE_WITHOUT_TUNING"}}
+    assert programme_next_action(first,eligible_managed_paper_candidate=False)=="RETAIN_REJECTED_COUNTED_TRIAL_AND_MOVE_TO_NEXT_PREFROZEN_V4_CAMPAIGN"
+    assert programme_next_action(final,eligible_managed_paper_candidate=False)=="STOP_V4_AND_REVIEW_SCOPE_WITHOUT_TUNING"
+    assert programme_next_action(final,eligible_managed_paper_candidate=True)=="ADMIT_TO_NON_SUBMITTING_MANAGED_PAPER_SHAKEDOWN"

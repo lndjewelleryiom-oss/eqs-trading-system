@@ -8,7 +8,7 @@ from pathlib import Path
 from uuid import NAMESPACE_URL, uuid5
 
 from quant_system.research.feasibility_trial_ledger_v2 import FeasibilityTrialLedger
-from quant_system.research.feasibility_v4_programme import load_campaign_v4, load_v4_months, run_v4_campaign
+from quant_system.research.feasibility_v4_programme import load_campaign_v4, load_v4_months, programme_next_action, run_v4_campaign
 from quant_system.research.paper_entry_gate_v1 import assess_paper_entry, load_policy
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -190,10 +190,8 @@ def main() -> int:
                 "counts_toward_168h_100_trade_gate": False,
             },
             "status": decision.status,
-            "next_action": (
-                "ADMIT_TO_NON_SUBMITTING_MANAGED_PAPER_SHAKEDOWN"
-                if decision.eligible_managed_paper_candidate
-                else "RETAIN_REJECTED_COUNTED_TRIAL_AND_MOVE_TO_NEXT_PREFROZEN_V4_CAMPAIGN"
+            "next_action": programme_next_action(
+                campaign, eligible_managed_paper_candidate=decision.eligible_managed_paper_candidate
             ),
         }
         result_path = EV / f"EQS_{args.campaign.replace('-', '_')}_RESULT.json"

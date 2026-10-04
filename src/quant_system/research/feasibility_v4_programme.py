@@ -353,6 +353,17 @@ def _run_phase(
     )
 
 
+def programme_next_action(campaign: dict[str, object], *, eligible_managed_paper_candidate: bool) -> str:
+    if eligible_managed_paper_candidate:
+        return "ADMIT_TO_NON_SUBMITTING_MANAGED_PAPER_SHAKEDOWN"
+    exit_rule = dict(campaign.get("programme_exit_rule", {}))
+    campaign_number = int(campaign.get("campaign_number", 0) or 0)
+    maximum_campaigns = int(exit_rule.get("maximum_campaigns", 0) or 0)
+    if maximum_campaigns > 0 and campaign_number >= maximum_campaigns:
+        return str(exit_rule.get("on_no_candidate", "STOP_AND_REVIEW_SCOPE_WITHOUT_TUNING"))
+    return "RETAIN_REJECTED_COUNTED_TRIAL_AND_MOVE_TO_NEXT_PREFROZEN_V4_CAMPAIGN"
+
+
 def run_v4_campaign(*, campaign_record: dict[str, object], months: tuple[V4Month, ...], trial_id: str) -> ProgrammeResult:
     campaign = dict(campaign_record["campaign"])
     periods = dict(campaign["periods"])
