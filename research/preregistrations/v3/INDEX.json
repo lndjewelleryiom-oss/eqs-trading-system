@@ -1,0 +1,33 @@
+{
+  "index_sha256": "a925da549d78493423ea7cbfe3b6f783ec23a3e5961dc042b24ef2bae3cf3562",
+  "maximum_campaigns": 3,
+  "ordered_campaigns": [
+    {
+      "campaign_fingerprint": "5fcfbfba93f15859b0e1a07e2962df5837b0da3b5de271b1d12c69815318e77b",
+      "campaign_id": "FEAS-V3-MR-001",
+      "campaign_number": 1,
+      "family": "VOLATILITY_NORMALIZED_MEAN_REVERSION",
+      "file": "FEAS-V3-MR-001.json",
+      "version": "3.1.0"
+    },
+    {
+      "campaign_fingerprint": "27b1074e7ce971b392c9961f630827de789b904bea99b43d7f2d1d92aa684f3c",
+      "campaign_id": "FEAS-V3-VOLBREAK-002",
+      "campaign_number": 2,
+      "family": "VOLATILITY_COMPRESSION_BREAKOUT",
+      "file": "FEAS-V3-VOLBREAK-002.json",
+      "version": "3.2.0"
+    },
+    {
+      "campaign_fingerprint": "4a8cc749ac47025bbec27bf3af059d7f4c6068db6eccda92d00ebc78fbbfff0c",
+      "campaign_id": "FEAS-V3-CARRY-003",
+      "campaign_number": 3,
+      "family": "FUNDING_SIGN_CARRY",
+      "file": "FEAS-V3-CARRY-003.json",
+      "version": "3.3.0"
+    }
+  ],
+  "outcomes_accessed_after_freeze": false,
+  "programme_version": "3.0.0",
+  "schema_id": "EQS-FEASIBILITY-V3-CAMPAIGN-INDEX"
+}

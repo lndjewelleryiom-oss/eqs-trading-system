@@ -1,0 +1,96 @@
+{
+  "campaign": {
+    "campaign_id": "FEAS-V3-VOLBREAK-002",
+    "campaign_number": 2,
+    "classification": "EXPLORATORY_NON_EVIDENTIARY",
+    "execution_model": {
+      "adverse_slippage_bps_per_side": 2,
+      "decision_time": "BAR_CLOSE",
+      "decision_timestamp_convention": "BAR_END_MINUS_1_MICROSECOND_FOR_NEXT_BAR_ELIGIBILITY",
+      "entry_cutoff_bars_before_window_end": 289,
+      "fee_bps_per_side": 5,
+      "fill_time": "NEXT_BAR_OPEN",
+      "funding_event_ordering": "SETTLE_BEFORE_SAME_TIMESTAMP_NEXT_BAR_FILL",
+      "funding_price_proxy": "MOST_RECENT_CLOSED_5M_CLOSE",
+      "funding_treatment": "APPLY_ARCHIVED_FUNDING_WHEN_POSITION_SPANS_SETTLEMENT",
+      "same_bar_fill_allowed": false
+    },
+    "methodology_fingerprint": "4712647cef8966d01ed765d0d0cc568173e320c16b47787573a29a94f0f2c066",
+    "methodology_version": "3.0.0",
+    "paper_entry_policy_sha256": "06007d3f7ab782269f4d933493b847424716c78cf5c73115fc148a37322c9ff4",
+    "periods": {
+      "locked_oos_access": "SEALED_NOT_PERMITTED",
+      "locked_oos_end": "2026-09-21T23:59:59Z",
+      "locked_oos_start": "2026-04-01T00:00:00Z",
+      "training_end": "2025-06-30T23:59:59Z",
+      "training_start": "2023-01-01T00:00:00Z",
+      "validation_end": "2026-03-31T23:59:59Z",
+      "validation_start": "2025-07-01T00:00:00Z"
+    },
+    "programme_exit_rule": {
+      "max_new_v3_campaigns": 3,
+      "on_no_candidate": "STOP_V3_AND_REVIEW_DATA_OR_ECONOMIC_HYPOTHESES_WITHOUT_TUNING"
+    },
+    "promotion_prohibitions": [
+      "R13_CERTIFICATION",
+      "J25_LOCKED_OOS",
+      "J26_GENUINE_CANDIDATE",
+      "LIVE_PROMOTION",
+      "FORWARD_168H_100_TRADE_CREDIT"
+    ],
+    "purpose": "Volatility-compression breakout: only trade directional breaks after realized volatility compresses relative to the prior week.",
+    "research_rules": {
+      "all_runs_counted": true,
+      "may_claim_clean_validation": false,
+      "may_open_locked_oos": false,
+      "may_write_r13_admission_ledger": false,
+      "post_result_parameter_tuning_allowed": false,
+      "single_fixed_configuration": true,
+      "validation_window_already_consumed": true
+    },
+    "safety": {
+      "broker_submission_enabled": false,
+      "futures_dependency": false,
+      "live_authority": false,
+      "options_included": false
+    },
+    "scope": {
+      "asset_class": "CRYPTO_LINEAR_PERPETUAL",
+      "bar_interval": "5m",
+      "instrument": "BTCUSDT",
+      "venue": "BINANCE_USDM"
+    },
+    "sizing": {
+      "max_gross_leverage": "1.00",
+      "policy": "RISK_NORMALIZED_V3",
+      "quantity_step": "0.00001",
+      "starting_equity": "10000",
+      "target_position_notional_fraction": "0.10"
+    },
+    "source_contract": {
+      "full_object_sha256_required": true,
+      "historical_pit_metadata_claim": false,
+      "monthly_archive_count": 39,
+      "provider": "BINANCE_DATA_VISION_PUBLIC_ARCHIVE",
+      "required_series": [
+        "KLINES_5M",
+        "FUNDING_RATE"
+      ],
+      "shared_acquisition_manifest_file_sha256": "0a466c8ba272fddfcc1b92adbce3571818554f9b7af4122eef608a6deb71245f"
+    },
+    "strategy": {
+      "breakout_lookback_bars": 144,
+      "compression_ratio_max": "0.60",
+      "direction": "LONG_SHORT",
+      "exit_lookback_bars": 72,
+      "family": "VOLATILITY_COMPRESSION_BREAKOUT",
+      "fast_vol_bars": 288,
+      "max_holding_bars": 1008,
+      "parameter_tuning_allowed": false,
+      "slow_vol_bars": 2016
+    },
+    "version": "3.2.0"
+  },
+  "campaign_fingerprint": "27b1074e7ce971b392c9961f630827de789b904bea99b43d7f2d1d92aa684f3c",
+  "schema_id": "EQS-FEASIBILITY-CRYPTO-CAMPAIGN-V3"
+}
