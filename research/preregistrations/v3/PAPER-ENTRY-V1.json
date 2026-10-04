@@ -1,0 +1,52 @@
+{
+  "schema_id": "EQS-PAPER-ENTRY-RESEARCH-GATE-V1",
+  "version": "1.0.0",
+  "classification": "EXPLORATORY_PAPER_ENTRY_PREOUTCOME_POLICY",
+  "purpose": "Permit a distinct counted exploratory crypto strategy to enter non-submitting managed PAPER without granting R1.3, J25/J26 or LIVE authority.",
+  "scope": {
+    "venue": "BINANCE_USDM",
+    "instrument": "BTCUSDT",
+    "allowed_series": ["KLINES_5M", "FUNDING_RATE"],
+    "allowed_source_class": "PUBLIC_UNADMITTED_EXPLORATORY",
+    "locked_oos_access": false,
+    "validation_is_clean_holdout": false
+  },
+  "trial_discipline": {
+    "all_trials_counted": true,
+    "distinct_preregistered_campaign_required": true,
+    "post_result_parameter_tuning_within_campaign": false,
+    "maximum_new_v3_campaigns_before_programme_review": 3
+  },
+  "sizing": {
+    "required_methodology_version": "3.0.0",
+    "maximum_gross_leverage": "1.00",
+    "target_position_notional_fraction_max": "0.10",
+    "fixed_one_btc_override_permitted": false
+  },
+  "minimum_research_screen": {
+    "minimum_training_completed_trades": 50,
+    "minimum_validation_completed_trades": 20,
+    "training_net_pnl_after_costs_must_be_positive": true,
+    "validation_net_pnl_after_costs_must_be_positive": true,
+    "whole_window_net_pnl_after_costs_must_be_positive": true,
+    "maximum_drawdown_fraction": "0.20",
+    "maximum_cost_share_of_gross_profit_fraction": "0.50",
+    "journal_reconciliation_required": true,
+    "final_position_flat_required": true,
+    "pending_orders_zero_required": true
+  },
+  "paper_authority": {
+    "eligible_output": "MANAGED_PAPER_CANDIDATE",
+    "requires_shakedown_mechanics_pass": true,
+    "counts_historical_trades_toward_168h_100_trade_gate": false,
+    "broker_submission_enabled": false,
+    "live_authority": false,
+    "r13_certification_authority": false,
+    "j25_j26_candidate_authority": false
+  },
+  "promotion_boundary": {
+    "managed_paper_only": true,
+    "live_requires_separate_r13_j25_j26_and_explicit_human_authority": true,
+    "paper_result_must_be_counted_as_additional_registered_trial": true
+  }
+}
