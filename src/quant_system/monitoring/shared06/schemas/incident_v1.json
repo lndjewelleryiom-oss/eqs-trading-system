@@ -1,0 +1,102 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://eqs.local/schemas/shared06/incident_v1.json",
+  "title": "Incident V1",
+  "type": "object",
+  "required": [
+    "incident_id",
+    "detected_at",
+    "started_at",
+    "severity",
+    "affected_components",
+    "symptoms",
+    "evidence_refs",
+    "safety_actions",
+    "status"
+  ],
+  "properties": {
+    "incident_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "detected_at": {
+      "$ref": "common_defs_v1.json#/$defs/timestamp_utc"
+    },
+    "started_at": {
+      "$ref": "common_defs_v1.json#/$defs/timestamp_utc"
+    },
+    "recovered_at": {
+      "oneOf": [
+        {
+          "$ref": "common_defs_v1.json#/$defs/timestamp_utc"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "resolved_at": {
+      "oneOf": [
+        {
+          "$ref": "common_defs_v1.json#/$defs/timestamp_utc"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "severity": {
+      "$ref": "common_defs_v1.json#/$defs/severity"
+    },
+    "affected_components": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "symptoms": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "minItems": 1
+    },
+    "evidence_refs": {
+      "$ref": "common_defs_v1.json#/$defs/evidence_refs"
+    },
+    "safety_actions": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "remediation": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "follow_up": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "status": {
+      "enum": [
+        "OPEN",
+        "MITIGATED",
+        "RECOVERED",
+        "RESOLVED"
+      ]
+    }
+  },
+  "additionalProperties": false
+}

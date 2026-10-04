@@ -1,0 +1,71 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://eqs.local/schemas/shared06/portfolio_health_v1.json",
+  "title": "Portfolio Health V1",
+  "type": "object",
+  "required": [
+    "portfolio_service_id",
+    "observed_at",
+    "target_generation_state",
+    "strategy_input_state",
+    "exposure_input_state",
+    "rebalance_state",
+    "allocation_state",
+    "health_state"
+  ],
+  "properties": {
+    "portfolio_service_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "observed_at": {
+      "$ref": "common_defs_v1.json#/$defs/timestamp_utc"
+    },
+    "target_generation_state": {
+      "enum": [
+        "NORMAL",
+        "FAILED",
+        "STALE",
+        "UNKNOWN"
+      ]
+    },
+    "strategy_input_state": {
+      "enum": [
+        "FRESH",
+        "STALE",
+        "UNKNOWN"
+      ]
+    },
+    "exposure_input_state": {
+      "enum": [
+        "FRESH",
+        "STALE",
+        "UNKNOWN"
+      ]
+    },
+    "rebalance_state": {
+      "enum": [
+        "IDLE",
+        "RUNNING",
+        "COMPLETE",
+        "FAILED",
+        "UNKNOWN"
+      ]
+    },
+    "allocation_state": {
+      "enum": [
+        "NORMAL",
+        "FAILED",
+        "BLOCKED",
+        "UNKNOWN"
+      ]
+    },
+    "health_state": {
+      "$ref": "common_defs_v1.json#/$defs/health_state"
+    },
+    "reason_codes": {
+      "$ref": "common_defs_v1.json#/$defs/reason_codes"
+    }
+  },
+  "additionalProperties": false
+}

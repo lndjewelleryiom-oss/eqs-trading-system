@@ -1,0 +1,89 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://eqs.local/schemas/strategy_run_event_v1.schema.json",
+  "title": "EQS Strategy Run Event V1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "event_id",
+    "sequence",
+    "run_id",
+    "event_type",
+    "market_time_utc",
+    "received_time_utc",
+    "emitted_time_utc",
+    "payload",
+    "previous_event_hash",
+    "event_hash"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "EQS-STRATEGY-RUN-EVENT-V1"
+    },
+    "event_id": {
+      "type": "string",
+      "minLength": 16
+    },
+    "sequence": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "run_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "event_type": {
+      "enum": [
+        "RUN_STARTED",
+        "RUN_PROGRESS",
+        "MARKET_BAR",
+        "MARKET_TICK",
+        "SIGNAL",
+        "RISK_DECISION",
+        "ORDER_SUBMITTED",
+        "ORDER_ACK",
+        "ORDER_REJECT",
+        "FILL",
+        "PARTIAL_FILL",
+        "POSITION_CHANGE",
+        "TRADE_CLOSED",
+        "EQUITY_UPDATE",
+        "HEARTBEAT",
+        "RUN_BLOCKED",
+        "RUN_FAILED",
+        "RUN_PAUSED",
+        "RUN_FINISHED"
+      ]
+    },
+    "market_time_utc": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "received_time_utc": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "emitted_time_utc": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "payload": {
+      "type": "object"
+    },
+    "previous_event_hash": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "event_hash": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    }
+  }
+}

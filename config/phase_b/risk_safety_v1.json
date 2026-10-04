@@ -1,0 +1,43 @@
+{
+  "accepted_at": "2026-09-27T20:29:57.222750Z",
+  "allowed_requested_actions": [
+    "BLOCK_NEW_RISK",
+    "DISABLE_VENUE",
+    "DEMOTE_MODE",
+    "ACTIVATE_SCOPED_KILL_SWITCH",
+    "ACTIVATE_PORTFOLIO_KILL_SWITCH"
+  ],
+  "baseline_manifest_sha256": "d1d05a4a4ed6f10783ea50d327dd8e0f87eec7f7c68e0b358133212d9fc20ac1",
+  "effective_from": "2026-09-27T20:29:57.222750Z",
+  "execution_authority": {
+    "ACTIVATE_PORTFOLIO_KILL_SWITCH": "EQS-SHARED-03",
+    "ACTIVATE_SCOPED_KILL_SWITCH": "EQS-SHARED-03",
+    "BLOCK_NEW_RISK": "EQS-SHARED-03",
+    "DEMOTE_MODE": "EQS-00 owns canonical mode; EQS-SHARED-03 blocks risk pending EQS-00 update",
+    "DISABLE_VENUE": "EQS-SHARED-03 blocks new risk; EQS-SHARED-04 performs venue isolation"
+  },
+  "fail_closed_rules": [
+    "unknown_policy_blocks_risk_increase",
+    "expired_or_revoked_policy_has_no_authority",
+    "invalid_scope_rejected",
+    "failed_action_remains_blocked_until_reconciled",
+    "monitoring_cannot_increase_capital",
+    "monitoring_cannot_enable_broker_submission",
+    "safety_policy_cannot_promote_programme_mode"
+  ],
+  "owner": "EQS-SHARED-03 Capital & Risk",
+  "policy_id": "risk-safety-v1",
+  "policy_sha256": "9549657d17b8493c507269992181d572e1d964977c7f876f7a375eccba2cbace",
+  "policy_version": "1",
+  "programme_acceptor": "EQS-00 Master Control",
+  "requester_service_ids": [
+    "EQS-SHARED-06"
+  ],
+  "revocation_conditions": [
+    "baseline_change",
+    "shared03_tree_change",
+    "shared06_interface_change",
+    "EQS00_revocation"
+  ],
+  "status": "ACCEPTED"
+}

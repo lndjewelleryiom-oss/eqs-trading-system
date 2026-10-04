@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://eqs.local/schemas/shared06/alert_event_v1.json",
+  "title": "Alert Event V1",
+  "type": "object",
+  "required": [
+    "alert_id",
+    "state_transition_id",
+    "severity",
+    "component_id",
+    "opened_at",
+    "dedupe_key",
+    "reason_codes",
+    "routing_policy_id"
+  ],
+  "properties": {
+    "alert_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "state_transition_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "severity": {
+      "$ref": "common_defs_v1.json#/$defs/severity"
+    },
+    "component_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "opened_at": {
+      "$ref": "common_defs_v1.json#/$defs/timestamp_utc"
+    },
+    "closed_at": {
+      "oneOf": [
+        {
+          "$ref": "common_defs_v1.json#/$defs/timestamp_utc"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "dedupe_key": {
+      "type": "string",
+      "minLength": 1
+    },
+    "reason_codes": {
+      "$ref": "common_defs_v1.json#/$defs/reason_codes"
+    },
+    "routing_policy_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "incident_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "automatic_safety_action_authorised": {
+      "type": "boolean"
+    }
+  },
+  "additionalProperties": false
+}

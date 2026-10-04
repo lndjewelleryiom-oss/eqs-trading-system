@@ -1,0 +1,748 @@
+{
+  "engine_id": "EQS-SHARED-06-OPERATIONAL-CERTIFICATION-AGGREGATION-V1",
+  "version": "1.0.0",
+  "workstream": "EQS-SHARED-06 Monitoring & Operations",
+  "status": "DEFINED",
+  "authority_boundary": {
+    "operational_certification_owner": "EQS-SHARED-06",
+    "programme_promotion_owner": "EQS-00 Master Control",
+    "capital_and_risk_action_authority": "EQS-SHARED-03 Capital & Risk",
+    "engine_may_mutate_programme_mode": false,
+    "engine_may_promote_capital": false,
+    "engine_may_emit_promotion_candidate": true,
+    "engine_may_emit_block_or_demotion_request": true,
+    "unknown_safety_critical_state": {
+      "reported_health": "UNKNOWN",
+      "continuation_permission": "BLOCK"
+    }
+  },
+  "design_principles": [
+    "No voting or averaging across conflicting safety-critical evidence.",
+    "Authority is domain-specific and configured, not inferred from freshness alone.",
+    "Negative or unknown safety-critical evidence cannot be masked by positive evidence.",
+    "A dashboard or derived metric is never more authoritative than its underlying evidence.",
+    "Missing policy is not permission.",
+    "Certification is reproducible from frozen inputs, policy, schema and engine version.",
+    "PASS is impossible without complete required evidence and a verified output seal.",
+    "Operational certification and programme promotion are separate actions."
+  ],
+  "input_envelope": {
+    "required_fields": [
+      "record_id",
+      "record_type",
+      "schema_version",
+      "producer_service_id",
+      "authority_domain",
+      "environment",
+      "effective_at",
+      "observed_at",
+      "received_at",
+      "payload_sha256",
+      "payload",
+      "evidence_class",
+      "source_status"
+    ],
+    "optional_fields": [
+      "run_id",
+      "strategy_id",
+      "instrument_id",
+      "venue_id",
+      "account_id",
+      "correlation_id",
+      "parent_record_ids",
+      "supersedes_record_id",
+      "revokes_record_id",
+      "source_seal_id",
+      "expires_at"
+    ],
+    "evidence_class": [
+      "CANONICAL_CONTROL",
+      "DOMAIN_AUTHORITY",
+      "EXTERNAL_TRUTH",
+      "PRIMARY_OBSERVATION",
+      "SEALED_COMMISSIONING",
+      "DERIVED",
+      "PRESENTATION",
+      "TEST_FIXTURE",
+      "SIMULATION"
+    ],
+    "source_status": [
+      "ACTIVE",
+      "SUPERSEDED",
+      "REVOKED",
+      "QUARANTINED"
+    ]
+  },
+  "authoritative_inputs": {
+    "PROGRAMME_MODE": {
+      "authority": [
+        "EQS-00_CANONICAL_CONTROL"
+      ],
+      "fallback": "NONE",
+      "conflict_action": "UNKNOWN_BLOCK"
+    },
+    "CAPITAL_RISK_STATE": {
+      "authority": [
+        "EQS-SHARED-03_DOMAIN_AUTHORITY"
+      ],
+      "fallback": "NONE_FOR_SAFETY_DECISIONS",
+      "conflict_action": "UNKNOWN_BLOCK"
+    },
+    "MARKET_DATA_HEALTH": {
+      "authority": [
+        "EQS-SHARED-01_DOMAIN_AUTHORITY",
+        "PRIMARY_SOURCE_OBSERVATION"
+      ],
+      "fallback": "NONE_IF_REQUIRED_POLICY_CANNOT_RESOLVE",
+      "conflict_action": "UNKNOWN_BLOCK_IF_SAFETY_CRITICAL"
+    },
+    "EXECUTION_INTERNAL_STATE": {
+      "authority": [
+        "EQS-SHARED-04_DOMAIN_AUTHORITY"
+      ],
+      "fallback": "NONE",
+      "conflict_action": "UNKNOWN_BLOCK"
+    },
+    "EXTERNAL_ORDER_POSITION_FILL_TRUTH": {
+      "authority": [
+        "BROKER_OR_VENUE_EXTERNAL_TRUTH"
+      ],
+      "fallback": "NONE",
+      "conflict_action": "RECONCILIATION_MISMATCH"
+    },
+    "PORTFOLIO_STATE": {
+      "authority": [
+        "EQS-SHARED-05_DOMAIN_AUTHORITY"
+      ],
+      "fallback": "NONE",
+      "conflict_action": "UNKNOWN_BLOCK_IF_SAFETY_CRITICAL"
+    },
+    "SERVICE_RUNTIME_HEALTH": {
+      "authority": [
+        "OWNING_SERVICE_PRIMARY_OBSERVATION",
+        "HOST_RUNTIME_PRIMARY_OBSERVATION"
+      ],
+      "fallback": "MONITORING_DERIVED_ONLY_WHEN_POLICY_PERMITS",
+      "conflict_action": "WORST_SAFE_STATE"
+    },
+    "CLOCK_STATE": {
+      "authority": [
+        "POLICY_DESIGNATED_TIME_SOURCE",
+        "HOST_CLOCK_OBSERVATION"
+      ],
+      "fallback": "NONE",
+      "conflict_action": "UNKNOWN_BLOCK_IF_EVENT_ORDERING_MATERIAL"
+    },
+    "COMMISSIONING_RESULT": {
+      "authority": [
+        "EQS-SHARED-06_SEALED_CERTIFICATION"
+      ],
+      "fallback": "NONE",
+      "conflict_action": "FAIL_OR_UNKNOWN"
+    },
+    "POLICY": {
+      "authority": [
+        "CANONICAL_POLICY_REGISTRY"
+      ],
+      "fallback": "NONE",
+      "conflict_action": "UNKNOWN_BLOCK"
+    }
+  },
+  "precedence_rules": [
+    {
+      "priority": 1,
+      "rule_id": "PREC-001",
+      "rule": "Reject any record whose payload hash, schema, seal, producer identity or authority binding fails verification."
+    },
+    {
+      "priority": 2,
+      "rule_id": "PREC-002",
+      "rule": "A REVOKED or QUARANTINED source cannot contribute positive certification evidence."
+    },
+    {
+      "priority": 3,
+      "rule_id": "PREC-003",
+      "rule": "Canonical domain authority outranks derived, cached and presentation state for that domain."
+    },
+    {
+      "priority": 4,
+      "rule_id": "PREC-004",
+      "rule": "External broker/venue truth defines external orders, positions and fills; conflicting internal state is retained as a reconciliation mismatch, not overwritten."
+    },
+    {
+      "priority": 5,
+      "rule_id": "PREC-005",
+      "rule": "Within the same authority class and semantic identity, newer valid evidence may supersede older evidence only when timestamps are monotonic, the source is not revoked and the new record is valid for the certification as-of time."
+    },
+    {
+      "priority": 6,
+      "rule_id": "PREC-006",
+      "rule": "Fresh evidence cannot override higher-authority stale evidence when policy requires the higher-authority source; the result becomes STALE or UNKNOWN rather than silently falling back."
+    },
+    {
+      "priority": 7,
+      "rule_id": "PREC-007",
+      "rule": "Explicit FAIL, BLOCK or material mismatch evidence survives aggregation and cannot be averaged away by HEALTHY observations."
+    },
+    {
+      "priority": 8,
+      "rule_id": "PREC-008",
+      "rule": "Unresolved safety-critical conflict produces UNKNOWN/BLOCK."
+    },
+    {
+      "priority": 9,
+      "rule_id": "PREC-009",
+      "rule": "Terminal sealed commissioning evidence outranks intermediate checkpoints for final certification; intermediate checkpoints remain historical evidence."
+    },
+    {
+      "priority": 10,
+      "rule_id": "PREC-010",
+      "rule": "Presentation/dashboard state has zero promotion authority."
+    }
+  ],
+  "duplicate_and_conflict_rules": {
+    "same_record_id_same_hash": "IDEMPOTENT_DUPLICATE_IGNORE",
+    "same_record_id_different_hash": "CORRUPT_BLOCK_AND_INCIDENT",
+    "same_authority_same_fact_same_time_conflicting_values": "CONFLICT_UNKNOWN_BLOCK",
+    "cross_authority_conflict": "RESOLVE_BY_DOMAIN_AUTHORITY_OR_RECONCILIATION_RULE",
+    "future_dated_record": "REJECT_FOR_CURRENT_CERTIFICATION",
+    "clock_regression": "QUARANTINE_AFFECTED_SEQUENCE_AND_FAIL_CLOSED_IF_MATERIAL"
+  },
+  "certification_as_of_rules": {
+    "snapshot_time_field": "certification_as_of",
+    "eligible_record_conditions": [
+      "received_at <= certification_as_of",
+      "effective_at <= certification_as_of unless explicitly future-effective policy data",
+      "source_status == ACTIVE",
+      "expires_at is null or expires_at > certification_as_of",
+      "schema and hash validation PASS",
+      "producer and authority binding VERIFIED"
+    ],
+    "late_arrival": "May affect a later certification run but never silently rewrites an already sealed result.",
+    "environment_isolation": "Records from different environments cannot be combined unless an acceptance plan explicitly defines the cross-environment relationship.",
+    "run_isolation": "Commissioning evidence from different run_ids cannot satisfy one run's required checks unless the preregistered plan explicitly permits inherited evidence."
+  },
+  "resolved_fact_model": {
+    "fact_key": [
+      "authority_domain",
+      "environment",
+      "scope",
+      "fact_name"
+    ],
+    "output_fields": [
+      "fact_key",
+      "resolved_value",
+      "resolution_state",
+      "winning_record_ids",
+      "rejected_record_ids",
+      "authority_used",
+      "freshness_state",
+      "conflict_state",
+      "reason_codes",
+      "evidence_refs"
+    ],
+    "resolution_state": [
+      "RESOLVED",
+      "STALE",
+      "CONFLICT",
+      "UNKNOWN",
+      "INVALID"
+    ],
+    "safety_rule": "Only RESOLVED facts satisfying their bound policy may support PASS."
+  },
+  "health_aggregation": {
+    "input_health_states": [
+      "HEALTHY",
+      "DEGRADED",
+      "BLOCKED",
+      "UNKNOWN"
+    ],
+    "default_safe_order_for_required_dependencies": [
+      "BLOCKED",
+      "UNKNOWN",
+      "DEGRADED",
+      "HEALTHY"
+    ],
+    "rules": [
+      "Any required dependency BLOCKED => aggregate BLOCKED.",
+      "Else any required safety-critical dependency UNKNOWN => aggregate UNKNOWN with continuation_permission=BLOCK.",
+      "Else any required dependency DEGRADED => aggregate DEGRADED unless bound policy escalates to BLOCKED.",
+      "Else all required dependencies HEALTHY => aggregate HEALTHY.",
+      "Optional dependency failures affect aggregation only as defined by policy."
+    ]
+  },
+  "gate_outcomes": [
+    "PASS",
+    "FAIL",
+    "BLOCKED",
+    "UNKNOWN",
+    "NOT_APPLICABLE"
+  ],
+  "gate_engine": {
+    "gates": {
+      "OPS_G01_SERVICE_HEALTH": {
+        "purpose": "Required service and dependency health is authoritative.",
+        "pass_condition": "All policy-required service facts satisfy bound policy and none is BLOCKED/UNKNOWN.",
+        "fail_closed_conditions": [
+          "missing required service",
+          "unknown safety-critical dependency",
+          "corrupt health evidence"
+        ]
+      },
+      "OPS_G02_DATA_HEALTH": {
+        "purpose": "Required market/data inputs are fresh, continuous and semantically valid.",
+        "pass_condition": "All policy-required data-health checks PASS.",
+        "fail_closed_conditions": [
+          "required data state UNKNOWN",
+          "unresolved sequence gap",
+          "material clock regression",
+          "silent semantic failover"
+        ]
+      },
+      "OPS_G03_RISK_HEALTH": {
+        "purpose": "Capital & Risk service and policy state is authoritative.",
+        "pass_condition": "EQS-SHARED-03 state is authoritative, required policy is loaded and risk/reconciliation facts satisfy policy.",
+        "fail_closed_conditions": [
+          "risk authority unavailable",
+          "policy unknown",
+          "reservation inconsistency",
+          "unknown account state where required"
+        ]
+      },
+      "OPS_G04_EXECUTION_HEALTH": {
+        "purpose": "Execution state has no unresolved safety-critical ambiguity.",
+        "pass_condition": "Required execution checks satisfy policy and unknown order outcomes are zero unless policy explicitly marks the scope non-applicable.",
+        "fail_closed_conditions": [
+          "unknown order outcome",
+          "execution authority unavailable",
+          "unresolved broker/venue mismatch"
+        ]
+      },
+      "OPS_G05_RECONCILIATION": {
+        "purpose": "Internal and external positions/cash/orders/fills/fees are reconciled where required.",
+        "pass_condition": "All policy-required reconciliations are MATCHED or explicitly NOT_APPLICABLE.",
+        "fail_closed_conditions": [
+          "material mismatch",
+          "UNKNOWN reconciliation",
+          "STALE required external snapshot"
+        ]
+      },
+      "OPS_G06_MODE_INTEGRITY": {
+        "purpose": "Actual runtime authority matches EQS-00 authorised mode.",
+        "pass_condition": "actual_mode == authorised_mode for every required execution-capable component.",
+        "fail_closed_conditions": [
+          "mode mismatch",
+          "EQS-00 mode unavailable",
+          "component mode UNKNOWN"
+        ]
+      },
+      "OPS_G07_COMMISSIONING": {
+        "purpose": "Required operational commissioning is preregistered, complete and sealed.",
+        "pass_condition": "Every required commissioning run has terminal completion, all required checks PASS, required duration satisfied, and seal VERIFIED.",
+        "fail_closed_conditions": [
+          "incomplete run",
+          "required check FAIL/UNKNOWN",
+          "duration shortfall",
+          "hash mismatch",
+          "unverified seal"
+        ]
+      },
+      "OPS_G08_RECOVERY": {
+        "purpose": "Restart/recovery returns the system to authoritative reconciled state.",
+        "pass_condition": "Required recovery tests PASS with authoritative_state_restored=true and reconciliation MATCHED.",
+        "fail_closed_conditions": [
+          "recovery incomplete",
+          "recovery state UNKNOWN",
+          "reconciliation not MATCHED"
+        ]
+      },
+      "OPS_G09_SECRET_HYGIENE": {
+        "purpose": "Operational evidence and logs do not expose secrets.",
+        "pass_condition": "Required secret-hygiene checks PASS.",
+        "fail_closed_conditions": [
+          "secret detected",
+          "secret scan unavailable when required"
+        ]
+      },
+      "OPS_G10_SAFETY_INTERFACE": {
+        "purpose": "Monitoring safety actions route only through authorised policy interfaces.",
+        "pass_condition": "Safety-action policy bindings exist and no authority violation is present.",
+        "fail_closed_conditions": [
+          "missing authorising policy",
+          "direct promotion request",
+          "unauthorised kill-switch or venue-disable path"
+        ]
+      }
+    },
+    "outcome_precedence": [
+      "FAIL",
+      "BLOCKED",
+      "UNKNOWN",
+      "PASS",
+      "NOT_APPLICABLE"
+    ],
+    "notes": [
+      "NOT_APPLICABLE is valid only when the bound gate policy explicitly permits it.",
+      "A DEGRADED health input does not automatically cause gate FAIL; the bound policy decides whether degradation is tolerable.",
+      "If the required policy needed to interpret DEGRADED is missing, gate outcome is UNKNOWN."
+    ]
+  },
+  "operational_certification": {
+    "certification_id_format": "opaque deterministic-or-UUID identifier",
+    "overall_outcomes": [
+      "PASS",
+      "FAIL",
+      "BLOCKED",
+      "UNKNOWN"
+    ],
+    "aggregation_logic": [
+      "Select required gates from the bound certification policy.",
+      "Validate every gate policy reference before evaluation.",
+      "Evaluate gates independently from frozen resolved facts.",
+      "If any required gate FAIL => overall FAIL.",
+      "Else if any required gate BLOCKED => overall BLOCKED.",
+      "Else if any required gate UNKNOWN => overall UNKNOWN.",
+      "Else if all required gates PASS or policy-authorised NOT_APPLICABLE => overall PASS.",
+      "Warnings never convert FAIL/BLOCKED/UNKNOWN into PASS."
+    ],
+    "pass_requirements": [
+      "policy bundle VERIFIED",
+      "input manifest SEALED",
+      "all required gate results deterministic",
+      "no unresolved critical conflicts",
+      "output certification seal VERIFIED"
+    ]
+  },
+  "promotion_logic": {
+    "principle": "Operational certification is evidence for promotion, not promotion itself.",
+    "required_input": "promotion_policy supplied by EQS-00",
+    "promotion_policy_required_fields": [
+      "policy_id",
+      "policy_version",
+      "target_mode",
+      "required_operational_gates",
+      "required_external_gate_refs",
+      "evidence_max_age_rules",
+      "allowed_not_applicable_gates",
+      "policy_sha256"
+    ],
+    "candidate_outcomes": [
+      "ELIGIBLE_FOR_EQS00_REVIEW",
+      "NOT_ELIGIBLE",
+      "BLOCKED",
+      "UNKNOWN"
+    ],
+    "candidate_rules": [
+      "No promotion candidate is evaluated without a verified EQS-00 promotion policy.",
+      "All required operational gates must PASS, except gates explicitly policy-authorised as NOT_APPLICABLE.",
+      "All required external gate references must be present and VERIFIED; this engine does not reinterpret research, OOS, strategy or capital approvals owned elsewhere.",
+      "Any safety-critical UNKNOWN => candidate UNKNOWN or BLOCKED according to policy; never ELIGIBLE.",
+      "Any explicit FAIL => NOT_ELIGIBLE.",
+      "Any explicit BLOCKED => BLOCKED.",
+      "Successful evaluation yields ELIGIBLE_FOR_EQS00_REVIEW only.",
+      "EQS-00 must independently accept the evidence and perform any canonical programme-mode mutation.",
+      "Automatic upward promotion is forbidden."
+    ],
+    "demotion_logic": [
+      "Monitoring may emit an immediate block/demotion request when an authorised safety condition fires.",
+      "EQS-SHARED-03 executes capital/risk safety actions under its policy authority.",
+      "EQS-00 remains authoritative for canonical programme mode.",
+      "Loss of confidence after a prior PASS can invalidate current eligibility without rewriting the historical sealed PASS."
+    ]
+  },
+  "fail_closed_matrix": [
+    {
+      "condition": "required record missing",
+      "fact": "UNKNOWN",
+      "gate": "UNKNOWN",
+      "continuation": "BLOCK_IF_SAFETY_CRITICAL"
+    },
+    {
+      "condition": "hash or seal mismatch",
+      "fact": "INVALID",
+      "gate": "FAIL",
+      "continuation": "BLOCK"
+    },
+    {
+      "condition": "unknown producer or authority binding",
+      "fact": "UNKNOWN",
+      "gate": "UNKNOWN",
+      "continuation": "BLOCK_IF_SAFETY_CRITICAL"
+    },
+    {
+      "condition": "same record_id with different hash",
+      "fact": "CONFLICT/CORRUPT",
+      "gate": "FAIL",
+      "continuation": "BLOCK_AND_INCIDENT"
+    },
+    {
+      "condition": "required evidence stale",
+      "fact": "STALE",
+      "gate": "UNKNOWN_OR_FAIL_PER_POLICY",
+      "continuation": "BLOCK_IF_SAFETY_CRITICAL"
+    },
+    {
+      "condition": "mode mismatch",
+      "fact": "RESOLVED_MISMATCH",
+      "gate": "FAIL",
+      "continuation": "BLOCK_AND_CRITICAL_INCIDENT"
+    },
+    {
+      "condition": "material reconciliation mismatch",
+      "fact": "RESOLVED_MISMATCH",
+      "gate": "FAIL",
+      "continuation": "BLOCK_AND_INCIDENT"
+    },
+    {
+      "condition": "required policy missing",
+      "fact": "UNKNOWN",
+      "gate": "UNKNOWN",
+      "continuation": "BLOCK"
+    },
+    {
+      "condition": "commissioning terminal state unverified",
+      "fact": "UNKNOWN",
+      "gate": "UNKNOWN",
+      "continuation": "NO_PASS"
+    },
+    {
+      "condition": "secret detected",
+      "fact": "INVALID",
+      "gate": "FAIL",
+      "continuation": "BLOCK_AND_INCIDENT"
+    },
+    {
+      "condition": "clock regression affects ordering",
+      "fact": "UNKNOWN",
+      "gate": "UNKNOWN",
+      "continuation": "BLOCK"
+    },
+    {
+      "condition": "dashboard/evidence conflict",
+      "fact": "UNDERLYING_EVIDENCE_WINS",
+      "gate": "UNCHANGED_OR_UNKNOWN",
+      "continuation": "DASHBOARD_NON_AUTHORITATIVE"
+    }
+  ],
+  "certification_run_lifecycle": [
+    "1. LOAD_ENGINE_VERSION",
+    "2. LOAD_AND_VERIFY_POLICY_BUNDLE",
+    "3. SET_CERTIFICATION_AS_OF",
+    "4. INGEST_INPUT_ENVELOPES",
+    "5. VERIFY_SCHEMA_HASH_SEAL_AND_AUTHORITY",
+    "6. APPLY_REVOCATIONS_SUPERSESSIONS_AND_DUPLICATE_RULES",
+    "7. FREEZE_INPUT_MANIFEST",
+    "8. RESOLVE_AUTHORITATIVE_FACTS",
+    "9. RUN_SEMANTIC_VALIDATORS",
+    "10. EVALUATE_GATES_INDEPENDENTLY",
+    "11. AGGREGATE_OPERATIONAL_CERTIFICATION",
+    "12. EVALUATE_PROMOTION_CANDIDATE_IF_EQS00_POLICY_PRESENT",
+    "13. EMIT_SAFETY_ACTION_REQUESTS_IF_REQUIRED",
+    "14. BUILD_OUTPUT_MANIFESTS",
+    "15. HASH_AND_SEAL",
+    "16. INDEPENDENTLY_RECOMPUTE_AND_VERIFY_SEAL",
+    "17. PUBLISH_IMMUTABLE_RESULT"
+  ],
+  "output_objects": {
+    "input_manifest": {
+      "required": [
+        "manifest_id",
+        "certification_as_of",
+        "record_count",
+        "record_hashes",
+        "policy_bundle_sha256",
+        "engine_version",
+        "manifest_sha256"
+      ]
+    },
+    "resolved_fact": {
+      "required": [
+        "fact_key",
+        "resolved_value",
+        "resolution_state",
+        "authority_used",
+        "winning_record_ids",
+        "reason_codes",
+        "fact_sha256"
+      ]
+    },
+    "gate_result": {
+      "required": [
+        "gate_id",
+        "outcome",
+        "required",
+        "policy_id",
+        "input_fact_hashes",
+        "rule_results",
+        "reason_codes",
+        "gate_result_sha256"
+      ]
+    },
+    "operational_certificate": {
+      "required": [
+        "certification_id",
+        "certification_as_of",
+        "environment",
+        "overall_outcome",
+        "required_gate_results",
+        "warnings",
+        "input_manifest_sha256",
+        "resolved_fact_set_sha256",
+        "gate_results_sha256",
+        "policy_bundle_sha256",
+        "engine_build_sha256",
+        "certificate_sha256"
+      ]
+    },
+    "promotion_candidate": {
+      "required": [
+        "candidate_id",
+        "target_mode",
+        "candidate_outcome",
+        "eqs00_promotion_policy_id",
+        "operational_certificate_sha256",
+        "external_gate_refs",
+        "reason_codes",
+        "candidate_sha256"
+      ]
+    },
+    "safety_action_request": {
+      "required": [
+        "request_id",
+        "requested_action",
+        "scope",
+        "trigger_gate_or_fact",
+        "authorising_policy_id",
+        "evidence_refs",
+        "request_sha256"
+      ]
+    },
+    "final_seal": {
+      "required": [
+        "seal_id",
+        "certification_id",
+        "created_at",
+        "input_manifest_sha256",
+        "resolved_fact_set_sha256",
+        "gate_results_sha256",
+        "operational_certificate_sha256",
+        "policy_bundle_sha256",
+        "engine_build_sha256",
+        "previous_seal_sha256",
+        "seal_status",
+        "seal_sha256"
+      ],
+      "seal_status": [
+        "VERIFIED_PASS",
+        "VERIFIED_FAIL",
+        "VERIFIED_BLOCKED",
+        "VERIFIED_UNKNOWN"
+      ],
+      "note": "A verified seal proves integrity and reproducibility of the result; it does not convert a non-PASS result into PASS."
+    }
+  },
+  "canonical_serialization_and_hashing": {
+    "encoding": "UTF-8",
+    "object_key_order": "lexicographic",
+    "whitespace": "minimal separators",
+    "unsupported_numeric_values": [
+      "NaN",
+      "Infinity",
+      "-Infinity"
+    ],
+    "hash": "SHA-256",
+    "array_order": "semantically ordered arrays preserve order; set-like arrays must be normalized by the producing schema before hashing",
+    "self_hashing_rule": "Compute each object's sha256 over the canonical object with its own hash field omitted.",
+    "final_seal_rule": "Compute seal_sha256 over the canonical final_seal object with seal_sha256 omitted."
+  },
+  "immutability_and_supersession": {
+    "sealed_results_are_immutable": true,
+    "correction_method": "Issue a new certification with supersedes_certification_id and preserve the prior artifact.",
+    "revocation_method": "Issue a signed/sealed revocation record; never delete historical evidence.",
+    "historical_pass_rule": "A later failure does not rewrite a prior valid PASS, but it can remove current eligibility and trigger block/demotion."
+  },
+  "reproducibility_requirements": [
+    "Same frozen input manifest + policy bundle + schema bundle + engine build must produce byte-identical resolved facts, gate results and certificate.",
+    "Every rejected input must remain listed with a deterministic reason code.",
+    "No network lookup is permitted during deterministic recomputation unless the fetched bytes were already frozen in the input manifest.",
+    "Wall-clock time may appear only as certification metadata; logic uses certification_as_of and frozen input timestamps."
+  ],
+  "reason_code_families": {
+    "INTEGRITY": [
+      "HASH_MISMATCH",
+      "SEAL_UNVERIFIED",
+      "SCHEMA_INVALID",
+      "DUPLICATE_ID_CONFLICT"
+    ],
+    "AUTHORITY": [
+      "UNKNOWN_PRODUCER",
+      "AUTHORITY_BINDING_MISSING",
+      "AUTHORITY_CONFLICT",
+      "PROMOTION_AUTHORITY_BREACH"
+    ],
+    "TEMPORAL": [
+      "EVIDENCE_STALE",
+      "CLOCK_REGRESSION",
+      "FUTURE_DATED_INPUT",
+      "TERMINAL_STATE_UNVERIFIED"
+    ],
+    "HEALTH": [
+      "CRITICAL_DEPENDENCY_UNKNOWN",
+      "SERVICE_BLOCKED",
+      "DATA_STALE",
+      "UNKNOWN_ORDER_OUTCOME"
+    ],
+    "RECONCILIATION": [
+      "MATERIAL_MISMATCH",
+      "EXTERNAL_SNAPSHOT_STALE",
+      "RECONCILIATION_UNKNOWN"
+    ],
+    "POLICY": [
+      "POLICY_MISSING",
+      "POLICY_UNVERIFIED",
+      "NOT_APPLICABLE_NOT_AUTHORISED"
+    ],
+    "COMMISSIONING": [
+      "REQUIRED_CHECK_FAILED",
+      "REQUIRED_CHECK_UNKNOWN",
+      "DURATION_SHORTFALL",
+      "RUN_INCOMPLETE"
+    ],
+    "SECURITY": [
+      "SECRET_EXPOSURE"
+    ],
+    "MODE": [
+      "AUTHORISED_ACTUAL_MODE_MISMATCH"
+    ]
+  },
+  "eqs00_handoff": {
+    "workstream": "EQS-SHARED-06 Monitoring & Operations",
+    "task": "Define complete operational certification and aggregation engine",
+    "result": "PASS_DEFINITION_COMPLETE",
+    "canonical_mutation": false,
+    "programme_gate_promoted": false,
+    "interfaces_created": [
+      "input envelope",
+      "domain authority registry",
+      "precedence resolver",
+      "resolved fact set",
+      "OPS_G01-OPS_G10 gate evaluator",
+      "operational certificate",
+      "promotion candidate",
+      "safety action request",
+      "immutable output seal"
+    ],
+    "dependencies": [
+      "EQS-00 must provide canonical promotion policies and external gate references.",
+      "EQS-SHARED-03 must provide safety-action policy bindings.",
+      "Each domain authority must register authoritative producer identities and freshness/threshold policies.",
+      "No production threshold is defined by this engine."
+    ],
+    "recommended_next_job": "Implement the deterministic reference aggregator against the existing V1 schemas and rule catalog, then run an adversarial certification suite covering authority conflicts, stale evidence, revocation, hash corruption, reconciliation mismatch, mode mismatch, incomplete commissioning and current-eligibility demotion."
+  },
+  "definition_seal": {
+    "seal_id": "EQS-SHARED-06-CERT-AGG-V1-20260927",
+    "content_sha256_excluding_definition_seal": "cc2e7618f9985e163b870445a400d011c9c0097035f405bdb3440c43e2f709dd",
+    "verification_status": "VERIFIED"
+  }
+}

@@ -1,0 +1,9 @@
+Metadata-Version: 2.4
+Name: evolutionary-quant-system
+Version: 0.1.0
+Summary: Institutional-style autonomous quantitative research and trading platform
+Requires-Python: >=3.12
+Requires-Dist: jsonschema>=4.23
+Requires-Dist: tzdata>=2025.2; platform_system == "Windows"
+Provides-Extra: dev
+Requires-Dist: pytest>=8; extra == "dev"

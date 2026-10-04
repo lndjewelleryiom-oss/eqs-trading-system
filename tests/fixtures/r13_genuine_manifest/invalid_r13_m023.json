@@ -1,0 +1,293 @@
+{
+  "artifact_inventory": [
+    {
+      "artifact_id": "h02.json",
+      "artifact_type": "OTHER",
+      "byte_size": 9,
+      "classification": "DERIVED_REAL_MARKET",
+      "path_or_uri": "h02.json",
+      "sha256": "a68982fc165883b6e799e895cf53c1ab7b8defe203b73039d071f5c9ef5bfdc5"
+    },
+    {
+      "artifact_id": "universe.json",
+      "artifact_type": "UNIVERSE_SNAPSHOT",
+      "byte_size": 17,
+      "classification": "DERIVED_REAL_MARKET",
+      "path_or_uri": "universe.json",
+      "sha256": "14d99713389e1a21c598a374f237d7bf46aa513cc1945eea95857da20db149c2"
+    },
+    {
+      "artifact_id": "lifecycle.json",
+      "artifact_type": "LIFECYCLE_EVENT_SET",
+      "byte_size": 16,
+      "classification": "DERIVED_REAL_MARKET",
+      "path_or_uri": "lifecycle.json",
+      "sha256": "df5e76723e9407b9c14259de0da566d0a0e11820a691e8616ff0780dde512cc5"
+    },
+    {
+      "artifact_id": "coverage.json",
+      "artifact_type": "COVERAGE_RECORD_SET",
+      "byte_size": 16,
+      "classification": "DERIVED_REAL_MARKET",
+      "path_or_uri": "coverage.json",
+      "sha256": "6104a74f09c4a42be4f57aab02208f2134b202880d0a388147ceaa43cccbba2b"
+    },
+    {
+      "artifact_id": "eligibility.json",
+      "artifact_type": "ELIGIBILITY_RECORD_SET",
+      "byte_size": 19,
+      "classification": "DERIVED_REAL_MARKET",
+      "path_or_uri": "eligibility.json",
+      "sha256": "e93870acb6b7d04d4d0f4773449318e39ab82ae898f6d57b46bafd41ac452925"
+    },
+    {
+      "artifact_id": "validator.bin",
+      "artifact_type": "VALIDATOR_REPORT",
+      "byte_size": 15,
+      "classification": "DERIVED_REAL_MARKET",
+      "path_or_uri": "validator.bin",
+      "sha256": "47ce3c8f1ea7146ce2e68ee88ff9ebd3f3d9153e08c8c7049059d6f7b6f192ec"
+    },
+    {
+      "artifact_id": "rules.json",
+      "artifact_type": "RULE_CATALOGUE",
+      "byte_size": 10,
+      "classification": "DERIVED_REAL_MARKET",
+      "path_or_uri": "rules.json",
+      "sha256": "74b51e1b305931fb698f4f0c8e9c039a387d66c49c9996b71f018186cd528e13"
+    },
+    {
+      "artifact_id": "pit.json",
+      "artifact_type": "PIT_AUDIT",
+      "byte_size": 17,
+      "classification": "DERIVED_REAL_MARKET",
+      "path_or_uri": "pit.json",
+      "sha256": "d20f93c55dfece83553832433db30c6e725218dbf4c182e7c61ec55baac2b1ac"
+    },
+    {
+      "artifact_id": "receipts.json",
+      "artifact_type": "RAW_RECEIPT_INDEX",
+      "byte_size": 15,
+      "classification": "DERIVED_REAL_MARKET",
+      "path_or_uri": "receipts.json",
+      "sha256": "49ae13ab719682ad3a8d4872458314aaaa8a0633b8033f609a5da4c2e83818f2"
+    },
+    {
+      "artifact_id": "parent.bin",
+      "artifact_type": "OTHER",
+      "byte_size": 14,
+      "classification": "DERIVED_REAL_MARKET",
+      "path_or_uri": "parent.bin",
+      "sha256": "b4cbe87337334b009f5bf98c2fa63ea264a6daef736f78d7049c28939cde84d7"
+    }
+  ],
+  "certification": {
+    "a01_a28": {
+      "A01": "PASS",
+      "A02": "PASS",
+      "A03": "PASS",
+      "A04": "PASS",
+      "A05": "PASS",
+      "A06": "PASS",
+      "A07": "PASS",
+      "A08": "PASS",
+      "A09": "PASS",
+      "A10": "PASS",
+      "A11": "PASS",
+      "A12": "PASS",
+      "A13": "PASS",
+      "A14": "PASS",
+      "A15": "PASS",
+      "A16": "PASS",
+      "A17": "PASS",
+      "A18": "PASS",
+      "A19": "PASS",
+      "A20": "PASS",
+      "A21": "PASS",
+      "A22": "PASS",
+      "A23": "PASS",
+      "A24": "PASS",
+      "A25": "PASS",
+      "A26": "PASS",
+      "A27": "PASS",
+      "A28": "PASS"
+    },
+    "all_hard_gates_pass": true,
+    "certification_run_id": "cert-run-1",
+    "dataset_immutable": true,
+    "locked_oos_seal_intact": true,
+    "manifest_immutable": true,
+    "status": "PASSED"
+  },
+  "coverage": {
+    "coverage_record_set_sha256": "6104a74f09c4a42be4f57aab02208f2134b202880d0a388147ceaa43cccbba2b",
+    "locked_oos_complete": true,
+    "records": [
+      {
+        "availability_status": "COMPLETE",
+        "coverage_id": "coverage-1",
+        "end_time": "2026-09-30T23:59:59Z",
+        "expected_intervals": 10,
+        "instrument_id": "BTCUSDT",
+        "missing_intervals": 0,
+        "observed_intervals": 10,
+        "partial_intervals": 0,
+        "record_sha256": "5c5cbdaa74df4b5ae351dda6d82e7ba332c91a905656f0002508e826b678f94f",
+        "series": "TRADES",
+        "start_time": "2023-01-01T00:00:00Z",
+        "venue": "BINANCE_USDM"
+      }
+    ],
+    "schema_id": "EQS-H02-COVERAGE-v1",
+    "training_complete": true,
+    "validation_complete": true
+  },
+  "created_at": "2026-10-01T07:00:00Z",
+  "dataset": {
+    "builder_version": "r1.3-builder-v1",
+    "coverage_end": "2026-09-30T23:59:59Z",
+    "coverage_start": "2023-01-01T00:00:00Z",
+    "dataset_content_hash": "40dfae722cbdc3ea78722e90f34c2101d37257ef91747af9d11a6e9f29c5f0bd",
+    "dataset_id": "EQS-HIST-MULTIASSET-R1.3",
+    "dataset_manifest_fingerprint": "f273dc890c6f6566d71e699215fd20aa174057e92452bfbb1496725f51f84887",
+    "dataset_version": "R1.3-m023",
+    "decision_time": "2026-09-30T23:59:59Z",
+    "event_count": 100,
+    "event_identity_hash": "862417b9e7c3720bcb3263cd873b09892d787823b6f9a0f453e42824c5a4d4b6",
+    "format_version": "crypto-perps-research-v1",
+    "instrument_type": "LINEAR_PERPETUAL",
+    "partition_count": 3,
+    "partition_index_hash": "55f04705aafe36dd3c683863750c6d73fb865fadbd7b87afac31ee33e410563e",
+    "replay_fingerprint": "ac203c9843b5bd8c883e07039ff82820c94422010be6108bb82403ca25376a22",
+    "venues": [
+      "BINANCE_USDM",
+      "BYBIT_LINEAR",
+      "OKX_SWAP"
+    ]
+  },
+  "eligibility": {
+    "eligibility_record_set_sha256": "e93870acb6b7d04d4d0f4773449318e39ab82ae898f6d57b46bafd41ac452925",
+    "record_count": 1,
+    "records": [
+      {
+        "effective_from": "2023-01-01T00:00:00Z",
+        "effective_to": null,
+        "eligibility_id": "eligibility-1",
+        "eligible": true,
+        "instrument_id": "BTCUSDT",
+        "reason_codes": [
+          "ACTIVE_PIT"
+        ],
+        "record_sha256": "89cd8f9fb2753534295e5cd685eb121cae8574eb0e3d487c72d1f14f01330b9a",
+        "source_universe_fingerprint": "51a6db4364c083d71355a9a38b040e0d17ec3b30d0effdd9280060841fb767bc",
+        "venue": "BINANCE_USDM"
+      }
+    ],
+    "schema_id": "EQS-H02-ELIGIBILITY-v1"
+  },
+  "environment": "RESEARCH",
+  "feature_binding": {
+    "dataset_manifest_fingerprint": "f273dc890c6f6566d71e699215fd20aa174057e92452bfbb1496725f51f84887",
+    "feature_definition_hash": "3ad1c02e5e1a5e6edb9abc2c2183c7883c1fc6a1d8db9e1eae8db849be2d376b",
+    "feature_engine_version": "crypto-perps-feature-engine-v1",
+    "feature_run_manifest_fingerprints": [
+      "03b36b8a981bf1be367f368f034c40d8646186d73a35ce3d69dde59c3c235424"
+    ],
+    "universe_fingerprint": "51a6db4364c083d71355a9a38b040e0d17ec3b30d0effdd9280060841fb767bc"
+  },
+  "lifecycle": {
+    "continuity_status": "PASS",
+    "delisting_events_present": true,
+    "event_set_sha256": "df5e76723e9407b9c14259de0da566d0a0e11820a691e8616ff0780dde512cc5",
+    "listing_events_present": true,
+    "record_count": 4,
+    "schema_id": "EQS-H02-LIFECYCLE-EVENTS-v1",
+    "schema_version": "H02-LIFECYCLE-v1",
+    "source_revision_events_present": true,
+    "spec_revision_events_present": true
+  },
+  "manifest_generation": 1,
+  "manifest_hash": "829ee8c3aef9489fb6441f408f6240cd216bd54c85679f62e709c36251a6e91e",
+  "manifest_id": "r13m_m023case",
+  "pit": {
+    "audit_generated_at": "2026-10-01T06:30:00Z",
+    "audit_version": "pit-v1",
+    "backward_availability_adjustments": 0,
+    "certification_id": "pit-test-1",
+    "certification_sha256": "d20f93c55dfece83553832433db30c6e725218dbf4c182e7c61ec55baac2b1ac",
+    "decision_boundary_crossings": 0,
+    "future_events_detected": 0,
+    "future_revisions_detected": 0,
+    "records_checked": 100,
+    "status": "PASS",
+    "survivorship_bias_detected": false,
+    "violations": 0
+  },
+  "protected_boundary": {
+    "boundary_report_sha256": "2ee4ea47ef7e055319d865d68e88e6beff9d005bcba396e757a5e6b0725ea2fe",
+    "broker_submission_enabled": false,
+    "credentials_accessed": false,
+    "eqs06_options_included": false,
+    "live_capital_touched": false,
+    "protected_files_changed": 0
+  },
+  "provenance": {
+    "coverage_record_set_sha256": "6104a74f09c4a42be4f57aab02208f2134b202880d0a388147ceaa43cccbba2b",
+    "eligibility_record_set_sha256": "e93870acb6b7d04d4d0f4773449318e39ab82ae898f6d57b46bafd41ac452925",
+    "h02_batch_manifest_sha256": "a68982fc165883b6e799e895cf53c1ab7b8defe203b73039d071f5c9ef5bfdc5",
+    "lifecycle_event_schema_version": "H02-LIFECYCLE-v1",
+    "lifecycle_event_set_sha256": "df5e76723e9407b9c14259de0da566d0a0e11820a691e8616ff0780dde512cc5",
+    "parent_archive_sha256": "b4cbe87337334b009f5bf98c2fa63ea264a6daef736f78d7049c28939cde84d7",
+    "pit_certification_sha256": "d20f93c55dfece83553832433db30c6e725218dbf4c182e7c61ec55baac2b1ac",
+    "rule_catalog_sha256": "74b51e1b305931fb698f4f0c8e9c039a387d66c49c9996b71f018186cd528e13",
+    "rule_catalog_version": "RR-001-030-v1",
+    "source_receipt_index_sha256": "49ae13ab719682ad3a8d4872458314aaaa8a0633b8033f609a5da4c2e83818f2",
+    "universe_snapshot_sha256": "14d99713389e1a21c598a374f237d7bf46aa513cc1945eea95857da20db149c2",
+    "validator_build_sha256": "47ce3c8f1ea7146ce2e68ee88ff9ebd3f3d9153e08c8c7049059d6f7b6f192ec",
+    "validator_version": "v1.0.0"
+  },
+  "rule_catalogue": {
+    "blocked_rule_count": 0,
+    "catalogue_id": "EQS-H02-RR-CATALOGUE",
+    "catalogue_sha256": "74b51e1b305931fb698f4f0c8e9c039a387d66c49c9996b71f018186cd528e13",
+    "catalogue_version": "RR-001-030-v1",
+    "failed_rule_count": 0,
+    "first_rule": "RR-001",
+    "last_rule": "RR-030",
+    "passed_rule_count": 30,
+    "rule_count": 30
+  },
+  "schema_id": "EQS-R1.3-HISTORICAL-CERTIFICATION-MANIFEST-v1",
+  "source_class": "GENUINE",
+  "time_basis": {
+    "available_at_required": true,
+    "effective_time_required": true,
+    "event_time_semantics": "AS_KNOWN_AT",
+    "future_visibility_prohibited": true,
+    "ingestion_time_recorded": true,
+    "publication_time_required": true,
+    "revision_time_recorded": true,
+    "timezone": "UTC"
+  },
+  "universe": {
+    "history_sha256": "1ea81d2e8442ed166fdde1298f9882a7beb80c58ff95f0efa49b469a644564e4",
+    "point_in_time": true,
+    "record_count": 3,
+    "schema_id": "EQS-H02-HISTORICAL-UNIVERSE-v1",
+    "snapshot_id": "universe-test-1",
+    "snapshot_sha256": "14d99713389e1a21c598a374f237d7bf46aa513cc1945eea95857da20db149c2",
+    "survivorship_free": true,
+    "universe_fingerprint": "51a6db4364c083d71355a9a38b040e0d17ec3b30d0effdd9280060841fb767bc"
+  },
+  "validator": {
+    "json_schema_version": "2020-12",
+    "result": "PASS",
+    "run_completed_at": "2026-10-01T06:45:00Z",
+    "run_id": "validator-run-1",
+    "run_started_at": "2026-10-01T06:00:00Z",
+    "semantic_engine_version": "r13-semantic-v1",
+    "validator_build_sha256": "47ce3c8f1ea7146ce2e68ee88ff9ebd3f3d9153e08c8c7049059d6f7b6f192ec",
+    "validator_id": "EQS-H02-R1.3-VALIDATOR",
+    "validator_version": "v1.0.0"
+  }
+}

@@ -1,0 +1,40 @@
+{
+  "accepted_at": "2026-09-27T20:29:57.222750Z",
+  "allowed_not_applicable_gates": [],
+  "baseline_manifest_sha256": "d1d05a4a4ed6f10783ea50d327dd8e0f87eec7f7c68e0b358133212d9fc20ac1",
+  "explicit_non_effects": [
+    "NO_LIVE_PROMOTION",
+    "NO_BROKER_SUBMISSION",
+    "NO_CAPITAL_AUTHORIZATION",
+    "NO_OOS_UNLOCK",
+    "NO_PIT_PROMOTION",
+    "NO_ALPHA_PROMOTION"
+  ],
+  "owner": "EQS-00 Master Control",
+  "policy_id": "eqs-phase-b-programme-acceptance-v1",
+  "policy_sha256": "9351e32e6c4bf2eb762b4d2b264ed73bc887663e7d65b2a492c5269e862ca188",
+  "policy_version": "1",
+  "positive_result": "ELIGIBLE_FOR_EQS00_PHASE_B_REVIEW",
+  "required_mode_certificates": [
+    "PAPER",
+    "SHADOW"
+  ],
+  "required_operational_gates": [
+    "OPS_G01_SERVICE_HEALTH",
+    "OPS_G02_DATA_HEALTH",
+    "OPS_G03_RISK_HEALTH",
+    "OPS_G04_EXECUTION_HEALTH",
+    "OPS_G05_RECONCILIATION",
+    "OPS_G06_MODE_INTEGRITY",
+    "OPS_G07_COMMISSIONING",
+    "OPS_G08_RECOVERY",
+    "OPS_G09_SECRET_HYGIENE",
+    "OPS_G10_SAFETY_INTERFACE"
+  ],
+  "revocation_conditions": [
+    "baseline_change",
+    "policy_bundle_change",
+    "EQS00_revocation"
+  ],
+  "status": "ACCEPTED"
+}

@@ -1,0 +1,100 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://eqs.local/schemas/shared06/service_health_v1.json",
+  "title": "Service Health V1",
+  "type": "object",
+  "required": [
+    "service_id",
+    "service_version",
+    "environment",
+    "runtime_id",
+    "observed_at",
+    "health_state",
+    "reason_codes",
+    "dependency_states",
+    "authorised_mode",
+    "schema_version"
+  ],
+  "properties": {
+    "service_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "service_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "environment": {
+      "type": "string",
+      "minLength": 1
+    },
+    "runtime_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "host_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "observed_at": {
+      "$ref": "common_defs_v1.json#/$defs/timestamp_utc"
+    },
+    "health_state": {
+      "$ref": "common_defs_v1.json#/$defs/health_state"
+    },
+    "reason_codes": {
+      "$ref": "common_defs_v1.json#/$defs/reason_codes"
+    },
+    "dependency_states": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "dependency_id",
+          "health_state",
+          "safety_critical"
+        ],
+        "properties": {
+          "dependency_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "health_state": {
+            "$ref": "common_defs_v1.json#/$defs/health_state"
+          },
+          "safety_critical": {
+            "type": "boolean"
+          },
+          "observed_at": {
+            "$ref": "common_defs_v1.json#/$defs/timestamp_utc"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "authorised_mode": {
+      "$ref": "common_defs_v1.json#/$defs/programme_mode"
+    },
+    "actual_mode": {
+      "$ref": "common_defs_v1.json#/$defs/programme_mode"
+    },
+    "config_version": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "code_version": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "schema_version": {
+      "const": "1.0.0"
+    }
+  },
+  "additionalProperties": false
+}

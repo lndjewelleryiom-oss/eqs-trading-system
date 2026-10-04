@@ -1,0 +1,18 @@
+#!/usr/bin/env sh
+set -eu
+
+ROOT="$(git rev-parse --show-toplevel)"
+
+if [ -n "${PYTHON_BIN:-}" ]; then
+    :
+elif command -v python >/dev/null 2>&1; then
+    PYTHON_BIN="python"
+elif command -v python3 >/dev/null 2>&1; then
+    PYTHON_BIN="python3"
+else
+    echo "TEST_DATA PRE-COMMIT GUARD: FAIL - Python interpreter not found" >&2
+    exit 1
+fi
+
+export PYTHONPATH="$ROOT/src${PYTHONPATH:+:$PYTHONPATH}"
+exec "$PYTHON_BIN" -m quant_system.ci.test_data_evidence_guard --root "$ROOT"

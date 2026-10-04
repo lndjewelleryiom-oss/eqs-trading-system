@@ -1,0 +1,725 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://eqs.local/schemas/r1.3-genuine-certification-inputs-v1.schema.json",
+  "title": "EQS R1.3 Genuine Certification Input Bundle",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_id",
+    "manifest_id",
+    "manifest_generation",
+    "created_at",
+    "artifacts"
+  ],
+  "properties": {
+    "schema_id": {
+      "const": "EQS-R1.3-GENUINE-CERTIFICATION-INPUTS-v1"
+    },
+    "manifest_id": {
+      "type": "string",
+      "pattern": "^r13m_[A-Za-z0-9._:-]{8,128}$"
+    },
+    "manifest_generation": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "artifacts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "h02_batch_manifest",
+        "dataset_manifest",
+        "universe_snapshot",
+        "lifecycle_event_set",
+        "coverage_record_set",
+        "eligibility_record_set",
+        "pit_certification",
+        "rr_catalogue",
+        "rr_results",
+        "alpha_binding",
+        "source_receipt_index",
+        "parent_archive",
+        "validator_build",
+        "protected_boundary_report"
+      ],
+      "properties": {
+        "h02_batch_manifest": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "path",
+            "sha256",
+            "classification",
+            "artifact_type"
+          ],
+          "properties": {
+            "path": {
+              "type": "string",
+              "minLength": 1
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "classification": {
+              "enum": [
+                "REAL_MARKET",
+                "DERIVED_REAL_MARKET"
+              ]
+            },
+            "artifact_type": {
+              "enum": [
+                "RAW_RECEIPT_INDEX",
+                "RAW_OBJECT_INDEX",
+                "DATASET_MANIFEST",
+                "PARTITION_INDEX",
+                "UNIVERSE_HISTORY",
+                "UNIVERSE_SNAPSHOT",
+                "LIFECYCLE_EVENT_SET",
+                "COVERAGE_RECORD_SET",
+                "ELIGIBILITY_RECORD_SET",
+                "PIT_AUDIT",
+                "REPLAY_REPORT",
+                "DETERMINISM_REPORT",
+                "FEATURE_RUN_MANIFEST",
+                "HASH_INDEX",
+                "VALIDATOR_REPORT",
+                "RULE_CATALOGUE",
+                "PROTECTED_BOUNDARY_REPORT",
+                "OTHER"
+              ]
+            }
+          }
+        },
+        "dataset_manifest": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "path",
+            "sha256",
+            "classification",
+            "artifact_type"
+          ],
+          "properties": {
+            "path": {
+              "type": "string",
+              "minLength": 1
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "classification": {
+              "enum": [
+                "REAL_MARKET",
+                "DERIVED_REAL_MARKET"
+              ]
+            },
+            "artifact_type": {
+              "enum": [
+                "RAW_RECEIPT_INDEX",
+                "RAW_OBJECT_INDEX",
+                "DATASET_MANIFEST",
+                "PARTITION_INDEX",
+                "UNIVERSE_HISTORY",
+                "UNIVERSE_SNAPSHOT",
+                "LIFECYCLE_EVENT_SET",
+                "COVERAGE_RECORD_SET",
+                "ELIGIBILITY_RECORD_SET",
+                "PIT_AUDIT",
+                "REPLAY_REPORT",
+                "DETERMINISM_REPORT",
+                "FEATURE_RUN_MANIFEST",
+                "HASH_INDEX",
+                "VALIDATOR_REPORT",
+                "RULE_CATALOGUE",
+                "PROTECTED_BOUNDARY_REPORT",
+                "OTHER"
+              ]
+            }
+          }
+        },
+        "universe_snapshot": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "path",
+            "sha256",
+            "classification",
+            "artifact_type"
+          ],
+          "properties": {
+            "path": {
+              "type": "string",
+              "minLength": 1
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "classification": {
+              "enum": [
+                "REAL_MARKET",
+                "DERIVED_REAL_MARKET"
+              ]
+            },
+            "artifact_type": {
+              "enum": [
+                "RAW_RECEIPT_INDEX",
+                "RAW_OBJECT_INDEX",
+                "DATASET_MANIFEST",
+                "PARTITION_INDEX",
+                "UNIVERSE_HISTORY",
+                "UNIVERSE_SNAPSHOT",
+                "LIFECYCLE_EVENT_SET",
+                "COVERAGE_RECORD_SET",
+                "ELIGIBILITY_RECORD_SET",
+                "PIT_AUDIT",
+                "REPLAY_REPORT",
+                "DETERMINISM_REPORT",
+                "FEATURE_RUN_MANIFEST",
+                "HASH_INDEX",
+                "VALIDATOR_REPORT",
+                "RULE_CATALOGUE",
+                "PROTECTED_BOUNDARY_REPORT",
+                "OTHER"
+              ]
+            }
+          }
+        },
+        "lifecycle_event_set": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "path",
+            "sha256",
+            "classification",
+            "artifact_type"
+          ],
+          "properties": {
+            "path": {
+              "type": "string",
+              "minLength": 1
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "classification": {
+              "enum": [
+                "REAL_MARKET",
+                "DERIVED_REAL_MARKET"
+              ]
+            },
+            "artifact_type": {
+              "enum": [
+                "RAW_RECEIPT_INDEX",
+                "RAW_OBJECT_INDEX",
+                "DATASET_MANIFEST",
+                "PARTITION_INDEX",
+                "UNIVERSE_HISTORY",
+                "UNIVERSE_SNAPSHOT",
+                "LIFECYCLE_EVENT_SET",
+                "COVERAGE_RECORD_SET",
+                "ELIGIBILITY_RECORD_SET",
+                "PIT_AUDIT",
+                "REPLAY_REPORT",
+                "DETERMINISM_REPORT",
+                "FEATURE_RUN_MANIFEST",
+                "HASH_INDEX",
+                "VALIDATOR_REPORT",
+                "RULE_CATALOGUE",
+                "PROTECTED_BOUNDARY_REPORT",
+                "OTHER"
+              ]
+            }
+          }
+        },
+        "coverage_record_set": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "path",
+            "sha256",
+            "classification",
+            "artifact_type"
+          ],
+          "properties": {
+            "path": {
+              "type": "string",
+              "minLength": 1
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "classification": {
+              "enum": [
+                "REAL_MARKET",
+                "DERIVED_REAL_MARKET"
+              ]
+            },
+            "artifact_type": {
+              "enum": [
+                "RAW_RECEIPT_INDEX",
+                "RAW_OBJECT_INDEX",
+                "DATASET_MANIFEST",
+                "PARTITION_INDEX",
+                "UNIVERSE_HISTORY",
+                "UNIVERSE_SNAPSHOT",
+                "LIFECYCLE_EVENT_SET",
+                "COVERAGE_RECORD_SET",
+                "ELIGIBILITY_RECORD_SET",
+                "PIT_AUDIT",
+                "REPLAY_REPORT",
+                "DETERMINISM_REPORT",
+                "FEATURE_RUN_MANIFEST",
+                "HASH_INDEX",
+                "VALIDATOR_REPORT",
+                "RULE_CATALOGUE",
+                "PROTECTED_BOUNDARY_REPORT",
+                "OTHER"
+              ]
+            }
+          }
+        },
+        "eligibility_record_set": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "path",
+            "sha256",
+            "classification",
+            "artifact_type"
+          ],
+          "properties": {
+            "path": {
+              "type": "string",
+              "minLength": 1
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "classification": {
+              "enum": [
+                "REAL_MARKET",
+                "DERIVED_REAL_MARKET"
+              ]
+            },
+            "artifact_type": {
+              "enum": [
+                "RAW_RECEIPT_INDEX",
+                "RAW_OBJECT_INDEX",
+                "DATASET_MANIFEST",
+                "PARTITION_INDEX",
+                "UNIVERSE_HISTORY",
+                "UNIVERSE_SNAPSHOT",
+                "LIFECYCLE_EVENT_SET",
+                "COVERAGE_RECORD_SET",
+                "ELIGIBILITY_RECORD_SET",
+                "PIT_AUDIT",
+                "REPLAY_REPORT",
+                "DETERMINISM_REPORT",
+                "FEATURE_RUN_MANIFEST",
+                "HASH_INDEX",
+                "VALIDATOR_REPORT",
+                "RULE_CATALOGUE",
+                "PROTECTED_BOUNDARY_REPORT",
+                "OTHER"
+              ]
+            }
+          }
+        },
+        "pit_certification": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "path",
+            "sha256",
+            "classification",
+            "artifact_type"
+          ],
+          "properties": {
+            "path": {
+              "type": "string",
+              "minLength": 1
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "classification": {
+              "enum": [
+                "REAL_MARKET",
+                "DERIVED_REAL_MARKET"
+              ]
+            },
+            "artifact_type": {
+              "enum": [
+                "RAW_RECEIPT_INDEX",
+                "RAW_OBJECT_INDEX",
+                "DATASET_MANIFEST",
+                "PARTITION_INDEX",
+                "UNIVERSE_HISTORY",
+                "UNIVERSE_SNAPSHOT",
+                "LIFECYCLE_EVENT_SET",
+                "COVERAGE_RECORD_SET",
+                "ELIGIBILITY_RECORD_SET",
+                "PIT_AUDIT",
+                "REPLAY_REPORT",
+                "DETERMINISM_REPORT",
+                "FEATURE_RUN_MANIFEST",
+                "HASH_INDEX",
+                "VALIDATOR_REPORT",
+                "RULE_CATALOGUE",
+                "PROTECTED_BOUNDARY_REPORT",
+                "OTHER"
+              ]
+            }
+          }
+        },
+        "rr_catalogue": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "path",
+            "sha256",
+            "classification",
+            "artifact_type"
+          ],
+          "properties": {
+            "path": {
+              "type": "string",
+              "minLength": 1
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "classification": {
+              "enum": [
+                "REAL_MARKET",
+                "DERIVED_REAL_MARKET"
+              ]
+            },
+            "artifact_type": {
+              "enum": [
+                "RAW_RECEIPT_INDEX",
+                "RAW_OBJECT_INDEX",
+                "DATASET_MANIFEST",
+                "PARTITION_INDEX",
+                "UNIVERSE_HISTORY",
+                "UNIVERSE_SNAPSHOT",
+                "LIFECYCLE_EVENT_SET",
+                "COVERAGE_RECORD_SET",
+                "ELIGIBILITY_RECORD_SET",
+                "PIT_AUDIT",
+                "REPLAY_REPORT",
+                "DETERMINISM_REPORT",
+                "FEATURE_RUN_MANIFEST",
+                "HASH_INDEX",
+                "VALIDATOR_REPORT",
+                "RULE_CATALOGUE",
+                "PROTECTED_BOUNDARY_REPORT",
+                "OTHER"
+              ]
+            }
+          }
+        },
+        "rr_results": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "path",
+            "sha256",
+            "classification",
+            "artifact_type"
+          ],
+          "properties": {
+            "path": {
+              "type": "string",
+              "minLength": 1
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "classification": {
+              "enum": [
+                "REAL_MARKET",
+                "DERIVED_REAL_MARKET"
+              ]
+            },
+            "artifact_type": {
+              "enum": [
+                "RAW_RECEIPT_INDEX",
+                "RAW_OBJECT_INDEX",
+                "DATASET_MANIFEST",
+                "PARTITION_INDEX",
+                "UNIVERSE_HISTORY",
+                "UNIVERSE_SNAPSHOT",
+                "LIFECYCLE_EVENT_SET",
+                "COVERAGE_RECORD_SET",
+                "ELIGIBILITY_RECORD_SET",
+                "PIT_AUDIT",
+                "REPLAY_REPORT",
+                "DETERMINISM_REPORT",
+                "FEATURE_RUN_MANIFEST",
+                "HASH_INDEX",
+                "VALIDATOR_REPORT",
+                "RULE_CATALOGUE",
+                "PROTECTED_BOUNDARY_REPORT",
+                "OTHER"
+              ]
+            }
+          }
+        },
+        "alpha_binding": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "path",
+            "sha256",
+            "classification",
+            "artifact_type"
+          ],
+          "properties": {
+            "path": {
+              "type": "string",
+              "minLength": 1
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "classification": {
+              "enum": [
+                "REAL_MARKET",
+                "DERIVED_REAL_MARKET"
+              ]
+            },
+            "artifact_type": {
+              "enum": [
+                "RAW_RECEIPT_INDEX",
+                "RAW_OBJECT_INDEX",
+                "DATASET_MANIFEST",
+                "PARTITION_INDEX",
+                "UNIVERSE_HISTORY",
+                "UNIVERSE_SNAPSHOT",
+                "LIFECYCLE_EVENT_SET",
+                "COVERAGE_RECORD_SET",
+                "ELIGIBILITY_RECORD_SET",
+                "PIT_AUDIT",
+                "REPLAY_REPORT",
+                "DETERMINISM_REPORT",
+                "FEATURE_RUN_MANIFEST",
+                "HASH_INDEX",
+                "VALIDATOR_REPORT",
+                "RULE_CATALOGUE",
+                "PROTECTED_BOUNDARY_REPORT",
+                "OTHER"
+              ]
+            }
+          }
+        },
+        "source_receipt_index": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "path",
+            "sha256",
+            "classification",
+            "artifact_type"
+          ],
+          "properties": {
+            "path": {
+              "type": "string",
+              "minLength": 1
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "classification": {
+              "enum": [
+                "REAL_MARKET",
+                "DERIVED_REAL_MARKET"
+              ]
+            },
+            "artifact_type": {
+              "enum": [
+                "RAW_RECEIPT_INDEX",
+                "RAW_OBJECT_INDEX",
+                "DATASET_MANIFEST",
+                "PARTITION_INDEX",
+                "UNIVERSE_HISTORY",
+                "UNIVERSE_SNAPSHOT",
+                "LIFECYCLE_EVENT_SET",
+                "COVERAGE_RECORD_SET",
+                "ELIGIBILITY_RECORD_SET",
+                "PIT_AUDIT",
+                "REPLAY_REPORT",
+                "DETERMINISM_REPORT",
+                "FEATURE_RUN_MANIFEST",
+                "HASH_INDEX",
+                "VALIDATOR_REPORT",
+                "RULE_CATALOGUE",
+                "PROTECTED_BOUNDARY_REPORT",
+                "OTHER"
+              ]
+            }
+          }
+        },
+        "parent_archive": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "path",
+            "sha256",
+            "classification",
+            "artifact_type"
+          ],
+          "properties": {
+            "path": {
+              "type": "string",
+              "minLength": 1
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "classification": {
+              "enum": [
+                "REAL_MARKET",
+                "DERIVED_REAL_MARKET"
+              ]
+            },
+            "artifact_type": {
+              "enum": [
+                "RAW_RECEIPT_INDEX",
+                "RAW_OBJECT_INDEX",
+                "DATASET_MANIFEST",
+                "PARTITION_INDEX",
+                "UNIVERSE_HISTORY",
+                "UNIVERSE_SNAPSHOT",
+                "LIFECYCLE_EVENT_SET",
+                "COVERAGE_RECORD_SET",
+                "ELIGIBILITY_RECORD_SET",
+                "PIT_AUDIT",
+                "REPLAY_REPORT",
+                "DETERMINISM_REPORT",
+                "FEATURE_RUN_MANIFEST",
+                "HASH_INDEX",
+                "VALIDATOR_REPORT",
+                "RULE_CATALOGUE",
+                "PROTECTED_BOUNDARY_REPORT",
+                "OTHER"
+              ]
+            }
+          }
+        },
+        "validator_build": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "path",
+            "sha256",
+            "classification",
+            "artifact_type"
+          ],
+          "properties": {
+            "path": {
+              "type": "string",
+              "minLength": 1
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "classification": {
+              "enum": [
+                "REAL_MARKET",
+                "DERIVED_REAL_MARKET"
+              ]
+            },
+            "artifact_type": {
+              "enum": [
+                "RAW_RECEIPT_INDEX",
+                "RAW_OBJECT_INDEX",
+                "DATASET_MANIFEST",
+                "PARTITION_INDEX",
+                "UNIVERSE_HISTORY",
+                "UNIVERSE_SNAPSHOT",
+                "LIFECYCLE_EVENT_SET",
+                "COVERAGE_RECORD_SET",
+                "ELIGIBILITY_RECORD_SET",
+                "PIT_AUDIT",
+                "REPLAY_REPORT",
+                "DETERMINISM_REPORT",
+                "FEATURE_RUN_MANIFEST",
+                "HASH_INDEX",
+                "VALIDATOR_REPORT",
+                "RULE_CATALOGUE",
+                "PROTECTED_BOUNDARY_REPORT",
+                "OTHER"
+              ]
+            }
+          }
+        },
+        "protected_boundary_report": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "path",
+            "sha256",
+            "classification",
+            "artifact_type"
+          ],
+          "properties": {
+            "path": {
+              "type": "string",
+              "minLength": 1
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "classification": {
+              "enum": [
+                "REAL_MARKET",
+                "DERIVED_REAL_MARKET"
+              ]
+            },
+            "artifact_type": {
+              "enum": [
+                "RAW_RECEIPT_INDEX",
+                "RAW_OBJECT_INDEX",
+                "DATASET_MANIFEST",
+                "PARTITION_INDEX",
+                "UNIVERSE_HISTORY",
+                "UNIVERSE_SNAPSHOT",
+                "LIFECYCLE_EVENT_SET",
+                "COVERAGE_RECORD_SET",
+                "ELIGIBILITY_RECORD_SET",
+                "PIT_AUDIT",
+                "REPLAY_REPORT",
+                "DETERMINISM_REPORT",
+                "FEATURE_RUN_MANIFEST",
+                "HASH_INDEX",
+                "VALIDATOR_REPORT",
+                "RULE_CATALOGUE",
+                "PROTECTED_BOUNDARY_REPORT",
+                "OTHER"
+              ]
+            }
+          }
+        }
+      }
+    }
+  }
+}

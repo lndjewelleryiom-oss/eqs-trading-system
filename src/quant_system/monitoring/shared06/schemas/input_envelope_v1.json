@@ -1,0 +1,170 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://eqs.local/schemas/shared06/input_envelope_v1.json",
+  "title": "EQS-SHARED-06 Input Envelope V1",
+  "type": "object",
+  "required": [
+    "record_id",
+    "record_type",
+    "schema_version",
+    "producer_service_id",
+    "authority_domain",
+    "environment",
+    "effective_at",
+    "observed_at",
+    "received_at",
+    "payload_sha256",
+    "payload",
+    "evidence_class",
+    "source_status"
+  ],
+  "properties": {
+    "record_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "record_type": {
+      "enum": [
+        "service_health",
+        "heartbeat",
+        "data_health",
+        "risk_health",
+        "execution_health",
+        "portfolio_health",
+        "reconciliation",
+        "incident",
+        "alert_event",
+        "commissioning_run",
+        "restart_recovery_test",
+        "safety_action_request",
+        "mode_awareness",
+        "change_event",
+        "evidence_seal"
+      ]
+    },
+    "schema_version": {
+      "const": "1.0.0"
+    },
+    "producer_service_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "authority_domain": {
+      "type": "string",
+      "minLength": 1
+    },
+    "environment": {
+      "type": "string",
+      "minLength": 1
+    },
+    "effective_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "observed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "received_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "payload_sha256": {
+      "type": "string",
+      "pattern": "^[A-Fa-f0-9]{64}$"
+    },
+    "payload": {
+      "type": "object"
+    },
+    "evidence_class": {
+      "enum": [
+        "CANONICAL_CONTROL",
+        "DOMAIN_AUTHORITY",
+        "EXTERNAL_TRUTH",
+        "PRIMARY_OBSERVATION",
+        "SEALED_COMMISSIONING",
+        "DERIVED",
+        "PRESENTATION",
+        "TEST_FIXTURE",
+        "SIMULATION"
+      ]
+    },
+    "source_status": {
+      "enum": [
+        "ACTIVE",
+        "SUPERSEDED",
+        "REVOKED",
+        "QUARANTINED"
+      ]
+    },
+    "run_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "strategy_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "instrument_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "venue_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "account_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "correlation_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "parent_record_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    },
+    "supersedes_record_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "revokes_record_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "source_seal_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "expires_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    }
+  },
+  "additionalProperties": false
+}

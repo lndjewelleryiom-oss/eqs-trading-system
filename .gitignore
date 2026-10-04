@@ -1,0 +1,26 @@
+__pycache__/
+.pytest_cache/
+*.pyc
+.env
+.env.*
+!.env.example
+secrets/
+*.pem
+*.key
+*.p12
+.venv/
+
+# Generated/runtime state must never enter source control.
+artifacts/
+node_modules/
+test-results/
+*.db
+*.db-wal
+*.db-shm
+*.sqlite
+*.sqlite3
+*.wal
+*.shm
+
+.coverage
+htmlcov/

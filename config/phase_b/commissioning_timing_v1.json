@@ -1,0 +1,66 @@
+{
+  "PAPER": {
+    "maximum_observation_gap_seconds": 300,
+    "observation_cadence_seconds": 60,
+    "required_qualifying_duration_seconds": 86400
+  },
+  "SHADOW": {
+    "maximum_observation_gap_seconds": 300,
+    "observation_cadence_seconds": 60,
+    "required_qualifying_duration_seconds": 172800
+  },
+  "accepted_at": "2026-09-27T20:29:57.222750Z",
+  "baseline_manifest_sha256": "d1d05a4a4ed6f10783ea50d327dd8e0f87eec7f7c68e0b358133212d9fc20ac1",
+  "clock_rules": {
+    "backward_step_over_1_second": "RESET_UNLESS_PREREGISTERED_CLOCK_FAULT_TEST",
+    "clock_regression_test": "must prove detection, safe state, recovery, reconciliation, controlled resume",
+    "duration_measurement": "monotonic_process_clock",
+    "evidence_timestamp": "UTC",
+    "forward_step_1_to_60_seconds": "NO_TIME_CREDIT_FOR_AFFECTED_INTERVAL_AND_INCIDENT",
+    "forward_step_over_60_seconds": "RESET_UNLESS_PREREGISTERED_CLOCK_FAULT_TEST",
+    "wall_clock_role": "evidence_timestamp_only"
+  },
+  "effective_from": "2026-09-27T20:29:57.222750Z",
+  "no_reset_if_all_true": [
+    "fault_was_preregistered",
+    "system_entered_safe_state",
+    "broker_submission_remained_disabled",
+    "recovery_test_passed",
+    "authoritative_reconciliation_passed",
+    "qualifying_clock_was_paused_during_fault_window",
+    "observation_gap_did_not_exceed_300_seconds"
+  ],
+  "observation_rules": {
+    "gap_over_300_seconds": "RESET_AFFECTED_MODE_RUN",
+    "planned_fault_window": "PAUSE_QUALIFYING_CLOCK; preserve run only if fault is preregistered, safe state is reached, recovery passes, reconciliation passes, and gap does not exceed maximum_observation_gap_seconds",
+    "target_cadence_seconds": 60,
+    "two_consecutive_missed_observations": "DEGRADED_AND_INCIDENT"
+  },
+  "owner": "EQS-00 Master Control",
+  "reset_conditions": [
+    "broker_submission_enabled_true",
+    "EQS00_mode_mismatch",
+    "safety_critical_UNKNOWN",
+    "material_reconciliation_mismatch_unresolved",
+    "unknown_order_outcome_unresolved",
+    "evidence_hash_or_seal_corruption",
+    "authoritative_policy_or_registry_change",
+    "unexpected_process_or_data_gap_over_300_seconds",
+    "unexpected_clock_regression_over_1_second",
+    "unexpected_forward_wall_clock_jump_over_60_seconds"
+  ],
+  "revocation_conditions": [
+    "timing_change_after_run_start",
+    "baseline_change",
+    "EQS00_revocation"
+  ],
+  "sequence": [
+    "PAPER",
+    "SHADOW"
+  ],
+  "status": "ACCEPTED",
+  "terminal_completion_rule": "Each mode passes only after required qualifying duration has accumulated, every required observation/fault/recovery/reconciliation check is complete, OPS_G01-G10 are PASS, and terminal seal verifies.",
+  "timing_policy_id": "eqs-phase-b-commissioning-timing-v1",
+  "timing_policy_sha256": "3fc1e0c3e84bb6bc1bf2bb9303c261fce8caaa0c1e6252483fd7b458eef2231b",
+  "timing_policy_version": "1"
+}

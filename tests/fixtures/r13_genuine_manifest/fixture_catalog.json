@@ -1,0 +1,228 @@
+{
+  "artifact_root": ".",
+  "invalid": [
+    {
+      "expected_error_code": "R13_M001_FAILED",
+      "file": "invalid_r13_m001.json",
+      "prior_file": null,
+      "requires_prior": false,
+      "rule_id": "R13-M001",
+      "sha256": "562e4862a0bd6edf7a0da487f264119b1ecd2f2d70a3c73c9912ad43ed8bc8d3"
+    },
+    {
+      "expected_error_code": "R13_M002_FAILED",
+      "file": "invalid_r13_m002.json",
+      "prior_file": null,
+      "requires_prior": false,
+      "rule_id": "R13-M002",
+      "sha256": "82936dc1ae4b557cc4f75280043b6291e57b033594296f14ee62e3eabcd6ef0c"
+    },
+    {
+      "expected_error_code": "R13_M003_FAILED",
+      "file": "invalid_r13_m003.json",
+      "prior_file": null,
+      "requires_prior": false,
+      "rule_id": "R13-M003",
+      "sha256": "8a1c7bdf81d043da6103ef5a07149e747f8ccd1c8e2c02e48d011c04ea063c28"
+    },
+    {
+      "expected_error_code": "R13_M004_FAILED",
+      "file": "invalid_r13_m004.json",
+      "prior_file": null,
+      "requires_prior": false,
+      "rule_id": "R13-M004",
+      "sha256": "cdd2cc539de0db887cce7fccebca1ac0cb8d15c6f125e9827cbfbbbb868c1305"
+    },
+    {
+      "expected_error_code": "R13_M005_FAILED",
+      "file": "invalid_r13_m005.json",
+      "prior_file": null,
+      "requires_prior": false,
+      "rule_id": "R13-M005",
+      "sha256": "50c4de799ec1d235bac7db5a9fb1319b82f6d787ca4086626c772147b1dcd6d5"
+    },
+    {
+      "expected_error_code": "R13_M006_FAILED",
+      "file": "invalid_r13_m006.json",
+      "prior_file": null,
+      "requires_prior": false,
+      "rule_id": "R13-M006",
+      "sha256": "2b2613ac1b7539c6476f68f57f06f474cdf35143d5facec2087bc9ccdd5b7449"
+    },
+    {
+      "expected_error_code": "R13_M007_FAILED",
+      "file": "invalid_r13_m007.json",
+      "prior_file": null,
+      "requires_prior": false,
+      "rule_id": "R13-M007",
+      "sha256": "980a83bbfe3b277386edd95749ad406d0dfac3a417059a039317aa500c5132ef"
+    },
+    {
+      "expected_error_code": "R13_M008_FAILED",
+      "file": "invalid_r13_m008.json",
+      "prior_file": null,
+      "requires_prior": false,
+      "rule_id": "R13-M008",
+      "sha256": "e8d4fdc2e586f96d3baf9dada05aac7de686e98b2ae3d02fa328a72378fe827c"
+    },
+    {
+      "expected_error_code": "R13_M009_FAILED",
+      "file": "invalid_r13_m009.json",
+      "prior_file": null,
+      "requires_prior": false,
+      "rule_id": "R13-M009",
+      "sha256": "ed2a309a31832b94990a46b372a8485018a9556bbdae780386cad749226073b5"
+    },
+    {
+      "expected_error_code": "R13_M010_FAILED",
+      "file": "invalid_r13_m010.json",
+      "prior_file": null,
+      "requires_prior": false,
+      "rule_id": "R13-M010",
+      "sha256": "a0e1cd44cd80d6ab39dc4b0d9517cbf176f6afcf0c1aedbb7d6a47cbc7eee240"
+    },
+    {
+      "expected_error_code": "R13_M011_FAILED",
+      "file": "invalid_r13_m011.json",
+      "prior_file": null,
+      "requires_prior": false,
+      "rule_id": "R13-M011",
+      "sha256": "1a65c8131bcc005eb615b8840c9863a0572166668b5a89dd0bccd9ac8f553f6e"
+    },
+    {
+      "expected_error_code": "R13_M012_FAILED",
+      "file": "invalid_r13_m012.json",
+      "prior_file": null,
+      "requires_prior": false,
+      "rule_id": "R13-M012",
+      "sha256": "bd82f10038d9853d0d7e1d301b84c55c3018db76c6d6cb15d7a903458108d453"
+    },
+    {
+      "expected_error_code": "R13_M013_FAILED",
+      "file": "invalid_r13_m013.json",
+      "prior_file": null,
+      "requires_prior": false,
+      "rule_id": "R13-M013",
+      "sha256": "1509e72b16c90f945e8214063c601057af714c709dd36a5887628d3bf27c2c49"
+    },
+    {
+      "expected_error_code": "R13_M014_FAILED",
+      "file": "invalid_r13_m014.json",
+      "prior_file": null,
+      "requires_prior": false,
+      "rule_id": "R13-M014",
+      "sha256": "4c52a90e07fb2df23cd110accb30dc0710a638a8d25df558e1d1151a70f12eeb"
+    },
+    {
+      "expected_error_code": "R13_M015_FAILED",
+      "file": "invalid_r13_m015.json",
+      "prior_file": null,
+      "requires_prior": false,
+      "rule_id": "R13-M015",
+      "sha256": "4cf3cc40abdca8e0379d4fa864e90366b58e84bdb7520b9a32ddd87189d610e7"
+    },
+    {
+      "expected_error_code": "R13_M016_FAILED",
+      "file": "invalid_r13_m016.json",
+      "prior_file": null,
+      "requires_prior": false,
+      "rule_id": "R13-M016",
+      "sha256": "8ed15403b787c884dc273781daae11865bc88a31d6d68080590dc91767795de4"
+    },
+    {
+      "expected_error_code": "R13_M017_FAILED",
+      "file": "invalid_r13_m017.json",
+      "prior_file": null,
+      "requires_prior": false,
+      "rule_id": "R13-M017",
+      "sha256": "6a8599632f956f8bd7ce36a8841a4c0463282dfb5f01de64d1d27bbfc467ddbb"
+    },
+    {
+      "expected_error_code": "R13_M018_FAILED",
+      "file": "invalid_r13_m018.json",
+      "prior_file": null,
+      "requires_prior": false,
+      "rule_id": "R13-M018",
+      "sha256": "6f23119f049bc31777637fcd2f8d3b9469ec25659ac8775723951c31813f0b51"
+    },
+    {
+      "expected_error_code": "R13_M019_FAILED",
+      "file": "invalid_r13_m019.json",
+      "prior_file": null,
+      "requires_prior": false,
+      "rule_id": "R13-M019",
+      "sha256": "848bf626b88759d5a22b0da5e24efecee56eb044c0e5df07600b4d8ec17ac2b1"
+    },
+    {
+      "expected_error_code": "R13_M020_FAILED",
+      "file": "invalid_r13_m020.json",
+      "prior_file": null,
+      "requires_prior": false,
+      "rule_id": "R13-M020",
+      "sha256": "75384c2fbb212ba7209c6f386cf884760c73e744bd879f4d0d191b58548bcaf0"
+    },
+    {
+      "expected_error_code": "R13_M021_FAILED",
+      "file": "invalid_r13_m021.json",
+      "prior_file": null,
+      "requires_prior": false,
+      "rule_id": "R13-M021",
+      "sha256": "5c649c396509e2833df854177f256c892d74bc4d15702431146f9ca458ac8679"
+    },
+    {
+      "expected_error_code": "R13_M022_FAILED",
+      "file": "invalid_r13_m022.json",
+      "prior_file": null,
+      "requires_prior": false,
+      "rule_id": "R13-M022",
+      "sha256": "fcd75fb2d33941cf44c77e492e27d181e1096ce426e549effd47a731ae5a1087"
+    },
+    {
+      "expected_error_code": "R13_M023_FAILED",
+      "file": "invalid_r13_m023.json",
+      "prior_file": "valid_genuine_manifest.json",
+      "requires_prior": true,
+      "rule_id": "R13-M023",
+      "sha256": "264e65432184c46e783b2a7ee4cf25a0e45beed78cf559d77a059b0b8e3fd3bd"
+    },
+    {
+      "expected_error_code": "R13_M024_FAILED",
+      "file": "invalid_r13_m024.json",
+      "prior_file": "valid_genuine_manifest.json",
+      "requires_prior": true,
+      "rule_id": "R13-M024",
+      "sha256": "965e36d4297d4bcaed824f1f57981c2d85c73236a3c91f369301eb1bbd891fb7"
+    }
+  ],
+  "schema_version": "EQS-R1.3-GENUINE-MANIFEST-FIXTURE-CATALOG-v1",
+  "semantic_rules": [
+    "R13-M001",
+    "R13-M002",
+    "R13-M003",
+    "R13-M004",
+    "R13-M005",
+    "R13-M006",
+    "R13-M007",
+    "R13-M008",
+    "R13-M009",
+    "R13-M010",
+    "R13-M011",
+    "R13-M012",
+    "R13-M013",
+    "R13-M014",
+    "R13-M015",
+    "R13-M016",
+    "R13-M017",
+    "R13-M018",
+    "R13-M019",
+    "R13-M020",
+    "R13-M021",
+    "R13-M022",
+    "R13-M023",
+    "R13-M024"
+  ],
+  "valid": {
+    "file": "valid_genuine_manifest.json",
+    "sha256": "6be712af5689bccf2603b778f9018276b1c3a5eb7e30664f2ad04bbf0aae4846"
+  }
+}

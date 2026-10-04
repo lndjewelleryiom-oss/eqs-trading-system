@@ -1,0 +1,7 @@
+jsonschema>=4.23
+
+[:platform_system == "Windows"]
+tzdata>=2025.2
+
+[dev]
+pytest>=8

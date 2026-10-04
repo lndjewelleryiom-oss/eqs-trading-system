@@ -1,0 +1,64 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://eqs.local/schemas/shared06/promotion_policy_v1.json",
+  "title": "EQS-00 Promotion Policy Input V1",
+  "type": "object",
+  "required": [
+    "policy_id",
+    "policy_version",
+    "target_mode",
+    "verified",
+    "required_operational_gates",
+    "required_external_gate_refs",
+    "allowed_not_applicable_gates",
+    "policy_sha256"
+  ],
+  "properties": {
+    "policy_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "policy_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "target_mode": {
+      "enum": [
+        "PAPER",
+        "SHADOW",
+        "LIVE_PROBATION",
+        "LIVE_LIMITED",
+        "LIVE_FULL"
+      ]
+    },
+    "verified": {
+      "const": true
+    },
+    "required_operational_gates": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    },
+    "required_external_gate_refs": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    },
+    "allowed_not_applicable_gates": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    },
+    "policy_sha256": {
+      "type": "string",
+      "pattern": "^[A-Fa-f0-9]{64}$"
+    }
+  },
+  "additionalProperties": false
+}

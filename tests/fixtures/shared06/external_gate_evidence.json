@@ -1,0 +1,14 @@
+[
+  {
+    "ref": "PIT",
+    "status": "VERIFIED_PASS"
+  },
+  {
+    "ref": "ALPHA",
+    "status": "VERIFIED_PASS"
+  },
+  {
+    "ref": "OOS",
+    "status": "VERIFIED_PASS"
+  }
+]

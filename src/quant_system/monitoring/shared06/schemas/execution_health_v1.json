@@ -1,0 +1,81 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://eqs.local/schemas/shared06/execution_health_v1.json",
+  "title": "Execution Health V1",
+  "type": "object",
+  "required": [
+    "execution_service_id",
+    "observed_at",
+    "submission_state",
+    "ack_state",
+    "fill_state",
+    "cancel_state",
+    "reject_state",
+    "unknown_order_outcome_count",
+    "reconciliation_state",
+    "health_state"
+  ],
+  "properties": {
+    "execution_service_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "observed_at": {
+      "$ref": "common_defs_v1.json#/$defs/timestamp_utc"
+    },
+    "submission_state": {
+      "enum": [
+        "NORMAL",
+        "BLOCKED",
+        "DISABLED",
+        "UNKNOWN"
+      ]
+    },
+    "ack_state": {
+      "enum": [
+        "NORMAL",
+        "DEGRADED",
+        "UNKNOWN",
+        "NOT_APPLICABLE"
+      ]
+    },
+    "fill_state": {
+      "enum": [
+        "NORMAL",
+        "DEGRADED",
+        "UNKNOWN",
+        "NOT_APPLICABLE"
+      ]
+    },
+    "cancel_state": {
+      "enum": [
+        "NORMAL",
+        "DEGRADED",
+        "UNKNOWN",
+        "NOT_APPLICABLE"
+      ]
+    },
+    "reject_state": {
+      "enum": [
+        "NORMAL",
+        "ELEVATED",
+        "UNKNOWN",
+        "NOT_APPLICABLE"
+      ]
+    },
+    "unknown_order_outcome_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "reconciliation_state": {
+      "$ref": "common_defs_v1.json#/$defs/reconciliation_state"
+    },
+    "health_state": {
+      "$ref": "common_defs_v1.json#/$defs/health_state"
+    },
+    "reason_codes": {
+      "$ref": "common_defs_v1.json#/$defs/reason_codes"
+    }
+  },
+  "additionalProperties": false
+}

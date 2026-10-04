@@ -1,0 +1,75 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://eqs.local/schemas/shared06/safety_action_request_v1.json",
+  "title": "Safety Action Request V1",
+  "type": "object",
+  "required": [
+    "request_id",
+    "requested_at",
+    "requester_service_id",
+    "trigger_evidence_refs",
+    "requested_action",
+    "scope",
+    "authorising_policy_id",
+    "status"
+  ],
+  "properties": {
+    "request_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "requested_at": {
+      "$ref": "common_defs_v1.json#/$defs/timestamp_utc"
+    },
+    "requester_service_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "trigger_evidence_refs": {
+      "$ref": "common_defs_v1.json#/$defs/evidence_refs"
+    },
+    "requested_action": {
+      "enum": [
+        "BLOCK_NEW_RISK",
+        "DISABLE_VENUE",
+        "DEMOTE_MODE",
+        "ACTIVATE_SCOPED_KILL_SWITCH",
+        "ACTIVATE_PORTFOLIO_KILL_SWITCH"
+      ]
+    },
+    "scope": {
+      "type": "object",
+      "minProperties": 1
+    },
+    "authorising_policy_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "status": {
+      "enum": [
+        "REQUESTED",
+        "AUTHORISED",
+        "REJECTED",
+        "EXECUTED",
+        "FAILED"
+      ]
+    },
+    "authorised_by": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "executed_at": {
+      "oneOf": [
+        {
+          "$ref": "common_defs_v1.json#/$defs/timestamp_utc"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    }
+  },
+  "additionalProperties": false
+}

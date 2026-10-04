@@ -1,0 +1,457 @@
+{
+  "catalog_version": "EQS-SRF-ERROR-CODES-1.0",
+  "codes": [
+    {
+      "code": "EQS-SRF-SCHEMA-INVALID",
+      "description": "Object fails its declared JSON Schema.",
+      "effect": "BLOCK"
+    },
+    {
+      "code": "EQS-SRF-SCHEMA-VERSION-UNSUPPORTED",
+      "description": "Schema version is unsupported or ambiguous.",
+      "effect": "BLOCK"
+    },
+    {
+      "code": "EQS-SRF-REFERENCE-MISSING",
+      "description": "Required referenced object cannot be resolved.",
+      "effect": "BLOCK"
+    },
+    {
+      "code": "EQS-SRF-REFERENCE-TYPE-MISMATCH",
+      "description": "Resolved reference is of the wrong canonical object type.",
+      "effect": "BLOCK"
+    },
+    {
+      "code": "EQS-SRF-HASH-MISMATCH",
+      "description": "Stored hash differs from canonical recomputation.",
+      "effect": "INVALID"
+    },
+    {
+      "code": "EQS-SRF-HASH-ALGORITHM-UNSUPPORTED",
+      "description": "Required canonical hash algorithm is unsupported.",
+      "effect": "BLOCK"
+    },
+    {
+      "code": "EQS-SRF-VERSION-AMBIGUOUS",
+      "description": "Referenced version is missing or resolves to more than one immutable object.",
+      "effect": "BLOCK"
+    },
+    {
+      "code": "EQS-SRF-UNKNOWN-REQUIRED-STATE",
+      "description": "A required fact is UNKNOWN, UNVERIFIED, unresolved, or otherwise non-passable.",
+      "effect": "BLOCK"
+    },
+    {
+      "code": "EQS-SRF-CAMPAIGN-HASH-MISMATCH",
+      "description": "Campaign binding hash does not match the canonical campaign.",
+      "effect": "INVALID"
+    },
+    {
+      "code": "EQS-SRF-CAMPAIGN-IMMUTABILITY-VIOLATION",
+      "description": "Registered campaign semantics were changed in place.",
+      "effect": "INVALID"
+    },
+    {
+      "code": "EQS-SRF-CAMPAIGN-DATE-PARTITION-INVALID",
+      "description": "Research, validation, and OOS ranges overlap or are not strictly ordered.",
+      "effect": "BLOCK"
+    },
+    {
+      "code": "EQS-SRF-CAMPAIGN-ASSET-MODEL-INCOMPATIBLE",
+      "description": "Campaign asset classes are incompatible with one or more bound models.",
+      "effect": "BLOCK"
+    },
+    {
+      "code": "EQS-SRF-PREREG-MISSING",
+      "description": "Canonical research lacks a preregistration.",
+      "effect": "BLOCK"
+    },
+    {
+      "code": "EQS-SRF-PREREG-HASH-MISMATCH",
+      "description": "Preregistration hash does not match canonical content.",
+      "effect": "INVALID"
+    },
+    {
+      "code": "EQS-SRF-PREREG-CAMPAIGN-BINDING-MISMATCH",
+      "description": "Preregistration is bound to a different campaign/hash.",
+      "effect": "INVALID"
+    },
+    {
+      "code": "EQS-SRF-PREREG-IMMUTABILITY-VIOLATION",
+      "description": "Registered preregistration was changed in place.",
+      "effect": "INVALID"
+    },
+    {
+      "code": "EQS-SRF-PREREG-UNDECLARED-STRATEGY",
+      "description": "Experiment strategy family was not allowed by preregistration.",
+      "effect": "BLOCK"
+    },
+    {
+      "code": "EQS-SRF-PREREG-UNDECLARED-FEATURE",
+      "description": "Experiment uses a feature not allowed by preregistration.",
+      "effect": "BLOCK"
+    },
+    {
+      "code": "EQS-SRF-PREREG-UNDECLARED-LABEL",
+      "description": "Experiment uses a label not allowed by preregistration.",
+      "effect": "BLOCK"
+    },
+    {
+      "code": "EQS-SRF-PREREG-PARAMETER-OUT-OF-BOUNDS",
+      "description": "Parameter value or parameter key violates preregistered search space.",
+      "effect": "BLOCK"
+    },
+    {
+      "code": "EQS-SRF-DATA-PIT-NOT-CERTIFIED",
+      "description": "Data binding is not fully PIT certified.",
+      "effect": "BLOCK"
+    },
+    {
+      "code": "EQS-SRF-DATA-CERTIFICATION-MISSING",
+      "description": "Required market-data certification cannot be resolved.",
+      "effect": "BLOCK"
+    },
+    {
+      "code": "EQS-SRF-DATA-MANIFEST-MISMATCH",
+      "description": "Dataset manifest hash differs from bound immutable snapshot.",
+      "effect": "INVALID"
+    },
+    {
+      "code": "EQS-SRF-DATA-SOURCE-SNAPSHOT-MISMATCH",
+      "description": "One or more source snapshot hashes differ from the bound data.",
+      "effect": "INVALID"
+    },
+    {
+      "code": "EQS-SRF-CODE-DIRTY-WORKTREE",
+      "description": "Qualification run used a dirty/uncommitted working tree.",
+      "effect": "BLOCK"
+    },
+    {
+      "code": "EQS-SRF-CODE-BINDING-MISMATCH",
+      "description": "Executed code differs from the bound commit/tree/dependency state.",
+      "effect": "INVALID"
+    },
+    {
+      "code": "EQS-SRF-ENVIRONMENT-BINDING-MISMATCH",
+      "description": "Runtime environment differs from the bound environment.",
+      "effect": "INVALID"
+    },
+    {
+      "code": "EQS-SRF-DETERMINISM-INSUFFICIENT",
+      "description": "Campaign-required determinism level is not met.",
+      "effect": "BLOCK"
+    },
+    {
+      "code": "EQS-SRF-FEATURE-DEFINITION-MISSING",
+      "description": "Feature definition/version cannot be resolved.",
+      "effect": "BLOCK"
+    },
+    {
+      "code": "EQS-SRF-FEATURE-DEFINITION-HASH-MISMATCH",
+      "description": "Feature definition hash does not match the bound version.",
+      "effect": "INVALID"
+    },
+    {
+      "code": "EQS-SRF-FEATURE-SEMANTIC-ID-REUSE",
+      "description": "Same feature ID/version was reused for changed semantics.",
+      "effect": "INVALID"
+    },
+    {
+      "code": "EQS-SRF-FEATURE-KNOWN-FROM-VIOLATION",
+      "description": "Feature input was not knowable by the decision information cutoff.",
+      "effect": "INVALID"
+    },
+    {
+      "code": "EQS-SRF-LABEL-DEFINITION-MISSING",
+      "description": "Label definition/version cannot be resolved.",
+      "effect": "BLOCK"
+    },
+    {
+      "code": "EQS-SRF-LABEL-DEFINITION-HASH-MISMATCH",
+      "description": "Label definition hash does not match the bound version.",
+      "effect": "INVALID"
+    },
+    {
+      "code": "EQS-SRF-LABEL-TARGET-LEAKAGE",
+      "description": "Label or forward outcome information leaked into model inputs.",
+      "effect": "INVALID"
+    },
+    {
+      "code": "EQS-SRF-CV-FOLD-ORDER-INVALID",
+      "description": "Cross-validation fold timestamps are not temporally valid.",
+      "effect": "BLOCK"
+    },
+    {
+      "code": "EQS-SRF-CV-TRAIN-VALIDATION-OVERLAP",
+      "description": "Training and validation sets overlap where not explicitly allowed.",
+      "effect": "BLOCK"
+    },
+    {
+      "code": "EQS-SRF-CV-PURGE-INSUFFICIENT",
+      "description": "Purging does not meet label horizon/preregistered requirement.",
+      "effect": "BLOCK"
+    },
+    {
+      "code": "EQS-SRF-CV-EMBARGO-INSUFFICIENT",
+      "description": "Embargo does not meet label horizon/preregistered requirement.",
+      "effect": "BLOCK"
+    },
+    {
+      "code": "EQS-SRF-CV-SHUFFLE-PROHIBITED",
+      "description": "Temporal research attempted shuffled CV without an approved exception.",
+      "effect": "BLOCK"
+    },
+    {
+      "code": "EQS-SRF-EXPERIMENT-PROVENANCE-INCOMPLETE",
+      "description": "Experiment provenance cannot be reconstructed completely.",
+      "effect": "INVALID"
+    },
+    {
+      "code": "EQS-SRF-EXPERIMENT-CAMPAIGN-MISMATCH",
+      "description": "Experiment campaign binding is inconsistent.",
+      "effect": "INVALID"
+    },
+    {
+      "code": "EQS-SRF-EXPERIMENT-PREREG-MISMATCH",
+      "description": "Experiment preregistration binding is inconsistent.",
+      "effect": "INVALID"
+    },
+    {
+      "code": "EQS-SRF-EXPERIMENT-PHASE-DATE-VIOLATION",
+      "description": "Experiment consumed data outside the phase's authorized date range.",
+      "effect": "INVALID"
+    },
+    {
+      "code": "EQS-SRF-EXPERIMENT-SEQUENCE-CONFLICT",
+      "description": "Experiment sequence is duplicated or non-deterministically assigned.",
+      "effect": "BLOCK"
+    },
+    {
+      "code": "EQS-SRF-SEARCH-LEDGER-COUNT-MISMATCH",
+      "description": "Search-ledger counts do not reconcile to registered experiments.",
+      "effect": "BLOCK"
+    },
+    {
+      "code": "EQS-SRF-SEARCH-LEDGER-EXPERIMENT-OMITTED",
+      "description": "Canonical campaign experiment is missing from the search ledger.",
+      "effect": "BLOCK"
+    },
+    {
+      "code": "EQS-SRF-SEARCH-LEDGER-EXPERIMENT-UNKNOWN",
+      "description": "Search ledger references an unknown experiment.",
+      "effect": "BLOCK"
+    },
+    {
+      "code": "EQS-SRF-EXECUTION-MODEL-MISSING",
+      "description": "Required execution model cannot be resolved.",
+      "effect": "BLOCK"
+    },
+    {
+      "code": "EQS-SRF-EXECUTION-ASSET-INCOMPATIBLE",
+      "description": "Execution model does not support the campaign/instrument asset class.",
+      "effect": "BLOCK"
+    },
+    {
+      "code": "EQS-SRF-ASSET-LIFECYCLE-NOT-MODELED",
+      "description": "Required lifecycle event handling is absent or bypassed.",
+      "effect": "INVALID"
+    },
+    {
+      "code": "EQS-SRF-COST-MODEL-MISSING",
+      "description": "No valid cost model is bound.",
+      "effect": "BLOCK"
+    },
+    {
+      "code": "EQS-SRF-COST-MODEL-NOT-EFFECTIVE",
+      "description": "Cost model is outside its declared effective interval.",
+      "effect": "BLOCK"
+    },
+    {
+      "code": "EQS-SRF-COST-ASSET-INCOMPATIBLE",
+      "description": "Cost model does not support the relevant asset class.",
+      "effect": "BLOCK"
+    },
+    {
+      "code": "EQS-SRF-COST-ZERO-DEFAULT",
+      "description": "Research implicitly or silently defaulted total transaction costs to zero.",
+      "effect": "BLOCK"
+    },
+    {
+      "code": "EQS-SRF-TIME-KNOWN-FROM-AFTER-DECISION",
+      "description": "Information known_from exceeds decision information cutoff.",
+      "effect": "INVALID"
+    },
+    {
+      "code": "EQS-SRF-TIME-SIGNAL-AFTER-DECISION",
+      "description": "signal_time is later than decision_time.",
+      "effect": "INVALID"
+    },
+    {
+      "code": "EQS-SRF-TIME-DECISION-AFTER-ORDER",
+      "description": "decision_time is later than order_time.",
+      "effect": "INVALID"
+    },
+    {
+      "code": "EQS-SRF-TIME-ORDER-AFTER-EXECUTION",
+      "description": "order_time is later than fill execution_time.",
+      "effect": "INVALID"
+    },
+    {
+      "code": "EQS-SRF-TIME-RECEIPT-BEFORE-KNOWN-FROM",
+      "description": "receipt_time is earlier than known_from under a source model that forbids it.",
+      "effect": "INVALID"
+    },
+    {
+      "code": "EQS-SRF-FILL-QUANTITY-EXCEEDS-ORDER",
+      "description": "Aggregate fill quantity exceeds executable order quantity.",
+      "effect": "INVALID"
+    },
+    {
+      "code": "EQS-SRF-FILL-MARKET-STATE-MISSING",
+      "description": "Fill lacks a resolvable market state snapshot.",
+      "effect": "BLOCK"
+    },
+    {
+      "code": "EQS-SRF-OOS-LOCK-MISSING",
+      "description": "Campaign requires locked OOS but no valid lock exists.",
+      "effect": "BLOCK"
+    },
+    {
+      "code": "EQS-SRF-OOS-UNAUTHORIZED-OUTCOME-ACCESS",
+      "description": "OOS outcome data was accessed without valid EQS-00 authorization.",
+      "effect": "COMPROMISED"
+    },
+    {
+      "code": "EQS-SRF-OOS-AUTHORIZATION-MISMATCH",
+      "description": "Authorization does not match campaign/candidate/hash/scope.",
+      "effect": "COMPROMISED"
+    },
+    {
+      "code": "EQS-SRF-OOS-ACCESS-LOG-GAP",
+      "description": "Append-only OOS access log cannot be proven continuous.",
+      "effect": "COMPROMISED"
+    },
+    {
+      "code": "EQS-SRF-OOS-CANDIDATE-MISMATCH",
+      "description": "OOS execution candidate hash differs from the authorized sealed candidate.",
+      "effect": "INVALID"
+    },
+    {
+      "code": "EQS-SRF-OOS-RELOCK-PROHIBITED",
+      "description": "A compromised OOS interval was treated as clean by relocking it.",
+      "effect": "COMPROMISED"
+    },
+    {
+      "code": "EQS-SRF-OOS-OUTCOME-READ-BEFORE-FREEZE",
+      "description": "Candidate-specific OOS outcomes were read before candidate sealing.",
+      "effect": "COMPROMISED"
+    },
+    {
+      "code": "EQS-SRF-CANDIDATE-NOT-SEALED",
+      "description": "OOS qualification attempted without a SEALED candidate.",
+      "effect": "BLOCK"
+    },
+    {
+      "code": "EQS-SRF-CANDIDATE-HASH-MISMATCH",
+      "description": "Candidate hash does not recompute from all frozen dependencies.",
+      "effect": "INVALID"
+    },
+    {
+      "code": "EQS-SRF-CANDIDATE-MUTATED-AFTER-FREEZE",
+      "description": "Frozen candidate semantics changed after sealing.",
+      "effect": "INVALID"
+    },
+    {
+      "code": "EQS-SRF-CANDIDATE-MUTATED-AFTER-OOS-OPEN",
+      "description": "Candidate changed after OOS was opened.",
+      "effect": "INVALID"
+    },
+    {
+      "code": "EQS-SRF-CANDIDATE-EVIDENCE-MANIFEST-MISMATCH",
+      "description": "Candidate research evidence manifest does not match its frozen hash.",
+      "effect": "INVALID"
+    },
+    {
+      "code": "EQS-SRF-STRESS-REQUIRED-MISSING",
+      "description": "A preregistered required stress test is absent.",
+      "effect": "BLOCK"
+    },
+    {
+      "code": "EQS-SRF-STRESS-BASELINE-MISMATCH",
+      "description": "Stress test baseline does not match the sealed candidate baseline.",
+      "effect": "INVALID"
+    },
+    {
+      "code": "EQS-SRF-STRESS-INCONCLUSIVE",
+      "description": "Required stress evidence is inconclusive.",
+      "effect": "BLOCK"
+    },
+    {
+      "code": "EQS-SRF-REPRODUCTION-MISSING",
+      "description": "Required reproduction evidence is missing.",
+      "effect": "BLOCK"
+    },
+    {
+      "code": "EQS-SRF-REPRODUCTION-FAILED",
+      "description": "Research result failed its declared reproducibility tolerance.",
+      "effect": "BLOCK"
+    },
+    {
+      "code": "EQS-SRF-METRIC-DEFINITION-MISMATCH",
+      "description": "Metric observation does not match the registered metric definition/version/hash.",
+      "effect": "INVALID"
+    },
+    {
+      "code": "EQS-SRF-METRIC-INSUFFICIENT-DATA",
+      "description": "Required qualification metric has insufficient data.",
+      "effect": "BLOCK"
+    },
+    {
+      "code": "EQS-SRF-HANDOFF-CANDIDATE-MISMATCH",
+      "description": "Handoff candidate identity/hash differs from OOS-consumed candidate.",
+      "effect": "INVALID"
+    },
+    {
+      "code": "EQS-SRF-HANDOFF-CAMPAIGN-MISMATCH",
+      "description": "Handoff campaign identity/hash is inconsistent.",
+      "effect": "INVALID"
+    },
+    {
+      "code": "EQS-SRF-HANDOFF-PREREG-MISMATCH",
+      "description": "Handoff preregistration identity/hash is inconsistent.",
+      "effect": "INVALID"
+    },
+    {
+      "code": "EQS-SRF-HANDOFF-OOS-EVIDENCE-MISSING",
+      "description": "Required sealed OOS evidence is absent.",
+      "effect": "BLOCK"
+    },
+    {
+      "code": "EQS-SRF-HANDOFF-SEARCH-LEDGER-MISMATCH",
+      "description": "Handoff search-ledger hash differs from canonical ledger.",
+      "effect": "INVALID"
+    },
+    {
+      "code": "EQS-SRF-HANDOFF-STRESS-EVIDENCE-MISMATCH",
+      "description": "Handoff stress evidence hash differs from canonical evidence.",
+      "effect": "INVALID"
+    },
+    {
+      "code": "EQS-SRF-HANDOFF-NOT-ELIGIBLE",
+      "description": "Research evidence is not eligible for a valid PAPER handoff.",
+      "effect": "BLOCK"
+    },
+    {
+      "code": "EQS-SRF-PAPER-AUTHORITY-VIOLATION",
+      "description": "Research Infrastructure attempted to self-authorize PAPER or LIVE.",
+      "effect": "BLOCK"
+    }
+  ],
+  "default_policy": {
+    "candidate_mutation_after_oos_open": "INVALID",
+    "hash_mismatch": "INVALID",
+    "missing_required_reference": "BLOCK",
+    "unauthorized_oos_outcome_access": "COMPROMISED",
+    "unknown_required_fact": "BLOCK"
+  }
+}

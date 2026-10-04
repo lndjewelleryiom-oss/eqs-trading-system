@@ -1,0 +1,147 @@
+{
+  "accepted_at": "2026-09-27T20:29:57.222750Z",
+  "baseline_manifest_sha256": "d1d05a4a4ed6f10783ea50d327dd8e0f87eec7f7c68e0b358133212d9fc20ac1",
+  "effective_from": "2026-09-27T20:29:57.222750Z",
+  "entries": [
+    {
+      "allowed_evidence_classes": [
+        "CANONICAL_CONTROL"
+      ],
+      "authority_domain": "PROGRAMME_MODE",
+      "owner": "EQS-00 Master Control",
+      "permitted_environments": [
+        "PAPER",
+        "SHADOW"
+      ],
+      "producer_service_id": "EQS-00",
+      "rank": 0
+    },
+    {
+      "allowed_evidence_classes": [
+        "DOMAIN_AUTHORITY",
+        "PRIMARY_OBSERVATION"
+      ],
+      "authority_domain": "MARKET_DATA_HEALTH",
+      "baseline_tree_sha256": "fd1572fd89360ca12948f92f4266f69290811008e28ca53d11e57af662ee5e46",
+      "owner": "EQS-SHARED-01 Market Data",
+      "permitted_environments": [
+        "PAPER",
+        "SHADOW"
+      ],
+      "producer_service_id": "EQS-SHARED-01",
+      "rank": 0
+    },
+    {
+      "allowed_evidence_classes": [
+        "DOMAIN_AUTHORITY"
+      ],
+      "authority_domain": "RESEARCH_OPERATIONAL_STATE",
+      "baseline_tree_sha256": "9cff2f82d8fe2212a1e407a13e5dc9e80d46eae3366285b1a1bbe62275f1de09",
+      "owner": "EQS-SHARED-02 Research Infrastructure",
+      "permitted_environments": [
+        "PAPER",
+        "SHADOW"
+      ],
+      "producer_service_id": "EQS-SHARED-02",
+      "rank": 0
+    },
+    {
+      "allowed_evidence_classes": [
+        "DOMAIN_AUTHORITY"
+      ],
+      "authority_domain": "CAPITAL_RISK_STATE",
+      "baseline_tree_sha256": "2b0c583548d69e3c5e89bef8796def1d8f7fc009eae3fd24cf3cff3d3fa93769",
+      "owner": "EQS-SHARED-03 Capital & Risk",
+      "permitted_environments": [
+        "PAPER",
+        "SHADOW"
+      ],
+      "producer_service_id": "EQS-SHARED-03",
+      "rank": 0
+    },
+    {
+      "allowed_evidence_classes": [
+        "DOMAIN_AUTHORITY"
+      ],
+      "authority_domain": "EXECUTION_INTERNAL_STATE",
+      "baseline_tree_sha256": "7cf37f1ef7d3a78d7dc54940b7b88d89733652cc686c3277ad90555b3ff46283",
+      "owner": "EQS-SHARED-04 Execution",
+      "permitted_environments": [
+        "PAPER",
+        "SHADOW"
+      ],
+      "producer_service_id": "EQS-SHARED-04",
+      "rank": 0
+    },
+    {
+      "allowed_evidence_classes": [
+        "EXTERNAL_TRUTH"
+      ],
+      "authority_domain": "EXTERNAL_ORDER_POSITION_FILL_TRUTH",
+      "capability_constraint": "READ_ONLY",
+      "owner": "EQS-SHARED-04 Execution",
+      "permitted_environments": [
+        "SHADOW"
+      ],
+      "producer_service_id": "EQS-SHARED-04-READONLY-EXTERNAL",
+      "rank": 0
+    },
+    {
+      "allowed_evidence_classes": [
+        "DOMAIN_AUTHORITY"
+      ],
+      "authority_domain": "PORTFOLIO_STATE",
+      "baseline_tree_sha256": "6a7d9c18f04ec931293a468d0d266b9337671783d9d2d7a00cb8eb76f2cc5de4",
+      "owner": "EQS-SHARED-05 Portfolio Construction",
+      "permitted_environments": [
+        "PAPER",
+        "SHADOW"
+      ],
+      "producer_service_id": "EQS-SHARED-05",
+      "rank": 0
+    },
+    {
+      "allowed_evidence_classes": [
+        "DOMAIN_AUTHORITY",
+        "PRIMARY_OBSERVATION"
+      ],
+      "authority_domain": "SERVICE_RUNTIME_HEALTH",
+      "baseline_tree_sha256": "b188825ecf3acfff9ee2a08b4bb51a463e2fd13926453c3b9cad719ba67aa0c2",
+      "owner": "EQS-SHARED-06 Monitoring & Operations",
+      "permitted_environments": [
+        "PAPER",
+        "SHADOW"
+      ],
+      "producer_service_id": "EQS-SHARED-06",
+      "rank": 0
+    },
+    {
+      "allowed_evidence_classes": [
+        "SEALED_COMMISSIONING"
+      ],
+      "authority_domain": "COMMISSIONING_RESULT",
+      "baseline_tree_sha256": "b188825ecf3acfff9ee2a08b4bb51a463e2fd13926453c3b9cad719ba67aa0c2",
+      "owner": "EQS-SHARED-06 Monitoring & Operations",
+      "permitted_environments": [
+        "PAPER",
+        "SHADOW"
+      ],
+      "producer_service_id": "EQS-SHARED-06",
+      "rank": 0
+    }
+  ],
+  "owner": "EQS-00 Master Control",
+  "owner_attestation_basis": "Explicit EQS owner approval in current Phase-B workstream, bound to frozen service-tree hashes.",
+  "registry_id": "eqs-phase-b-producer-authority-registry-v1",
+  "registry_sha256": "141482771a9edbc8c936910981e154f109264a9330019ab9917026b94adbcc46",
+  "registry_version": "1",
+  "revocation_conditions": [
+    "baseline_change",
+    "producer_identity_change",
+    "authority_owner_change",
+    "evidence_class_change",
+    "environment_scope_change"
+  ],
+  "status": "ACCEPTED",
+  "technical_custodian": "EQS-SHARED-06 Monitoring & Operations"
+}

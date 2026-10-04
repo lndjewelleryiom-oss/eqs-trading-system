@@ -1,0 +1,86 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://eqs.local/schemas/shared06/certification_policy_bundle_v1.json",
+  "title": "EQS-SHARED-06 Certification Policy Bundle V1",
+  "type": "object",
+  "required": [
+    "policy_id",
+    "policy_version",
+    "environment",
+    "verified",
+    "authority_bindings",
+    "gate_policies",
+    "safety_action_policy_bindings",
+    "policy_sha256"
+  ],
+  "properties": {
+    "policy_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "policy_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "environment": {
+      "type": "string",
+      "minLength": 1
+    },
+    "verified": {
+      "const": true
+    },
+    "authority_bindings": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "required": [
+            "producer_service_id",
+            "allowed_evidence_classes",
+            "rank"
+          ],
+          "properties": {
+            "producer_service_id": {
+              "type": "string"
+            },
+            "allowed_evidence_classes": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "minItems": 1
+            },
+            "rank": {
+              "type": "integer",
+              "minimum": 0
+            }
+          },
+          "additionalProperties": false
+        }
+      }
+    },
+    "gate_policies": {
+      "type": "object"
+    },
+    "safety_action_policy_bindings": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    },
+    "accepted_evidence_classes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    },
+    "policy_sha256": {
+      "type": "string",
+      "pattern": "^[A-Fa-f0-9]{64}$"
+    }
+  },
+  "additionalProperties": false
+}

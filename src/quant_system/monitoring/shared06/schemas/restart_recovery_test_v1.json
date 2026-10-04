@@ -1,0 +1,72 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://eqs.local/schemas/shared06/restart_recovery_test_v1.json",
+  "title": "Restart/Recovery Test V1",
+  "type": "object",
+  "required": [
+    "test_run_id",
+    "component_id",
+    "fault_type",
+    "pre_state",
+    "fault_injected_at",
+    "recovery_started_at",
+    "post_state",
+    "authoritative_state_restored",
+    "reconciliation_state",
+    "result"
+  ],
+  "properties": {
+    "test_run_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "component_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "fault_type": {
+      "type": "string",
+      "minLength": 1
+    },
+    "pre_state": {
+      "$ref": "common_defs_v1.json#/$defs/health_state"
+    },
+    "fault_injected_at": {
+      "$ref": "common_defs_v1.json#/$defs/timestamp_utc"
+    },
+    "recovery_started_at": {
+      "$ref": "common_defs_v1.json#/$defs/timestamp_utc"
+    },
+    "recovered_at": {
+      "oneOf": [
+        {
+          "$ref": "common_defs_v1.json#/$defs/timestamp_utc"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "post_state": {
+      "$ref": "common_defs_v1.json#/$defs/health_state"
+    },
+    "authoritative_state_restored": {
+      "type": "boolean"
+    },
+    "reconciliation_state": {
+      "$ref": "common_defs_v1.json#/$defs/reconciliation_state"
+    },
+    "result": {
+      "enum": [
+        "PASS",
+        "FAIL",
+        "INCOMPLETE",
+        "UNKNOWN"
+      ]
+    },
+    "evidence_refs": {
+      "$ref": "common_defs_v1.json#/$defs/evidence_refs"
+    }
+  },
+  "additionalProperties": false
+}

@@ -1,0 +1,589 @@
+{
+  "schema_version": 1,
+  "allowed_statuses": [
+    "NOT STARTED",
+    "IN PROGRESS",
+    "BLOCKED",
+    "TESTING",
+    "PASSED",
+    "LIVE",
+    "FAILED",
+    "PAUSED"
+  ],
+  "components": [
+    {
+      "id": "F0.1",
+      "name": "Repository/config foundation",
+      "status": "PASSED",
+      "depends_on": [],
+      "evidence": [
+        "12 automated tests passed",
+        "safety config assertions passed"
+      ]
+    },
+    {
+      "id": "F0.2",
+      "name": "Core PostgreSQL database schema",
+      "status": "PASSED",
+      "depends_on": [
+        "F0.1"
+      ],
+      "evidence": [
+        "PostgreSQL 17.6 real-database acceptance executed in an isolated temporary schema",
+        "0001 forward migration executed successfully twice from clean schema state",
+        "database-backed structural and behavioral SQL acceptance suite passed twice",
+        "explicit 0001 rollback migration removed all 16 core tables and 4 enums with zero residual objects",
+        "rollback preserved shared pgcrypto extension",
+        "temporary test schema was removed after final rollback",
+        "repository migration-contract tests require every forward migration to have an explicit down path"
+      ],
+      "remaining": []
+    },
+    {
+      "id": "F0.3",
+      "name": "Strategy lifecycle + registry history",
+      "status": "PASSED",
+      "depends_on": [
+        "F0.1"
+      ],
+      "evidence": [
+        "illegal direct-to-live blocked",
+        "staged path passed",
+        "transition reason retained"
+      ]
+    },
+    {
+      "id": "F0.4",
+      "name": "Pre-trade risk foundation",
+      "status": "PASSED",
+      "depends_on": [
+        "F0.1"
+      ],
+      "evidence": [
+        "allow/block/stale-data/kill-switch tests passed"
+      ]
+    },
+    {
+      "id": "F0.5",
+      "name": "Hash-chained audit foundation",
+      "status": "PASSED",
+      "depends_on": [
+        "F0.1"
+      ],
+      "evidence": [
+        "tamper detection test passed"
+      ]
+    },
+    {
+      "id": "F1.1",
+      "name": "Instrument master/calendars",
+      "status": "PASSED",
+      "depends_on": [
+        "F0"
+      ],
+      "evidence": [
+        "canonical instrument identity and trading-calendar primitives tested",
+        "versioned calendar-source loader validates timezone, sessions, weekdays and holiday records",
+        "synthetic holiday fixture proves holiday closure without embedding unverified venue calendars"
+      ]
+    },
+    {
+      "id": "F1.2",
+      "name": "Dataset contracts/lineage",
+      "status": "PASSED",
+      "depends_on": [
+        "F0"
+      ],
+      "evidence": [
+        "dataset manifests have deterministic content fingerprints",
+        "immutable raw blob hash is linked into persisted manifest lineage",
+        "manifest catalog detects tampering on read",
+        "normalized connector ingestion contract tested"
+      ]
+    },
+    {
+      "id": "F1.3",
+      "name": "Immutable raw capture",
+      "status": "PASSED",
+      "depends_on": [
+        "F1.2"
+      ],
+      "evidence": [
+        "content-addressed idempotent raw store test passed",
+        "read-back integrity hash verified"
+      ]
+    },
+    {
+      "id": "F1.4",
+      "name": "Point-in-time availability guard",
+      "status": "PASSED",
+      "depends_on": [
+        "F1.2"
+      ],
+      "evidence": [
+        "future-unavailable data rejection test passed"
+      ]
+    },
+    {
+      "id": "F1.5",
+      "name": "Revisions/data quality pipeline",
+      "status": "PASSED",
+      "depends_on": [
+        "F1.4"
+      ],
+      "evidence": [
+        "quality pipeline accepts, quarantines and rejects with explicit reason codes",
+        "low-confidence/corrupt data quarantine tested",
+        "conflicting same-revision values rejected",
+        "out-of-order revisions quarantined"
+      ]
+    },
+    {
+      "id": "F1.6",
+      "name": "Deterministic historical replay",
+      "status": "PASSED",
+      "depends_on": [
+        "F1.3",
+        "F1.5"
+      ],
+      "evidence": [
+        "deterministic replay under shuffled inputs",
+        "point-in-time cutoff enforced"
+      ]
+    },
+    {
+      "id": "F2",
+      "name": "Event-driven backtest/execution simulator",
+      "status": "PASSED",
+      "depends_on": [
+        "F1"
+      ],
+      "evidence": [
+        "no same-bar fills and strictly increasing per-symbol market clock",
+        "buy/sell limit orders require OHLC touch and fill conservatively at limit",
+        "latency delays fills until the first eligible bar",
+        "adverse spread, slippage and square-root participation-scaled market impact",
+        "volume participation partial fills and duplicate-order rejection",
+        "ACT/365 debit-cash financing and marked short borrow accrual",
+        "split cost-basis/quantity adjustment and long/short dividend cashflows",
+        "realized/unrealized P&L, commissions, cash, equity, gross/net notional accounting",
+        "journal reconstruction reconciles cash/positions and detects aggregate drift",
+        "40 tests passed, 0 failed"
+      ],
+      "remaining": []
+    },
+    {
+      "id": "F3",
+      "name": "Validation/overfit-defence platform",
+      "status": "PASSED",
+      "depends_on": [
+        "F2"
+      ],
+      "evidence": [
+        "canonical reproducible experiment manifests with tamper detection",
+        "chronological holdout and rolling/expanding walk-forward evaluation",
+        "purged temporal K-fold with label-overlap purge and embargo",
+        "deterministic parameter and cost sensitivity surfaces",
+        "seeded circular-block bootstrap confidence intervals and Monte Carlo trade paths",
+        "Deflated Sharpe, CSCV/PBO, White-style max-mean bootstrap reality check and Holm-Bonferroni correction",
+        "strategy scorecards and stage-labelled research reports",
+        "controlled synthetic edge passes phase-exit gate; deliberately slice-mined fixture rejected with PBO=1.0",
+        "25 targeted F3 tests passed with 87% validation-module coverage",
+        "65 tests passed, 0 failed in complete repository suite"
+      ],
+      "remaining": []
+    },
+    {
+      "id": "F4",
+      "name": "Regime/portfolio/degradation",
+      "status": "PASSED",
+      "depends_on": [
+        "F3"
+      ],
+      "evidence": [
+        "transparent rule-based regime baseline and deterministic probabilistic Gaussian classifier",
+        "conservative portfolio allocator scales down researched base weights only",
+        "hard strategy, gross, cash-floor, capacity, liquidity and correlation controls",
+        "live-vs-expected degradation monitor with ACTIVE/WATCH/REDUCED/PAUSED outputs",
+        "feature/prediction distribution drift via PSI and execution/data-integrity fail-closed pause",
+        "synthetic crisis phase-exit fixture reduces gross allocation without breaching limits",
+        "15 targeted F4 tests passed with 89% coverage across F4 modules"
+      ],
+      "remaining": []
+    },
+    {
+      "id": "F5",
+      "name": "Paper/shadow/broker abstraction",
+      "status": "PASSED",
+      "depends_on": [
+        "F2",
+        "F3",
+        "F4"
+      ],
+      "evidence": [
+        "normalized broker adapter contract contains health/submit/cancel/account snapshot and no withdrawal action",
+        "paper engine reuses conservative simulator and journal-backed ledger",
+        "shadow engine refuses submission-enabled gateway and records would-be orders without venue transmission",
+        "broker outage/submission exceptions halt fail-closed",
+        "unknown venue orders and position/order mismatches trigger reconciliation HALT; unknown orders are contained",
+        "F5 phase-exit fixture confirms end-to-end broker-facing path with venue submission disabled survives injected fault",
+        "10 targeted F5 tests passed with 94% coverage across F5 modules"
+      ],
+      "remaining": []
+    },
+    {
+      "id": "F6",
+      "name": "Evolutionary alpha discovery",
+      "status": "PASSED",
+      "depends_on": [
+        "F3",
+        "F5"
+      ],
+      "evidence": [
+        "z-score and cross-sectional anomaly detectors feed falsifiable hypothesis factory",
+        "hypothesis registry retains rejected research and blocks illegal promotion",
+        "fixed hypothesis/trial/parameter-combination budgets bound search",
+        "precommitted acceptance criteria are fingerprinted and evaluated without post-hoc threshold mutation",
+        "autonomous loop can create, queue, test, reject/document or mark research candidate but exposes no deploy method",
+        "candidate prioritization weights evidence/novelty/diversification/readiness rather than raw return",
+        "8 targeted F6 tests passed with 93% coverage across F6 modules"
+      ],
+      "remaining": []
+    },
+    {
+      "id": "F7",
+      "name": "Controlled live commissioning",
+      "status": "BLOCKED",
+      "depends_on": [
+        "F0",
+        "F1",
+        "F2",
+        "F3",
+        "F4",
+        "F5",
+        "F6"
+      ],
+      "remaining": [
+        "F7.E1 trade-only production credentials not verified",
+        "F7.E2 withdrawals-disabled/fund-movement restrictions not verified",
+        "F7.E3 operational approval not recorded",
+        "F7.E4 regulatory approval not recorded",
+        "F7.E5 explicit human LIVE_1 capital authorization not recorded",
+        "venue-specific LIVE_1 commissioning evidence remains required after F7.E1-F7.E5 pass"
+      ],
+      "evidence": [
+        "commissioning controller defaults to LIVE_0 and cannot leave it on incomplete readiness evidence",
+        "with software-controlled gates complete, readiness reports only the five external credential/approval/authorization blockers",
+        "commissioned submission boundary blocks before calling a submission-capable broker gateway while LIVE_0",
+        "progressive scaling is strictly one level at a time and requires a positive precommitted observation floor plus slippage/drawdown/reconciliation/degradation evidence",
+        "reasoned rollback cannot increase live level",
+        "critical runtime safety failures automatically de-risk to LIVE_0; execution/degradation warnings reduce one level",
+        "13 targeted F7 credential-free tests passed with 98% commissioning-module coverage using only synthetic evidence and the in-memory broker double",
+        "external-gate tracker contract regression test verifies exactly F7.E1-F7.E5, required pass conditions, evidence fields, BLOCKED status and explicit blockers",
+        "signed F7 external-gate approval template added with approver/scope/validity/evidence/revocation/signature controls and regression coverage",
+        "completed F7 TEST DATA approval example added with machine-readable non-authorizing sentinels, NOT APPROVED decision, LIVE_0 result, fictional evidence references, and regression proof that it cannot enter objective gate evidence",
+        "CI TEST_DATA live-evidence guard runs before pytest and fails if TEST_DATA or test-evidence references appear in objective_evidence_recorded, signed approval reference fields, or live-authorization fields; negative regression fixtures cover all three paths",
+        "versioned .githooks/pre-commit invokes the same TEST_DATA live-evidence guard used by CI; installer configures core.hooksPath=.githooks; end-to-end git regression proves clean commits succeed while contaminated objective evidence blocks the commit before history advances",
+        "versioned pre-push hook runs the same TEST_DATA contamination guard as CI/pre-commit and blocks a deliberately --no-verify contaminated commit before the remote ref advances",
+        "git-hook installer activates pre-commit and pre-push through core.hooksPath=.githooks and repairs executable bits after archive extraction",
+        "137 tests passed, 0 failed in the complete repository suite; no venue credentials or live capital used",
+        "151 tests passed, 0 failed in the current complete repository suite after R1.1 integration; F7 remains BLOCKED"
+      ],
+      "external_gates": [
+        {
+          "id": "F7.E1",
+          "name": "Trade-only credentials",
+          "status": "BLOCKED",
+          "pass_condition": "A dedicated production trading credential exists with only minimum required read/trade/order-management permissions, no unrelated administrative or fund-movement privileges, and is stored in approved secret management.",
+          "objective_evidence_required": [
+            "redacted venue permission export or screenshot",
+            "credential inventory record containing venue, account/environment, key ID or fingerprint, owner, creation/rotation dates and granted scopes",
+            "safe API permission test proving required trading operations are authorized",
+            "completed and signed F7 external-gate approval record reference (docs/F7_EXTERNAL_GATE_APPROVAL_TEMPLATE.md) with immutable signed artifact URI/hash"
+          ],
+          "objective_evidence_recorded": [],
+          "blockers": [
+            "No production venue/account credential has been supplied or verified."
+          ]
+        },
+        {
+          "id": "F7.E2",
+          "name": "Withdrawals disabled",
+          "status": "BLOCKED",
+          "pass_condition": "The production trading credential cannot withdraw assets, manage withdrawal addresses, change bank/security settings, create privileged credentials, or move funds except any narrowly required transfer permission separately approved in writing.",
+          "objective_evidence_required": [
+            "redacted venue permission export or screenshot showing withdrawal/transfer scopes disabled",
+            "safe negative API authorization test showing withdrawal or fund-movement action is denied",
+            "immutable evidence URI or hash",
+            "completed and signed F7 external-gate approval record reference (docs/F7_EXTERNAL_GATE_APPROVAL_TEMPLATE.md) with immutable signed artifact URI/hash"
+          ],
+          "objective_evidence_recorded": [],
+          "blockers": [
+            "No venue credential exists from which withdrawal and transfer restrictions can be objectively verified."
+          ]
+        },
+        {
+          "id": "F7.E3",
+          "name": "Operational approval",
+          "status": "BLOCKED",
+          "pass_condition": "An accountable human operator approves the exact system/adapter version, strategy scope, capital/risk limits, monitoring, reconciliation, kill-switch, incident response, credential-revocation, manual-flattening and restart procedures, and a fault-recovery commissioning rehearsal is completed.",
+          "objective_evidence_required": [
+            "signed or immutable operational commissioning record with approver, timestamp, commit/version, limits and procedures",
+            "rehearsal evidence for normal -> fault -> HALT -> reconciliation -> human review -> controlled restart",
+            "completed and signed F7 external-gate approval record reference (docs/F7_EXTERNAL_GATE_APPROVAL_TEMPLATE.md) with immutable signed artifact URI/hash"
+          ],
+          "objective_evidence_recorded": [],
+          "blockers": [
+            "No signed operational commissioning approval or rehearsal evidence has been recorded."
+          ]
+        },
+        {
+          "id": "F7.E4",
+          "name": "Regulatory approval",
+          "status": "BLOCKED",
+          "pass_condition": "A written legal/compliance determination for the actual operator, jurisdiction, venue, instruments, ownership/funding model and intended activity concludes that the proposed live operation may proceed and identifies any binding restrictions.",
+          "objective_evidence_required": [
+            "dated legal/compliance assessment or approval reference identifying jurisdiction, venue/account type, instruments/activity and reviewer",
+            "documented unresolved restrictions, if any",
+            "immutable evidence URI or hash",
+            "completed and signed F7 external-gate approval record reference (docs/F7_EXTERNAL_GATE_APPROVAL_TEMPLATE.md) with immutable signed artifact URI/hash"
+          ],
+          "objective_evidence_recorded": [],
+          "blockers": [
+            "The final live venue/instrument/legal operating configuration has not been approved by an appropriate compliance/legal authority."
+          ]
+        },
+        {
+          "id": "F7.E5",
+          "name": "Explicit live-capital authorization",
+          "status": "BLOCKED",
+          "pass_condition": "A named authorized human explicitly approves LIVE_1 only for the specified venue/account, strategy IDs, system version, maximum capital, exposure, leverage, position, daily-loss and drawdown limits, with revocation conditions and an expiry/review point.",
+          "objective_evidence_required": [
+            "signed or immutable live-capital authorization record",
+            "approver and timestamp",
+            "system commit/version and venue/account identifier",
+            "strategy IDs and approved capital/risk limits",
+            "automatic-revocation conditions and expiry/review date",
+            "completed and signed F7 external-gate approval record reference (docs/F7_EXTERNAL_GATE_APPROVAL_TEMPLATE.md) with immutable signed artifact URI/hash"
+          ],
+          "objective_evidence_recorded": [],
+          "blockers": [
+            "No explicit human authorization to expose real capital has been granted."
+          ]
+        }
+      ],
+      "approval_template": {
+        "path": "docs/F7_EXTERNAL_GATE_APPROVAL_TEMPLATE.md",
+        "purpose": "Signed human-controlled evidence record for F7.E1-F7.E5 and LIVE_1-only authorization.",
+        "required_fields": [
+          "approver identity and authority",
+          "authorized scope and immutable system/configuration versions",
+          "valid-from, expiry and mandatory review period",
+          "per-gate decision and objective evidence references",
+          "automatic revocation conditions",
+          "overall LIVE_1-only decision and signature",
+          "signed artifact URI and integrity hash"
+        ],
+        "fail_closed_rule": "A missing, incomplete, expired, out-of-scope, revoked or unverifiable approval record cannot satisfy any external gate and cannot authorize broker submission.",
+        "non_authorizing_example": {
+          "path": "docs/F7_EXTERNAL_GATE_APPROVAL_EXAMPLE_TEST_DATA.md",
+          "classification": "TEST_DATA_NON_AUTHORIZING",
+          "authorization_effect": "NONE",
+          "runtime_eligibility": "REJECT",
+          "overall_decision": "NOT_APPROVED",
+          "tracker_evidence_eligible": false,
+          "required_deployment_stage": "LIVE_0"
+        }
+      }
+    },
+    {
+      "id": "R1.1",
+      "name": "Crypto perpetual public-data contracts/connectors",
+      "status": "PASSED",
+      "depends_on": [
+        "F1.2",
+        "F1.3",
+        "F1.4"
+      ],
+      "evidence": [
+        "canonical crypto-perpetual schemas implemented for instrument definitions, trades, book snapshots/deltas, perpetual state and liquidation events",
+        "strict event_time <= published_at <= available_at <= received_at point-in-time ordering and decision-time visibility tested",
+        "raw-first collector stores exact bytes before JSON parsing and links normalized events to the immutable raw SHA-256",
+        "unknown venue symbols fail closed instead of guessing canonical instrument identity",
+        "Binance USD-M split public/market route plan and trade/depth/mark-funding/liquidation fixture normalization tested",
+        "Bybit Linear public orderbook/trade/ticker/all-liquidation fixture normalization tested",
+        "OKX SWAP public books/trades/mark-price/funding-rate/open-interest connector plan and fixture normalization tested",
+        "order-book snapshot initialization and sequence-integrity failure path tested",
+        "R1.1 uses read-only public market-data subscription surfaces and contains no credential requirement",
+        "14 targeted R1.1 tests passed; no live-feed connectivity or profitability claim is made",
+        "151 tests passed, 0 failed in the complete repository suite after R1.1 integration"
+      ],
+      "remaining": []
+    },
+    {
+      "id": "R1.2",
+      "name": "Crypto perpetual live-feed/backfill acceptance",
+      "status": "TESTING",
+      "depends_on": [
+        "R1.1"
+      ],
+      "evidence": [
+        "2026-09-22 genuine read-only public-feed acceptance executed against Binance USD-M, Bybit Linear, and OKX SWAP; prior short-run reconnect/book recovery evidence remains retained",
+        "sustained-capture acceptance persisted 1366/1366 received raw websocket frames into isolated PostgreSQL staging storage with 0 persistence failures; all 1366 stored raw payloads independently rehashed to their recorded SHA-256 values; 797828 bytes persisted",
+        "sustained capture by venue: Binance 416 rows/294435 bytes, Bybit 483 rows/199156 bytes, OKX 467 rows/304237 bytes",
+        "controlled forced-disconnect/reconnect testing in the sustained run produced fresh Bybit and OKX order-book resynchronizations twice each with zero sequence-gap detections and uncrossed reconstructed books",
+        "the sustained Binance subtest is retained as FAILED_HARNESS_DEFECT: its REST depth snapshot was taken after the socket session closed, creating two artificial sequence-gap detections; no exchange-loss claim is made from those two gaps; prior short-live Binance evidence proved correct snapshot bridging twice",
+        "three-hour historical backfill reconciliation passed for all three venues using 1-minute closed bars: 180/180 expected buckets present per venue with zero missing and zero duplicate buckets",
+        "drop accounting explicitly separates parse failures, persistence failures, sequence gaps, forced disconnects, reconnects and resynchronizations; it does not infer unobservable network loss as zero",
+        "hourly checkpoint scheduler and persistent JSONL raw-capture integrity are verified by deterministic multi-hour tests; actual live hourly wall-clock checkpoints have not yet elapsed",
+        "R1.2 sustained evidence stored at artifacts/test-evidence/R1_2_SUSTAINED_SOAK_2026-09-22.json; R1.2 remains TESTING rather than PASSED",
+        "corrected sustained Binance reconnect probe passed on genuine public USD-M depth data: two cycles requested the REST snapshot while the WebSocket remained open and buffering, found the snapshot bridge, applied 25 updates per cycle, recorded 0 sequence gaps, kept books uncrossed, and persisted 71/71 raw frames with zero parse/persistence failures",
+        "real-hour checkpoint collection is now under an hourly condition watch that restarts/inspects the read-only remote collector when reachable; no checkpoint is accepted before >=3600 seconds of actual wall-clock elapsed time",
+        "corrected Binance sustained collector confirmed active from 2026-09-22T19:49:38.321Z; pre-hour state showed 2125/2125 received/persisted frames, 0 parse failures, 0 persistence failures, 0 sequence gaps, 1 forced reconnect and 3 resynchronizations; raw capture file observed at 14,468,964 bytes"
+      ],
+      "remaining": [
+        "actual multi-hour/day continuous live websocket soak still lacks completed real hourly wall-clock checkpoints; 0 genuine one-hour checkpoints were available at this update and the remote workstation went offline before the first could be observed",
+        "heartbeat behavior through documented long-lived connection intervals and Binance 24-hour connection rollover has not been exercised end-to-end",
+        "rate-limit/backoff behavior under controlled REST and reconnect pressure has not been exercised",
+        "long-duration storage growth, sustained throughput and drop accounting over hours/days remain unmeasured even though short-run persistence completeness passed"
+      ]
+    },
+    {
+      "id": "PP1",
+      "name": "Phase-B commissioning and first authorised PAPER run",
+      "status": "PASSED",
+      "depends_on": [
+        "F5"
+      ],
+      "evidence": [
+        "EQS-PHASE-B-PAPER-017 terminal PASS sealed",
+        "EQS-00 PAPER_AUTHORISED",
+        "EQS-FIRST-PAPER-RUN-001 VERIFIED",
+        "first PAPER receipt sha256=e137f346a88966cb58b62bca28f3f8ca0d8018a4683a4cb1289a6e99b517cd1e",
+        "50 canonical acceptance tests passed; broker sends 0; safety breaches 0"
+      ],
+      "remaining": []
+    },
+    {
+      "id": "PP2",
+      "name": "Sustained authorised PAPER operations",
+      "status": "IN PROGRESS",
+      "depends_on": [
+        "PP1"
+      ],
+      "evidence": [
+        "sustained PAPER runtime generation=38",
+        "latest sustained health status=BLOCKED",
+        "latest sustained health record=0d9e1ead386cdeb4ef0faa147ce7b39b0b0363afb616f7fe0fead8c04950c821",
+        "broker sends since current authority=0",
+        "venue submission enabled events=0",
+        "current PAPER admission decision=90648339bd17e774e01c8d8e9823a5c62ce37b95b17dfb3e0e664c8aae299f73",
+        "SHARED-06 final readiness seal=549a72dc9d8653de9d9253f53559dd387876aea149516e75eddff03cb90e0ed7"
+      ],
+      "remaining": [
+        "continue accumulating sustained PAPER operating history",
+        "keep all runtime leases, data, reconciliation and safety checks green"
+      ]
+    },
+    {
+      "id": "EQS-02-PAPER",
+      "name": "Stocks / ETFs PAPER workstream",
+      "status": "IN PROGRESS",
+      "depends_on": [
+        "PP1"
+      ],
+      "evidence": [
+        "EQS-02 foundation/connectors/PAPER adapter ready",
+        "pre-PAPER certification seal=3fc5618847f08dbf9be85413d1dfb626c7f46e165c754e44350a0ae1206e36ca",
+        "authenticated Alpaca IEX production market-data acceptance PASS seal=c895b7cfbecb0036a9ecfe0fee29fedde7e35dd27c04c01c185fdd2024e1414e",
+        "production PAPER market-data authority=true",
+        "authenticated universe includes SPY, AAPL and GLD",
+        "Alpaca connector latest/historical normalization regression 7/7 PASS",
+        "raw-first immutable capture enabled; credential material not recorded",
+        "trading endpoint not used; broker submission disabled"
+      ],
+      "remaining": [
+        "forward acceptance pending; current state=WAITING_FOR_POST_CERTIFICATION_MARKET_BAR"
+      ]
+    },
+    {
+      "id": "EQS-03-PAPER",
+      "name": "FX PAPER workstream",
+      "status": "IN PROGRESS",
+      "depends_on": [
+        "PP1"
+      ],
+      "evidence": [
+        "HistData fixed EST/no-DST source convention verified",
+        "1,770 false weekend gaps reclassified",
+        "1,136 bounded exact-1-second source-order corrupt intervals normalized",
+        "AUDJPY missing interval repaired only with genuine Dukascopy tick coverage",
+        "FX F2 PASS 15/15; remaining missing intervals=0; remaining corrupt intervals=0",
+        "FX F2 v1.4 seal=2f66077b54aedb8bb80e5d6836113b0eb9183fd17a93edf80f4af8930ecad862",
+        "FX PAPER adapter tests 9/9 PASS",
+        "FX pre-PAPER certification seal=10189ec96f9b3c9c5ece3315f01109b8a1b9d1142a3ae02ea3e4046a3ff9eab4",
+        "spot-FX PAPER simulator does not fabricate consolidated exchange volume or market impact"
+      ],
+      "remaining": [
+        "forward acceptance pending; current state=WAITING_FOR_FORWARD_FX_SOURCE"
+      ]
+    },
+    {
+      "id": "EQS-04-PAPER",
+      "name": "Futures / Commodities PAPER workstream",
+      "status": "PAUSED",
+      "depends_on": [
+        "PP1"
+      ],
+      "evidence": [
+        "CME-grade futures data commissioning deliberately deferred on cost grounds",
+        "CME public website delayed quotes are not being used as certification data",
+        "no paid CME DataMine subscription authorised"
+      ],
+      "remaining": [
+        "resume only if a free/low-cost admissible licensed futures data source is identified and approved",
+        "do not purchase CME DataMine without explicit approval"
+      ]
+    },
+    {
+      "id": "EQS-05-PAPER",
+      "name": "Rates / Fixed Income PAPER workstream",
+      "status": "IN PROGRESS",
+      "depends_on": [
+        "PP1"
+      ],
+      "evidence": [
+        "EQS-05 auction foundation PASS",
+        "official U.S. Treasury daily par-yield curve source PASS seal=93aaf5a8af5be82d5dd22cf2a3e1616f5fab332b8a9dbc7f4365bcf8b90c114a",
+        "official curve history contains 190 rows through 2026-10-02",
+        "Rates curve/PIT/DV01 regression 9/9 PASS",
+        "genuine official-curve offline acceptance PASS seal=087c7c5860bcc2d0289b7683f9e7cfec973e588cc594e10f768e03fa2fd11231",
+        "historical PIT authority not inferred; forward publication required",
+        "broker submission disabled"
+      ],
+      "remaining": [
+        "forward acceptance pending; current state=WAITING_FOR_NEW_TREASURY_CURVE"
+      ]
+    },
+    {
+      "id": "XAU-SPOT-PAPER",
+      "name": "Gold XAU/USD spot PAPER route",
+      "status": "IN PROGRESS",
+      "depends_on": [
+        "PP1"
+      ],
+      "evidence": [
+        "XAU/USD direct gold route implemented as COMMODITY SPOT, not FX and not CME futures",
+        "genuine Dukascopy XAU/USD source acceptance PASS",
+        "XAU/USD spot pre-PAPER certification PASS seal=7030ecd8805450bc9f8290537b90d0faeeb6f851a6abd772d3b7a41d6fcd8fd4",
+        "SHARED-03 commodity spot extension PASS seal=10266b33b6c6d5b31e088f96511e0f8a6574a81cbba32d25c6e5b6cc2519d74f",
+        "SHARED-03 extension full regression 790 passed / 1 skipped",
+        "no CME dependency; no fabricated exchange volume or market impact",
+        "broker submission disabled"
+      ],
+      "remaining": [
+        "forward acceptance pending; current state=WAITING_FOR_FORWARD_XAU_SOURCE"
+      ]
+    }
+  ]
+}

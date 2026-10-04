@@ -1,0 +1,294 @@
+{
+  "catalogue_id": "EQS-H02-RR-CATALOGUE",
+  "catalogue_version": "RR-001-030-v1",
+  "scope": {
+    "asset_class": "CRYPTO",
+    "instrument_type": "PERPETUAL",
+    "contract_style": "LINEAR",
+    "venues": [
+      "BINANCE_USDM",
+      "BYBIT_LINEAR",
+      "OKX_SWAP"
+    ],
+    "windows": {
+      "training": [
+        "2023-01-01T00:00:00Z",
+        "2025-06-30T23:59:59Z"
+      ],
+      "validation": [
+        "2025-07-01T00:00:00Z",
+        "2026-03-31T23:59:59Z"
+      ],
+      "locked_oos": [
+        "2026-04-01T00:00:00Z",
+        "2026-09-21T23:59:59Z"
+      ]
+    },
+    "minimum_history_days": 90,
+    "liquidity_window_days": 30,
+    "liquidity_threshold_usd_per_day_default": 10000000,
+    "liquidity_threshold_usd_per_day_liquidity_order_flow": 25000000,
+    "minimum_cross_sectional_instruments": 8,
+    "minimum_breadth_fraction": 0.8,
+    "required_series": [
+      "TRADES",
+      "ORDERBOOK",
+      "MARK_PRICE",
+      "INDEX_PRICE",
+      "FUNDING",
+      "OPEN_INTEREST",
+      "LIQUIDATIONS",
+      "INSTRUMENT_METADATA"
+    ]
+  },
+  "rules": [
+    {
+      "rule_id": "RR-001",
+      "name": "Schema and version integrity",
+      "predicate": "H02 batch and records use the frozen schema/version and object types.",
+      "failure_codes": [
+        "H02_SCHEMA_INVALID"
+      ]
+    },
+    {
+      "rule_id": "RR-002",
+      "name": "Immutable identity",
+      "predicate": "Record IDs and identity tuples are unique and cannot bind to conflicting content.",
+      "failure_codes": [
+        "H02_IDENTITY_CONFLICT"
+      ]
+    },
+    {
+      "rule_id": "RR-003",
+      "name": "Frozen scope",
+      "predicate": "Only CRYPTO / PERPETUAL / LINEAR instruments on BINANCE_USDM, BYBIT_LINEAR and OKX_SWAP are admitted.",
+      "failure_codes": [
+        "H02_SCOPE_INVALID"
+      ]
+    },
+    {
+      "rule_id": "RR-004",
+      "name": "Canonical mapping",
+      "predicate": "Venue symbol to canonical instrument ID mapping is deterministic and unambiguous.",
+      "failure_codes": [
+        "H02_CANONICAL_MAPPING_AMBIGUOUS"
+      ]
+    },
+    {
+      "rule_id": "RR-005",
+      "name": "Source receipt lineage",
+      "predicate": "Every admitted source object resolves to an immutable receipt and exact SHA-256 lineage.",
+      "failure_codes": [
+        "H02_SOURCE_RECEIPT_MISSING",
+        "H02_SOURCE_HASH_MISMATCH"
+      ]
+    },
+    {
+      "rule_id": "RR-006",
+      "name": "PIT timestamp ordering",
+      "predicate": "UTC timestamps satisfy event_time <= published_at <= available_at <= received_at after forward-only corrections.",
+      "failure_codes": [
+        "H02_TIMESTAMP_ORDER_INVALID"
+      ]
+    },
+    {
+      "rule_id": "RR-007",
+      "name": "Lifecycle continuity",
+      "predicate": "Historical lifecycle transitions are contiguous, source-backed and non-conflicting.",
+      "failure_codes": [
+        "H02_LIFECYCLE_GAP",
+        "H02_LIFECYCLE_CONFLICT"
+      ]
+    },
+    {
+      "rule_id": "RR-008",
+      "name": "Source coverage",
+      "predicate": "Required source and normalized partition evidence exists for the frozen scope.",
+      "failure_codes": [
+        "H02_SOURCE_COVERAGE_INCOMPLETE"
+      ]
+    },
+    {
+      "rule_id": "RR-009",
+      "name": "Frozen research windows",
+      "predicate": "Coverage reconciles exactly to training 2023-01-01..2025-06-30, validation 2025-07-01..2026-03-31 and locked OOS 2026-04-01..2026-09-21.",
+      "failure_codes": [
+        "H02_WINDOW_SCOPE_MISMATCH"
+      ]
+    },
+    {
+      "rule_id": "RR-010",
+      "name": "Known availability",
+      "predicate": "Evidence with unknown or non-provable availability time is blocked.",
+      "failure_codes": [
+        "H02_UNKNOWN_AVAILABILITY"
+      ]
+    },
+    {
+      "rule_id": "RR-011",
+      "name": "A19 history",
+      "predicate": "Eligibility requires at least 90 days of PIT history and proven lifecycle state.",
+      "failure_codes": [
+        "H02_A19_HISTORY_INSUFFICIENT",
+        "H02_PIT_LIFECYCLE_UNPROVEN"
+      ]
+    },
+    {
+      "rule_id": "RR-012",
+      "name": "A20 liquidity",
+      "predicate": "Liquidity eligibility uses the exact preceding 30-day PIT rolling median volume and frozen campaign threshold.",
+      "failure_codes": [
+        "H02_A20_LIQUIDITY_INSUFFICIENT",
+        "H02_LIQUIDITY_WINDOW_INVALID"
+      ]
+    },
+    {
+      "rule_id": "RR-013",
+      "name": "Feature prerequisites",
+      "predicate": "All F3 feature inputs are present and available no later than each decision time.",
+      "failure_codes": [
+        "H02_FEATURE_PREREQUISITE_MISSING"
+      ]
+    },
+    {
+      "rule_id": "RR-014",
+      "name": "Cross-sectional breadth",
+      "predicate": "At least 8 instruments are simultaneously eligible at at least 80 percent of rebalance timestamps.",
+      "failure_codes": [
+        "H02_CROSS_SECTIONAL_BREADTH_INSUFFICIENT"
+      ]
+    },
+    {
+      "rule_id": "RR-015",
+      "name": "Eligibility consistency",
+      "predicate": "Eligibility and exclusion records are deterministic, justified and mutually consistent.",
+      "failure_codes": [
+        "H02_ELIGIBILITY_CONFLICT",
+        "H02_INVALID_EXCLUSION"
+      ]
+    },
+    {
+      "rule_id": "RR-016",
+      "name": "Record hash integrity",
+      "predicate": "All H02 record fingerprints recompute exactly.",
+      "failure_codes": [
+        "H02_RECORD_HASH_MISMATCH"
+      ]
+    },
+    {
+      "rule_id": "RR-017",
+      "name": "Manifest closure",
+      "predicate": "Every required H02 object and referenced artifact is closed by the batch manifest.",
+      "failure_codes": [
+        "H02_MANIFEST_CLOSURE_INCOMPLETE"
+      ]
+    },
+    {
+      "rule_id": "RR-018",
+      "name": "Deterministic rebuild",
+      "predicate": "An independent rebuild produces identical dataset, universe, coverage, eligibility and replay fingerprints.",
+      "failure_codes": [
+        "H02_REBUILD_NONDETERMINISTIC"
+      ]
+    },
+    {
+      "rule_id": "RR-019",
+      "name": "Required series",
+      "predicate": "TRADES, ORDERBOOK, MARK_PRICE, INDEX_PRICE, FUNDING, OPEN_INTEREST, LIQUIDATIONS and INSTRUMENT_METADATA satisfy frozen coverage requirements.",
+      "failure_codes": [
+        "H02_REQUIRED_SERIES_MISSING"
+      ]
+    },
+    {
+      "rule_id": "RR-020",
+      "name": "Coverage reconciliation",
+      "predicate": "Expected, observed, missing and partial interval counts reconcile for every coverage record.",
+      "failure_codes": [
+        "H02_COVERAGE_COUNT_MISMATCH"
+      ]
+    },
+    {
+      "rule_id": "RR-021",
+      "name": "Gap accounting",
+      "predicate": "Every gap or partial interval is explicit, source-attributed and non-silent.",
+      "failure_codes": [
+        "H02_GAP_ACCOUNTING_INVALID"
+      ]
+    },
+    {
+      "rule_id": "RR-022",
+      "name": "Completion semantics",
+      "predicate": "COMPLETE is asserted only when no required interval is missing or partial.",
+      "failure_codes": [
+        "H02_COMPLETION_SEMANTICS_INVALID"
+      ]
+    },
+    {
+      "rule_id": "RR-023",
+      "name": "PIT membership",
+      "predicate": "Observations are usable only when their instrument definition was available and effective and lifecycle state was active at the PIT boundary.",
+      "failure_codes": [
+        "H02_PIT_LIFECYCLE_UNPROVEN",
+        "H02_PIT_MEMBERSHIP_INVALID"
+      ]
+    },
+    {
+      "rule_id": "RR-024",
+      "name": "Decision-time boundary",
+      "predicate": "No observation, revision, feature source or lifecycle state crosses its decision-time visibility boundary.",
+      "failure_codes": [
+        "H02_DECISION_TIME_INVALID"
+      ]
+    },
+    {
+      "rule_id": "RR-025",
+      "name": "Liquidity policy binding",
+      "predicate": "Eligibility records bind to the frozen 30-day liquidity policy and campaign-specific threshold.",
+      "failure_codes": [
+        "H02_LIQUIDITY_POLICY_MISMATCH"
+      ]
+    },
+    {
+      "rule_id": "RR-026",
+      "name": "Cross-artifact consistency",
+      "predicate": "Dataset, universe, lifecycle, coverage, eligibility, PIT and feature lineage agree on identity, scope, versions and hashes.",
+      "failure_codes": [
+        "H02_CROSS_ARTIFACT_CONFLICT"
+      ]
+    },
+    {
+      "rule_id": "RR-027",
+      "name": "Fail-closed evidence",
+      "predicate": "Missing, ambiguous or unprovable required evidence is BLOCKED and never silently inferred.",
+      "failure_codes": [
+        "H02_EVIDENCE_INCOMPLETE",
+        "H02_UNKNOWN_AVAILABILITY"
+      ]
+    },
+    {
+      "rule_id": "RR-028",
+      "name": "Ruleset identity",
+      "predicate": "The executed ruleset identity, version and hash exactly match the frozen RR-001-030-v1 catalogue.",
+      "failure_codes": [
+        "H02_RULESET_UNVERIFIED"
+      ]
+    },
+    {
+      "rule_id": "RR-029",
+      "name": "Evidence conflict",
+      "predicate": "Overlapping accepted evidence cannot conflict; missing or ambiguous required evidence blocks.",
+      "failure_codes": [
+        "H02_EVIDENCE_CONFLICT",
+        "H02_EVIDENCE_INCOMPLETE"
+      ]
+    },
+    {
+      "rule_id": "RR-030",
+      "name": "Authority boundary",
+      "predicate": "H02 is historical-data-only, do_not_promote remains true and it grants no OOS, PAPER, LIVE or broker-submission authority.",
+      "failure_codes": [
+        "H02_AUTHORITY_BOUNDARY_BREACH"
+      ]
+    }
+  ]
+}

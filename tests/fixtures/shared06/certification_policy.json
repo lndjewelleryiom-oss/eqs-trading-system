@@ -1,0 +1,222 @@
+{
+  "policy_id": "ops-paper-v1",
+  "policy_version": "1",
+  "environment": "PAPER",
+  "verified": true,
+  "authority_bindings": {
+    "SERVICE_RUNTIME_HEALTH": [
+      {
+        "producer_service_id": "svc-health",
+        "allowed_evidence_classes": [
+          "DOMAIN_AUTHORITY"
+        ],
+        "rank": 0
+      },
+      {
+        "producer_service_id": "svc-health-low",
+        "allowed_evidence_classes": [
+          "PRIMARY_OBSERVATION"
+        ],
+        "rank": 1
+      },
+      {
+        "producer_service_id": "heartbeat",
+        "allowed_evidence_classes": [
+          "DOMAIN_AUTHORITY"
+        ],
+        "rank": 0
+      }
+    ],
+    "MARKET_DATA_HEALTH": [
+      {
+        "producer_service_id": "market-data",
+        "allowed_evidence_classes": [
+          "DOMAIN_AUTHORITY"
+        ],
+        "rank": 0
+      }
+    ],
+    "CAPITAL_RISK_STATE": [
+      {
+        "producer_service_id": "risk",
+        "allowed_evidence_classes": [
+          "DOMAIN_AUTHORITY"
+        ],
+        "rank": 0
+      }
+    ],
+    "EXECUTION_INTERNAL_STATE": [
+      {
+        "producer_service_id": "exec",
+        "allowed_evidence_classes": [
+          "DOMAIN_AUTHORITY"
+        ],
+        "rank": 0
+      }
+    ],
+    "PORTFOLIO_STATE": [
+      {
+        "producer_service_id": "portfolio",
+        "allowed_evidence_classes": [
+          "DOMAIN_AUTHORITY"
+        ],
+        "rank": 0
+      }
+    ],
+    "EXTERNAL_ORDER_POSITION_FILL_TRUTH": [
+      {
+        "producer_service_id": "broker-truth",
+        "allowed_evidence_classes": [
+          "EXTERNAL_TRUTH"
+        ],
+        "rank": 0
+      }
+    ],
+    "PROGRAMME_MODE": [
+      {
+        "producer_service_id": "eqs00",
+        "allowed_evidence_classes": [
+          "CANONICAL_CONTROL"
+        ],
+        "rank": 0
+      }
+    ],
+    "COMMISSIONING_RESULT": [
+      {
+        "producer_service_id": "ops06",
+        "allowed_evidence_classes": [
+          "SEALED_COMMISSIONING"
+        ],
+        "rank": 0
+      }
+    ]
+  },
+  "gate_policies": {
+    "OPS_G01_SERVICE_HEALTH": {
+      "required": true,
+      "selectors": [
+        {
+          "record_type": "service_health",
+          "match": {
+            "service_id": "core"
+          }
+        },
+        {
+          "record_type": "portfolio_health",
+          "match": {
+            "portfolio_service_id": "portfolio"
+          }
+        }
+      ],
+      "allow_degraded": false
+    },
+    "OPS_G02_DATA_HEALTH": {
+      "required": true,
+      "selectors": [
+        {
+          "record_type": "data_health",
+          "match": {
+            "source_id": "md"
+          }
+        }
+      ]
+    },
+    "OPS_G03_RISK_HEALTH": {
+      "required": true,
+      "selectors": [
+        {
+          "record_type": "risk_health",
+          "match": {
+            "risk_service_id": "risk"
+          }
+        }
+      ]
+    },
+    "OPS_G04_EXECUTION_HEALTH": {
+      "required": true,
+      "selectors": [
+        {
+          "record_type": "execution_health",
+          "match": {
+            "execution_service_id": "exec"
+          }
+        }
+      ]
+    },
+    "OPS_G05_RECONCILIATION": {
+      "required": true,
+      "selectors": [
+        {
+          "record_type": "reconciliation",
+          "match": {
+            "scope": "MULTI"
+          }
+        }
+      ]
+    },
+    "OPS_G06_MODE_INTEGRITY": {
+      "required": true,
+      "selectors": [
+        {
+          "record_type": "mode_awareness",
+          "match": {
+            "authorised_mode": "PAPER"
+          }
+        }
+      ]
+    },
+    "OPS_G07_COMMISSIONING": {
+      "required": true,
+      "selectors": [
+        {
+          "record_type": "commissioning_run",
+          "match": {
+            "run_id": "formal-soak"
+          }
+        }
+      ]
+    },
+    "OPS_G08_RECOVERY": {
+      "required": true,
+      "selectors": [
+        {
+          "record_type": "restart_recovery_test",
+          "match": {
+            "component_id": "core"
+          }
+        }
+      ]
+    },
+    "OPS_G09_SECRET_HYGIENE": {
+      "required": true,
+      "selectors": [
+        {
+          "record_type": "evidence_seal",
+          "match": {
+            "artifact_type": "SECRET_HYGIENE_SCAN_PASS"
+          }
+        }
+      ],
+      "required_seal_artifact_types": [
+        "SECRET_HYGIENE_SCAN_PASS"
+      ]
+    },
+    "OPS_G10_SAFETY_INTERFACE": {
+      "required": true,
+      "authorising_policy_ids": [
+        "risk-safety-v1"
+      ]
+    }
+  },
+  "safety_action_policy_bindings": [
+    "risk-safety-v1"
+  ],
+  "accepted_evidence_classes": [
+    "CANONICAL_CONTROL",
+    "DOMAIN_AUTHORITY",
+    "EXTERNAL_TRUTH",
+    "PRIMARY_OBSERVATION",
+    "SEALED_COMMISSIONING"
+  ],
+  "policy_sha256": "d02764f80b8934dcd5db12eeec2a4164e9b0f5dd82d0fdcd410a629dec95924c"
+}

@@ -1,0 +1,85 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://eqs.local/schemas/shared06/data_health_v1.json",
+  "title": "Data Health V1",
+  "type": "object",
+  "required": [
+    "source_id",
+    "instrument_scope",
+    "observed_at",
+    "freshness_state",
+    "sequence_state",
+    "coverage_state",
+    "clock_state",
+    "health_state",
+    "policy_id"
+  ],
+  "properties": {
+    "source_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "instrument_scope": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "observed_at": {
+      "$ref": "common_defs_v1.json#/$defs/timestamp_utc"
+    },
+    "freshness_state": {
+      "enum": [
+        "FRESH",
+        "STALE",
+        "UNKNOWN"
+      ]
+    },
+    "sequence_state": {
+      "enum": [
+        "CONTIGUOUS",
+        "GAP",
+        "NOT_APPLICABLE",
+        "UNKNOWN"
+      ]
+    },
+    "coverage_state": {
+      "enum": [
+        "COMPLETE",
+        "PARTIAL",
+        "MISSING",
+        "UNKNOWN"
+      ]
+    },
+    "clock_state": {
+      "enum": [
+        "SYNCHRONIZED",
+        "DRIFTED",
+        "REGRESSED",
+        "UNKNOWN"
+      ]
+    },
+    "replay_live_divergence": {
+      "enum": [
+        "MATCH",
+        "DIVERGED",
+        "NOT_APPLICABLE",
+        "UNKNOWN"
+      ]
+    },
+    "health_state": {
+      "$ref": "common_defs_v1.json#/$defs/health_state"
+    },
+    "policy_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "reason_codes": {
+      "$ref": "common_defs_v1.json#/$defs/reason_codes"
+    }
+  },
+  "additionalProperties": false
+}

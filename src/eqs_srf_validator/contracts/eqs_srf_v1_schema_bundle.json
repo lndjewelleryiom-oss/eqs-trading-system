@@ -1,0 +1,3530 @@
+{
+  "$defs": {
+    "AssetClass": {
+      "enum": [
+        "CRYPTO",
+        "EQUITY",
+        "ETF",
+        "FX",
+        "FUTURE",
+        "COMMODITY",
+        "RATE",
+        "OPTION",
+        "CROSS_ASSET"
+      ]
+    },
+    "AtomicCondition": {
+      "additionalProperties": false,
+      "properties": {
+        "field": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "operator": {
+          "enum": [
+            "EQ",
+            "NE",
+            "LT",
+            "LTE",
+            "GT",
+            "GTE",
+            "IN",
+            "NOT_IN",
+            "EXISTS",
+            "NOT_EXISTS",
+            "IS_TRUE",
+            "IS_FALSE"
+          ]
+        },
+        "value": {}
+      },
+      "required": [
+        "field",
+        "operator"
+      ],
+      "type": "object"
+    },
+    "CampaignId": {
+      "pattern": "^ALPHA-[A-Z0-9]+-[A-Z0-9._-]+-V[1-9][0-9]*$",
+      "type": "string"
+    },
+    "Condition": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/AtomicCondition"
+        },
+        {
+          "additionalProperties": false,
+          "properties": {
+            "all": {
+              "items": {
+                "$ref": "#/$defs/Condition"
+              },
+              "minItems": 1,
+              "type": "array"
+            }
+          },
+          "required": [
+            "all"
+          ],
+          "type": "object"
+        },
+        {
+          "additionalProperties": false,
+          "properties": {
+            "any": {
+              "items": {
+                "$ref": "#/$defs/Condition"
+              },
+              "minItems": 1,
+              "type": "array"
+            }
+          },
+          "required": [
+            "any"
+          ],
+          "type": "object"
+        },
+        {
+          "additionalProperties": false,
+          "properties": {
+            "not": {
+              "$ref": "#/$defs/Condition"
+            }
+          },
+          "required": [
+            "not"
+          ],
+          "type": "object"
+        }
+      ]
+    },
+    "Criterion": {
+      "additionalProperties": false,
+      "properties": {
+        "condition": {
+          "$ref": "#/$defs/Condition"
+        },
+        "criterion_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "description": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "on_fail": {
+          "enum": [
+            "BLOCK",
+            "INVALID",
+            "REJECT_CANDIDATE"
+          ]
+        }
+      },
+      "required": [
+        "criterion_id",
+        "description",
+        "condition",
+        "on_fail"
+      ],
+      "type": "object"
+    },
+    "DateRange": {
+      "additionalProperties": false,
+      "properties": {
+        "end": {
+          "$ref": "#/$defs/Timestamp"
+        },
+        "start": {
+          "$ref": "#/$defs/Timestamp"
+        }
+      },
+      "required": [
+        "start",
+        "end"
+      ],
+      "type": "object"
+    },
+    "Duration": {
+      "pattern": "^P(?!$)(?:\\d+Y)?(?:\\d+M)?(?:\\d+D)?(?:T(?=\\d)(?:\\d+H)?(?:\\d+M)?(?:\\d+(?:\\.\\d+)?S)?)?$",
+      "type": "string"
+    },
+    "EQSCandidateSeal": {
+      "additionalProperties": false,
+      "properties": {
+        "allocation_logic_hash": {
+          "$ref": "#/$defs/Sha256"
+        },
+        "campaign_id": {
+          "$ref": "#/$defs/CampaignId"
+        },
+        "candidate_hash": {
+          "$ref": "#/$defs/Sha256"
+        },
+        "candidate_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "candidate_version": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "canonicalization": {
+          "const": "JCS-RFC8785"
+        },
+        "code_binding_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "cost_model_hash": {
+          "$ref": "#/$defs/Sha256"
+        },
+        "data_binding_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "environment_binding_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "execution_model_hash": {
+          "$ref": "#/$defs/Sha256"
+        },
+        "feature_bindings": {
+          "items": {
+            "$ref": "#/$defs/VersionRef"
+          },
+          "minItems": 0,
+          "type": "array"
+        },
+        "frozen_at": {
+          "$ref": "#/$defs/Timestamp"
+        },
+        "label_bindings": {
+          "items": {
+            "$ref": "#/$defs/VersionRef"
+          },
+          "minItems": 0,
+          "type": "array"
+        },
+        "object_type": {
+          "const": "EQSCandidateSeal"
+        },
+        "parameter_hash": {
+          "$ref": "#/$defs/Sha256"
+        },
+        "preregistration_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "research_evidence_manifest_hash": {
+          "$ref": "#/$defs/Sha256"
+        },
+        "schema_version": {
+          "const": "EQS-CANDIDATE-1.0"
+        },
+        "status": {
+          "enum": [
+            "FREEZE_PENDING",
+            "SEALED",
+            "INVALIDATED",
+            "OOS_CONSUMED"
+          ]
+        },
+        "strategy_definition_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "universe_definition_hash": {
+          "$ref": "#/$defs/Sha256"
+        }
+      },
+      "required": [
+        "object_type",
+        "schema_version",
+        "candidate_id",
+        "candidate_version",
+        "campaign_id",
+        "preregistration_id",
+        "strategy_definition_id",
+        "code_binding_id",
+        "data_binding_id",
+        "environment_binding_id",
+        "feature_bindings",
+        "label_bindings",
+        "parameter_hash",
+        "universe_definition_hash",
+        "allocation_logic_hash",
+        "execution_model_hash",
+        "cost_model_hash",
+        "research_evidence_manifest_hash",
+        "frozen_at",
+        "canonicalization",
+        "candidate_hash",
+        "status"
+      ],
+      "type": "object"
+    },
+    "EQSCodeBinding": {
+      "additionalProperties": false,
+      "properties": {
+        "binding_hash": {
+          "$ref": "#/$defs/Sha256"
+        },
+        "bound_at": {
+          "$ref": "#/$defs/Timestamp"
+        },
+        "build_hash": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Sha256"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "code_binding_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "commit_sha": {
+          "pattern": "^[a-f0-9]{40,64}$",
+          "type": "string"
+        },
+        "dependency_lock_hash": {
+          "$ref": "#/$defs/Sha256"
+        },
+        "dirty_worktree": {
+          "type": "boolean"
+        },
+        "object_type": {
+          "const": "EQSCodeBinding"
+        },
+        "repository_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "schema_version": {
+          "const": "EQS-CODE-BINDING-1.0"
+        },
+        "tree_hash": {
+          "$ref": "#/$defs/Sha256"
+        }
+      },
+      "required": [
+        "object_type",
+        "schema_version",
+        "code_binding_id",
+        "repository_id",
+        "commit_sha",
+        "tree_hash",
+        "dirty_worktree",
+        "dependency_lock_hash",
+        "build_hash",
+        "bound_at",
+        "binding_hash"
+      ],
+      "type": "object"
+    },
+    "EQSCostModel": {
+      "additionalProperties": false,
+      "properties": {
+        "allows_zero_total_cost": {
+          "const": false
+        },
+        "asset_classes": {
+          "items": {
+            "$ref": "#/$defs/AssetClass"
+          },
+          "minItems": 1,
+          "type": "array",
+          "uniqueItems": true
+        },
+        "calibration_methodology": {
+          "minProperties": 1,
+          "type": "object"
+        },
+        "components": {
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "component_id": {
+                "$ref": "#/$defs/Id"
+              },
+              "component_type": {
+                "enum": [
+                  "COMMISSION",
+                  "SPREAD",
+                  "SLIPPAGE",
+                  "MARKET_IMPACT",
+                  "FINANCING",
+                  "BORROW",
+                  "FUNDING",
+                  "ROLL",
+                  "TAX",
+                  "LEVY",
+                  "MINIMUM_FEE",
+                  "OTHER"
+                ]
+              },
+              "formula_id": {
+                "$ref": "#/$defs/Id"
+              },
+              "parameters": {
+                "type": "object"
+              },
+              "provenance": {
+                "items": {
+                  "$ref": "#/$defs/EvidenceRef"
+                },
+                "minItems": 1,
+                "type": "array"
+              }
+            },
+            "required": [
+              "component_id",
+              "component_type",
+              "formula_id",
+              "parameters",
+              "provenance"
+            ],
+            "type": "object"
+          },
+          "minItems": 1,
+          "type": "array"
+        },
+        "cost_model_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "definition_hash": {
+          "$ref": "#/$defs/Sha256"
+        },
+        "effective_from": {
+          "$ref": "#/$defs/Timestamp"
+        },
+        "effective_to": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Timestamp"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "object_type": {
+          "const": "EQSCostModel"
+        },
+        "schema_version": {
+          "const": "EQS-COST-MODEL-1.0"
+        },
+        "version": {
+          "minLength": 1,
+          "type": "string"
+        }
+      },
+      "required": [
+        "object_type",
+        "schema_version",
+        "cost_model_id",
+        "version",
+        "asset_classes",
+        "components",
+        "effective_from",
+        "effective_to",
+        "calibration_methodology",
+        "allows_zero_total_cost",
+        "definition_hash"
+      ],
+      "type": "object"
+    },
+    "EQSCrossValidationSpec": {
+      "additionalProperties": false,
+      "properties": {
+        "campaign_id": {
+          "$ref": "#/$defs/CampaignId"
+        },
+        "cross_validation_spec_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "custom_justification": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "definition_hash": {
+          "$ref": "#/$defs/Sha256"
+        },
+        "embargo_interval": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Duration"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "folds": {
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "embargo": {
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/DateRange"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "fold_id": {
+                "$ref": "#/$defs/Id"
+              },
+              "purge": {
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/DateRange"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "train": {
+                "$ref": "#/$defs/DateRange"
+              },
+              "validation": {
+                "$ref": "#/$defs/DateRange"
+              }
+            },
+            "required": [
+              "fold_id",
+              "train",
+              "validation",
+              "purge",
+              "embargo"
+            ],
+            "type": "object"
+          },
+          "minItems": 1,
+          "type": "array"
+        },
+        "method": {
+          "enum": [
+            "WALK_FORWARD",
+            "EXPANDING_WINDOW",
+            "BLOCKED",
+            "PURGED",
+            "PURGED_EMBARGOED",
+            "CUSTOM_APPROVED"
+          ]
+        },
+        "object_type": {
+          "const": "EQSCrossValidationSpec"
+        },
+        "purge_interval": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Duration"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "schema_version": {
+          "const": "EQS-CV-1.0"
+        },
+        "shuffle": {
+          "const": false
+        }
+      },
+      "required": [
+        "object_type",
+        "schema_version",
+        "cross_validation_spec_id",
+        "campaign_id",
+        "method",
+        "folds",
+        "purge_interval",
+        "embargo_interval",
+        "shuffle",
+        "custom_justification",
+        "definition_hash"
+      ],
+      "type": "object"
+    },
+    "EQSDataBinding": {
+      "additionalProperties": false,
+      "properties": {
+        "binding_hash": {
+          "$ref": "#/$defs/Sha256"
+        },
+        "bound_at": {
+          "$ref": "#/$defs/Timestamp"
+        },
+        "calendar_versions": {
+          "type": "object"
+        },
+        "data_binding_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "dataset_manifest_hash": {
+          "$ref": "#/$defs/Sha256"
+        },
+        "dataset_schema_versions": {
+          "minProperties": 1,
+          "type": "object"
+        },
+        "market_data_certification_ids": {
+          "items": {
+            "$ref": "#/$defs/Id"
+          },
+          "minItems": 1,
+          "type": "array",
+          "uniqueItems": true
+        },
+        "object_type": {
+          "const": "EQSDataBinding"
+        },
+        "pit_certification_status": {
+          "enum": [
+            "CERTIFIED",
+            "PARTIAL",
+            "UNKNOWN",
+            "UNVERIFIED",
+            "CORRUPT"
+          ]
+        },
+        "reference_data_versions": {
+          "type": "object"
+        },
+        "schema_version": {
+          "const": "EQS-DATA-BINDING-1.0"
+        },
+        "source_snapshot_hashes": {
+          "items": {
+            "$ref": "#/$defs/Sha256"
+          },
+          "minItems": 1,
+          "type": "array",
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "object_type",
+        "schema_version",
+        "data_binding_id",
+        "market_data_certification_ids",
+        "dataset_manifest_hash",
+        "dataset_schema_versions",
+        "source_snapshot_hashes",
+        "calendar_versions",
+        "reference_data_versions",
+        "pit_certification_status",
+        "bound_at",
+        "binding_hash"
+      ],
+      "type": "object"
+    },
+    "EQSDecision": {
+      "additionalProperties": false,
+      "properties": {
+        "decision_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "decision_time": {
+          "$ref": "#/$defs/Timestamp"
+        },
+        "desired_action": {
+          "minProperties": 1,
+          "type": "object"
+        },
+        "experiment_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "feature_snapshot_hash": {
+          "$ref": "#/$defs/Sha256"
+        },
+        "information_cutoff": {
+          "$ref": "#/$defs/Timestamp"
+        },
+        "instrument_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "object_type": {
+          "const": "EQSDecision"
+        },
+        "schema_version": {
+          "const": "EQS-DECISION-1.0"
+        },
+        "signal_time": {
+          "$ref": "#/$defs/Timestamp"
+        },
+        "strategy_state_hash": {
+          "$ref": "#/$defs/Sha256"
+        }
+      },
+      "required": [
+        "object_type",
+        "schema_version",
+        "decision_id",
+        "experiment_id",
+        "instrument_id",
+        "signal_time",
+        "decision_time",
+        "information_cutoff",
+        "feature_snapshot_hash",
+        "strategy_state_hash",
+        "desired_action"
+      ],
+      "type": "object"
+    },
+    "EQSEnvironmentBinding": {
+      "additionalProperties": false,
+      "properties": {
+        "binding_hash": {
+          "$ref": "#/$defs/Sha256"
+        },
+        "bound_at": {
+          "$ref": "#/$defs/Timestamp"
+        },
+        "container_digest": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Sha256"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "dependency_manifest_hash": {
+          "$ref": "#/$defs/Sha256"
+        },
+        "determinism_profile_id": {
+          "enum": [
+            "D0_UNCONTROLLED",
+            "D1_SEEDED",
+            "D2_ENVIRONMENT_LOCKED",
+            "D3_BIT_REPRODUCIBLE",
+            "D4_TOLERANCE_REPRODUCIBLE"
+          ]
+        },
+        "environment_binding_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "hardware_metadata": {
+          "type": "object"
+        },
+        "object_type": {
+          "const": "EQSEnvironmentBinding"
+        },
+        "os_image_id": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "runtime_versions": {
+          "minProperties": 1,
+          "type": "object"
+        },
+        "schema_version": {
+          "const": "EQS-ENV-BINDING-1.0"
+        }
+      },
+      "required": [
+        "object_type",
+        "schema_version",
+        "environment_binding_id",
+        "runtime_versions",
+        "os_image_id",
+        "container_digest",
+        "dependency_manifest_hash",
+        "hardware_metadata",
+        "determinism_profile_id",
+        "bound_at",
+        "binding_hash"
+      ],
+      "type": "object"
+    },
+    "EQSExecutionModelDefinition": {
+      "additionalProperties": false,
+      "properties": {
+        "asset_classes": {
+          "items": {
+            "$ref": "#/$defs/AssetClass"
+          },
+          "minItems": 1,
+          "type": "array",
+          "uniqueItems": true
+        },
+        "definition_hash": {
+          "$ref": "#/$defs/Sha256"
+        },
+        "effective_from": {
+          "$ref": "#/$defs/Timestamp"
+        },
+        "effective_to": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Timestamp"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "execution_model_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "implementation_code_binding_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "lifecycle_handlers": {
+          "items": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "minItems": 1,
+          "type": "array",
+          "uniqueItems": true
+        },
+        "market_data_requirements": {
+          "items": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "minItems": 1,
+          "type": "array",
+          "uniqueItems": true
+        },
+        "model_type": {
+          "enum": [
+            "CRYPTO",
+            "EQUITIES",
+            "FX",
+            "FUTURES",
+            "RATES",
+            "OPTIONS",
+            "CROSS_ASSET",
+            "CUSTOM"
+          ]
+        },
+        "object_type": {
+          "const": "EQSExecutionModelDefinition"
+        },
+        "parameters": {
+          "type": "object"
+        },
+        "schema_version": {
+          "const": "EQS-EXECUTION-MODEL-1.0"
+        },
+        "version": {
+          "minLength": 1,
+          "type": "string"
+        }
+      },
+      "required": [
+        "object_type",
+        "schema_version",
+        "execution_model_id",
+        "version",
+        "asset_classes",
+        "model_type",
+        "implementation_code_binding_id",
+        "market_data_requirements",
+        "lifecycle_handlers",
+        "parameters",
+        "effective_from",
+        "effective_to",
+        "definition_hash"
+      ],
+      "type": "object"
+    },
+    "EQSExperiment": {
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "result_status": {
+                "const": "RUNNING"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "result_hash": {
+                "type": "null"
+              },
+              "run_completed_at": {
+                "type": "null"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "result_status": {
+                "enum": [
+                  "PASS",
+                  "FAIL",
+                  "ERROR",
+                  "INVALID",
+                  "BLOCKED"
+                ]
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "result_hash": {
+                "$ref": "#/$defs/Sha256"
+              },
+              "run_completed_at": {
+                "$ref": "#/$defs/Timestamp"
+              }
+            }
+          }
+        }
+      ],
+      "properties": {
+        "campaign_hash": {
+          "$ref": "#/$defs/Sha256"
+        },
+        "campaign_id": {
+          "$ref": "#/$defs/CampaignId"
+        },
+        "code_binding_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "data_binding_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "diagnostics_artifact_id": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "environment_binding_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "experiment_class": {
+          "enum": [
+            "PREREGISTERED",
+            "EXPLORATORY",
+            "DIAGNOSTIC",
+            "CONFIRMATORY",
+            "OOS"
+          ]
+        },
+        "experiment_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "experiment_sequence": {
+          "minimum": 1,
+          "type": "integer"
+        },
+        "failure_codes": {
+          "items": {
+            "pattern": "^EQS-SRF-[A-Z0-9-]+$",
+            "type": "string"
+          },
+          "minItems": 0,
+          "type": "array",
+          "uniqueItems": true
+        },
+        "feature_bindings": {
+          "items": {
+            "$ref": "#/$defs/VersionRef"
+          },
+          "minItems": 0,
+          "type": "array"
+        },
+        "label_bindings": {
+          "items": {
+            "$ref": "#/$defs/VersionRef"
+          },
+          "minItems": 0,
+          "type": "array"
+        },
+        "metrics_artifact_id": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "object_type": {
+          "const": "EQSExperiment"
+        },
+        "orders_artifact_id": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "parameter_hash": {
+          "$ref": "#/$defs/Sha256"
+        },
+        "parameter_set": {
+          "type": "object"
+        },
+        "positions_artifact_id": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "preregistration_hash": {
+          "$ref": "#/$defs/Sha256"
+        },
+        "preregistration_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "provenance_hash": {
+          "$ref": "#/$defs/Sha256"
+        },
+        "random_seed": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "research_phase": {
+          "enum": [
+            "TRAIN",
+            "VALIDATION",
+            "STRESS",
+            "DIAGNOSTIC",
+            "OOS"
+          ]
+        },
+        "result_hash": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Sha256"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "result_status": {
+          "enum": [
+            "RUNNING",
+            "PASS",
+            "FAIL",
+            "ERROR",
+            "INVALID",
+            "BLOCKED"
+          ]
+        },
+        "run_completed_at": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Timestamp"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "run_started_at": {
+          "$ref": "#/$defs/Timestamp"
+        },
+        "schema_version": {
+          "const": "EQS-EXPERIMENT-1.0"
+        },
+        "strategy_definition_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "strategy_definition_version": {
+          "minLength": 1,
+          "type": "string"
+        }
+      },
+      "required": [
+        "object_type",
+        "schema_version",
+        "experiment_id",
+        "campaign_id",
+        "preregistration_id",
+        "campaign_hash",
+        "preregistration_hash",
+        "experiment_sequence",
+        "experiment_class",
+        "strategy_definition_id",
+        "strategy_definition_version",
+        "code_binding_id",
+        "data_binding_id",
+        "environment_binding_id",
+        "feature_bindings",
+        "label_bindings",
+        "parameter_set",
+        "parameter_hash",
+        "random_seed",
+        "run_started_at",
+        "run_completed_at",
+        "research_phase",
+        "result_status",
+        "metrics_artifact_id",
+        "orders_artifact_id",
+        "positions_artifact_id",
+        "diagnostics_artifact_id",
+        "failure_codes",
+        "provenance_hash",
+        "result_hash"
+      ],
+      "type": "object"
+    },
+    "EQSFeatureDefinition": {
+      "additionalProperties": false,
+      "properties": {
+        "asset_compatibility": {
+          "items": {
+            "$ref": "#/$defs/AssetClass"
+          },
+          "minItems": 1,
+          "type": "array",
+          "uniqueItems": true
+        },
+        "calculation_definition": {
+          "minProperties": 1,
+          "type": "object"
+        },
+        "contract_event_policy": {
+          "type": [
+            "object",
+            "null"
+          ]
+        },
+        "corporate_event_policy": {
+          "type": [
+            "object",
+            "null"
+          ]
+        },
+        "created_at": {
+          "$ref": "#/$defs/Timestamp"
+        },
+        "decision_time_compatibility": {
+          "minProperties": 1,
+          "type": "object"
+        },
+        "definition_hash": {
+          "$ref": "#/$defs/Sha256"
+        },
+        "description": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "feature_family_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "feature_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "feature_version": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "known_from_rule": {
+          "minProperties": 1,
+          "type": "object"
+        },
+        "lookback": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/Duration"
+            },
+            {
+              "minimum": 0,
+              "type": "integer"
+            }
+          ]
+        },
+        "missing_value_policy": {
+          "type": "object"
+        },
+        "name": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "object_type": {
+          "const": "EQSFeatureDefinition"
+        },
+        "required_inputs": {
+          "items": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "minItems": 1,
+          "type": "array",
+          "uniqueItems": true
+        },
+        "schema_version": {
+          "const": "EQS-FEATURE-1.0"
+        },
+        "source_code_binding_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "warmup": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/Duration"
+            },
+            {
+              "minimum": 0,
+              "type": "integer"
+            }
+          ]
+        }
+      },
+      "required": [
+        "object_type",
+        "schema_version",
+        "feature_id",
+        "feature_family_id",
+        "feature_version",
+        "name",
+        "description",
+        "required_inputs",
+        "calculation_definition",
+        "lookback",
+        "warmup",
+        "known_from_rule",
+        "decision_time_compatibility",
+        "asset_compatibility",
+        "missing_value_policy",
+        "corporate_event_policy",
+        "contract_event_policy",
+        "source_code_binding_id",
+        "created_at",
+        "definition_hash"
+      ],
+      "type": "object"
+    },
+    "EQSFill": {
+      "additionalProperties": false,
+      "properties": {
+        "execution_time": {
+          "$ref": "#/$defs/Timestamp"
+        },
+        "explicit_cost": {
+          "minimum": 0,
+          "type": "number"
+        },
+        "fill_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "implicit_cost": {
+          "minimum": 0,
+          "type": "number"
+        },
+        "instrument_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "market_state_hash": {
+          "$ref": "#/$defs/Sha256"
+        },
+        "object_type": {
+          "const": "EQSFill"
+        },
+        "order_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "price": {
+          "exclusiveMinimum": 0,
+          "type": "number"
+        },
+        "quantity": {
+          "exclusiveMinimum": 0,
+          "type": "number"
+        },
+        "schema_version": {
+          "const": "EQS-FILL-1.0"
+        }
+      },
+      "required": [
+        "object_type",
+        "schema_version",
+        "fill_id",
+        "order_id",
+        "instrument_id",
+        "execution_time",
+        "price",
+        "quantity",
+        "explicit_cost",
+        "implicit_cost",
+        "market_state_hash"
+      ],
+      "type": "object"
+    },
+    "EQSLabelDefinition": {
+      "additionalProperties": false,
+      "properties": {
+        "asset_compatibility": {
+          "items": {
+            "$ref": "#/$defs/AssetClass"
+          },
+          "minItems": 1,
+          "type": "array",
+          "uniqueItems": true
+        },
+        "created_at": {
+          "$ref": "#/$defs/Timestamp"
+        },
+        "definition": {
+          "minProperties": 1,
+          "type": "object"
+        },
+        "definition_hash": {
+          "$ref": "#/$defs/Sha256"
+        },
+        "embargo_requirement": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Duration"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "end_time_semantics": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "execution_assumption_id": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "horizon": {
+          "$ref": "#/$defs/Duration"
+        },
+        "known_from_semantics": {
+          "minProperties": 1,
+          "type": "object"
+        },
+        "label_family_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "label_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "label_version": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "object_type": {
+          "const": "EQSLabelDefinition"
+        },
+        "price_basis": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "purge_requirement": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Duration"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "schema_version": {
+          "const": "EQS-LABEL-1.0"
+        },
+        "start_time_semantics": {
+          "minLength": 1,
+          "type": "string"
+        }
+      },
+      "required": [
+        "object_type",
+        "schema_version",
+        "label_id",
+        "label_family_id",
+        "label_version",
+        "definition",
+        "horizon",
+        "price_basis",
+        "start_time_semantics",
+        "end_time_semantics",
+        "execution_assumption_id",
+        "purge_requirement",
+        "embargo_requirement",
+        "known_from_semantics",
+        "asset_compatibility",
+        "created_at",
+        "definition_hash"
+      ],
+      "type": "object"
+    },
+    "EQSMarketEvent": {
+      "additionalProperties": false,
+      "properties": {
+        "event_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "event_type": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "instrument_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "known_from": {
+          "$ref": "#/$defs/Timestamp"
+        },
+        "market_event_time": {
+          "$ref": "#/$defs/Timestamp"
+        },
+        "object_type": {
+          "const": "EQSMarketEvent"
+        },
+        "payload": {
+          "type": "object"
+        },
+        "receipt_time": {
+          "$ref": "#/$defs/Timestamp"
+        },
+        "schema_version": {
+          "const": "EQS-MARKET-EVENT-1.0"
+        },
+        "source_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "source_sequence": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "object_type",
+        "schema_version",
+        "event_id",
+        "instrument_id",
+        "market_event_time",
+        "known_from",
+        "receipt_time",
+        "event_type",
+        "payload",
+        "source_id",
+        "source_sequence"
+      ],
+      "type": "object"
+    },
+    "EQSMetricDefinition": {
+      "additionalProperties": false,
+      "properties": {
+        "calculation_definition": {
+          "minProperties": 1,
+          "type": "object"
+        },
+        "category": {
+          "enum": [
+            "PERFORMANCE",
+            "RISK",
+            "RISK_ADJUSTED",
+            "TRADING",
+            "COST",
+            "PORTFOLIO",
+            "TAIL",
+            "ASSET_SPECIFIC"
+          ]
+        },
+        "definition_hash": {
+          "$ref": "#/$defs/Sha256"
+        },
+        "metric_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "metric_version": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "name": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "object_type": {
+          "const": "EQSMetricDefinition"
+        },
+        "schema_version": {
+          "const": "EQS-METRIC-DEFINITION-1.0"
+        },
+        "units": {
+          "minLength": 1,
+          "type": "string"
+        }
+      },
+      "required": [
+        "object_type",
+        "schema_version",
+        "metric_id",
+        "metric_version",
+        "category",
+        "name",
+        "units",
+        "calculation_definition",
+        "definition_hash"
+      ],
+      "type": "object"
+    },
+    "EQSMetricObservation": {
+      "additionalProperties": false,
+      "properties": {
+        "calculation_definition_hash": {
+          "$ref": "#/$defs/Sha256"
+        },
+        "calculation_window": {
+          "$ref": "#/$defs/DateRange"
+        },
+        "created_at": {
+          "$ref": "#/$defs/Timestamp"
+        },
+        "metric_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "metric_observation_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "metric_version": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "object_type": {
+          "const": "EQSMetricObservation"
+        },
+        "schema_version": {
+          "const": "EQS-METRIC-OBSERVATION-1.0"
+        },
+        "status": {
+          "enum": [
+            "VALID",
+            "NOT_APPLICABLE",
+            "INSUFFICIENT_DATA",
+            "INVALID"
+          ]
+        },
+        "subject_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "subject_type": {
+          "enum": [
+            "EXPERIMENT",
+            "CANDIDATE",
+            "STRESS_RUN",
+            "OOS_EVIDENCE",
+            "PORTFOLIO"
+          ]
+        },
+        "units": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "value": {
+          "type": [
+            "number",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "object_type",
+        "schema_version",
+        "metric_observation_id",
+        "metric_id",
+        "metric_version",
+        "subject_id",
+        "subject_type",
+        "value",
+        "units",
+        "calculation_window",
+        "calculation_definition_hash",
+        "status",
+        "created_at"
+      ],
+      "type": "object"
+    },
+    "EQSOOSAccessEvent": {
+      "additionalProperties": false,
+      "properties": {
+        "access_class": {
+          "enum": [
+            "METADATA",
+            "OUTCOME"
+          ]
+        },
+        "access_event_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "accessed_at": {
+          "$ref": "#/$defs/Timestamp"
+        },
+        "actor_id": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "authorization_id": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "campaign_id": {
+          "$ref": "#/$defs/CampaignId"
+        },
+        "candidate_hash": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Sha256"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "candidate_id": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "decision": {
+          "enum": [
+            "ALLOW",
+            "DENY"
+          ]
+        },
+        "event_hash": {
+          "$ref": "#/$defs/Sha256"
+        },
+        "object_type": {
+          "const": "EQSOOSAccessEvent"
+        },
+        "oos_lock_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "previous_event_hash": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Sha256"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "reason_code": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "resource_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "schema_version": {
+          "const": "EQS-OOS-ACCESS-1.0"
+        }
+      },
+      "required": [
+        "object_type",
+        "schema_version",
+        "access_event_id",
+        "oos_lock_id",
+        "campaign_id",
+        "actor_id",
+        "accessed_at",
+        "access_class",
+        "resource_id",
+        "candidate_id",
+        "candidate_hash",
+        "authorization_id",
+        "decision",
+        "reason_code",
+        "previous_event_hash",
+        "event_hash"
+      ],
+      "type": "object"
+    },
+    "EQSOOSAuthorization": {
+      "additionalProperties": false,
+      "properties": {
+        "authority": {
+          "const": "EQS-00"
+        },
+        "authorization_hash": {
+          "$ref": "#/$defs/Sha256"
+        },
+        "authorization_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "authorization_scope": {
+          "const": "OOS_OUTCOME_ACCESS"
+        },
+        "authorized_at": {
+          "$ref": "#/$defs/Timestamp"
+        },
+        "authorized_by": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "campaign_id": {
+          "$ref": "#/$defs/CampaignId"
+        },
+        "candidate_hash": {
+          "$ref": "#/$defs/Sha256"
+        },
+        "candidate_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "expires_at": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Timestamp"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "object_type": {
+          "const": "EQSOOSAuthorization"
+        },
+        "schema_version": {
+          "const": "EQS-OOS-AUTH-1.0"
+        }
+      },
+      "required": [
+        "object_type",
+        "schema_version",
+        "authorization_id",
+        "campaign_id",
+        "candidate_id",
+        "candidate_hash",
+        "authorization_scope",
+        "authorized_by",
+        "authority",
+        "authorized_at",
+        "expires_at",
+        "authorization_hash"
+      ],
+      "type": "object"
+    },
+    "EQSOOSLock": {
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "enum": [
+                  "AUTHORIZED",
+                  "OPEN",
+                  "CONSUMED"
+                ]
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "authorization_id": {
+                "$ref": "#/$defs/Id"
+              },
+              "authorized_at": {
+                "$ref": "#/$defs/Timestamp"
+              },
+              "authorized_by": {
+                "minLength": 1,
+                "type": "string"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "enum": [
+                  "OPEN",
+                  "CONSUMED"
+                ]
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "opened_at": {
+                "$ref": "#/$defs/Timestamp"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "CONSUMED"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "consumed_candidate_hash": {
+                "$ref": "#/$defs/Sha256"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "COMPROMISED"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "compromise_reason_codes": {
+                "minItems": 1,
+                "type": "array"
+              }
+            }
+          }
+        }
+      ],
+      "properties": {
+        "access_log_hash": {
+          "$ref": "#/$defs/Sha256"
+        },
+        "authorization_id": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "authorized_at": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Timestamp"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "authorized_by": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "campaign_id": {
+          "$ref": "#/$defs/CampaignId"
+        },
+        "compromise_reason_codes": {
+          "items": {
+            "pattern": "^EQS-SRF-[A-Z0-9-]+$",
+            "type": "string"
+          },
+          "minItems": 0,
+          "type": "array",
+          "uniqueItems": true
+        },
+        "consumed_candidate_hash": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Sha256"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "created_at": {
+          "$ref": "#/$defs/Timestamp"
+        },
+        "lock_hash": {
+          "$ref": "#/$defs/Sha256"
+        },
+        "metadata_access_policy": {
+          "minProperties": 1,
+          "type": "object"
+        },
+        "object_type": {
+          "const": "EQSOOSLock"
+        },
+        "oos_end": {
+          "$ref": "#/$defs/Timestamp"
+        },
+        "oos_lock_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "oos_start": {
+          "$ref": "#/$defs/Timestamp"
+        },
+        "opened_at": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Timestamp"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "outcome_access_policy": {
+          "enum": [
+            "DENY",
+            "AUTHORIZED_ONLY"
+          ]
+        },
+        "protected_dataset_ids": {
+          "items": {
+            "$ref": "#/$defs/Id"
+          },
+          "minItems": 1,
+          "type": "array",
+          "uniqueItems": true
+        },
+        "schema_version": {
+          "const": "EQS-OOS-LOCK-1.0"
+        },
+        "status": {
+          "enum": [
+            "LOCKED",
+            "AUTHORIZED",
+            "OPEN",
+            "CONSUMED",
+            "COMPROMISED"
+          ]
+        }
+      },
+      "required": [
+        "object_type",
+        "schema_version",
+        "oos_lock_id",
+        "campaign_id",
+        "oos_start",
+        "oos_end",
+        "protected_dataset_ids",
+        "metadata_access_policy",
+        "outcome_access_policy",
+        "created_at",
+        "lock_hash",
+        "status",
+        "authorization_id",
+        "authorized_by",
+        "authorized_at",
+        "opened_at",
+        "consumed_candidate_hash",
+        "access_log_hash",
+        "compromise_reason_codes"
+      ],
+      "type": "object"
+    },
+    "EQSOrder": {
+      "additionalProperties": false,
+      "properties": {
+        "decision_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "execution_model_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "instrument_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "limit_price": {
+          "exclusiveMinimum": 0,
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "object_type": {
+          "const": "EQSOrder"
+        },
+        "order_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "order_time": {
+          "$ref": "#/$defs/Timestamp"
+        },
+        "order_type": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "quantity": {
+          "exclusiveMinimum": 0,
+          "type": "number"
+        },
+        "schema_version": {
+          "const": "EQS-ORDER-1.0"
+        },
+        "side": {
+          "enum": [
+            "BUY",
+            "SELL",
+            "SELL_SHORT",
+            "BUY_TO_COVER",
+            "OTHER"
+          ]
+        }
+      },
+      "required": [
+        "object_type",
+        "schema_version",
+        "order_id",
+        "decision_id",
+        "instrument_id",
+        "order_time",
+        "order_type",
+        "side",
+        "quantity",
+        "limit_price",
+        "execution_model_id"
+      ],
+      "type": "object"
+    },
+    "EQSPreregistration": {
+      "additionalProperties": false,
+      "properties": {
+        "acceptance_criteria": {
+          "items": {
+            "$ref": "#/$defs/Criterion"
+          },
+          "minItems": 1,
+          "type": "array"
+        },
+        "campaign_hash": {
+          "$ref": "#/$defs/Sha256"
+        },
+        "campaign_id": {
+          "$ref": "#/$defs/CampaignId"
+        },
+        "canonical_payload_hash": {
+          "$ref": "#/$defs/Sha256"
+        },
+        "canonicalization": {
+          "const": "JCS-RFC8785"
+        },
+        "cross_validation_spec_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "economic_hypothesis": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "feature_sets": {
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "definition_hash": {
+                "$ref": "#/$defs/Sha256"
+              },
+              "feature_id": {
+                "$ref": "#/$defs/Id"
+              },
+              "feature_version": {
+                "minLength": 1,
+                "type": "string"
+              }
+            },
+            "required": [
+              "feature_id",
+              "feature_version",
+              "definition_hash"
+            ],
+            "type": "object"
+          },
+          "minItems": 0,
+          "type": "array"
+        },
+        "labels": {
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "definition_hash": {
+                "$ref": "#/$defs/Sha256"
+              },
+              "label_id": {
+                "$ref": "#/$defs/Id"
+              },
+              "label_version": {
+                "minLength": 1,
+                "type": "string"
+              }
+            },
+            "required": [
+              "label_id",
+              "label_version",
+              "definition_hash"
+            ],
+            "type": "object"
+          },
+          "minItems": 0,
+          "type": "array"
+        },
+        "metrics": {
+          "additionalProperties": false,
+          "properties": {
+            "primary": {
+              "items": {
+                "$ref": "#/$defs/Id"
+              },
+              "minItems": 1,
+              "type": "array",
+              "uniqueItems": true
+            },
+            "secondary": {
+              "items": {
+                "$ref": "#/$defs/Id"
+              },
+              "minItems": 0,
+              "type": "array",
+              "uniqueItems": true
+            }
+          },
+          "required": [
+            "primary",
+            "secondary"
+          ],
+          "type": "object"
+        },
+        "model_selection_rule": {
+          "type": "object"
+        },
+        "multiple_testing": {
+          "additionalProperties": false,
+          "properties": {
+            "adjustment_method": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "experiment_budget": {
+              "minimum": 1,
+              "type": [
+                "integer",
+                "null"
+              ]
+            },
+            "search_budget": {
+              "minimum": 1,
+              "type": [
+                "integer",
+                "null"
+              ]
+            }
+          },
+          "required": [
+            "experiment_budget",
+            "search_budget",
+            "adjustment_method"
+          ],
+          "type": "object"
+        },
+        "object_type": {
+          "const": "EQSPreregistration"
+        },
+        "oos_policy_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "preregistration_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "randomness": {
+          "additionalProperties": false,
+          "properties": {
+            "deterministic_required": {
+              "type": "boolean"
+            },
+            "permitted_seeds": {
+              "items": {
+                "type": "integer"
+              },
+              "minItems": 0,
+              "type": "array",
+              "uniqueItems": true
+            }
+          },
+          "required": [
+            "deterministic_required",
+            "permitted_seeds"
+          ],
+          "type": "object"
+        },
+        "registered_at": {
+          "$ref": "#/$defs/Timestamp"
+        },
+        "registrant": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "rejection_criteria": {
+          "items": {
+            "$ref": "#/$defs/Criterion"
+          },
+          "minItems": 1,
+          "type": "array"
+        },
+        "research_question": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "schema_version": {
+          "const": "EQS-PREREG-1.0"
+        },
+        "signature_metadata": {
+          "type": "object"
+        },
+        "strategy_families": {
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "parameter_ranges": {
+                "type": "object"
+              },
+              "permitted_parameters": {
+                "type": "object"
+              },
+              "prohibited_changes": {
+                "items": {
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "minItems": 0,
+                "type": "array",
+                "uniqueItems": true
+              },
+              "strategy_family_id": {
+                "$ref": "#/$defs/Id"
+              }
+            },
+            "required": [
+              "strategy_family_id",
+              "permitted_parameters",
+              "parameter_ranges",
+              "prohibited_changes"
+            ],
+            "type": "object"
+          },
+          "minItems": 1,
+          "type": "array"
+        },
+        "stress_requirements": {
+          "items": {
+            "$ref": "#/$defs/Id"
+          },
+          "minItems": 0,
+          "type": "array",
+          "uniqueItems": true
+        },
+        "training_methodology": {
+          "type": "object"
+        }
+      },
+      "required": [
+        "object_type",
+        "schema_version",
+        "preregistration_id",
+        "campaign_id",
+        "campaign_hash",
+        "research_question",
+        "economic_hypothesis",
+        "strategy_families",
+        "feature_sets",
+        "labels",
+        "training_methodology",
+        "cross_validation_spec_id",
+        "model_selection_rule",
+        "metrics",
+        "acceptance_criteria",
+        "rejection_criteria",
+        "stress_requirements",
+        "multiple_testing",
+        "randomness",
+        "oos_policy_id",
+        "registered_at",
+        "registrant",
+        "canonicalization",
+        "canonical_payload_hash",
+        "signature_metadata"
+      ],
+      "type": "object"
+    },
+    "EQSReproductionRecord": {
+      "additionalProperties": false,
+      "properties": {
+        "determinism_profile_id": {
+          "enum": [
+            "D1_SEEDED",
+            "D2_ENVIRONMENT_LOCKED",
+            "D3_BIT_REPRODUCIBLE",
+            "D4_TOLERANCE_REPRODUCIBLE"
+          ]
+        },
+        "generated_at": {
+          "$ref": "#/$defs/Timestamp"
+        },
+        "metric_deltas": {
+          "type": "object"
+        },
+        "object_type": {
+          "const": "EQSReproductionRecord"
+        },
+        "order_fill_differences": {
+          "type": "object"
+        },
+        "original_experiment_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "record_hash": {
+          "$ref": "#/$defs/Sha256"
+        },
+        "reproduction_experiment_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "reproduction_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "result": {
+          "enum": [
+            "PASS",
+            "FAIL",
+            "INVALID"
+          ]
+        },
+        "schema_version": {
+          "const": "EQS-REPRODUCTION-1.0"
+        },
+        "tolerance_specification": {
+          "type": "object"
+        },
+        "trade_count_delta": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "object_type",
+        "schema_version",
+        "reproduction_id",
+        "original_experiment_id",
+        "reproduction_experiment_id",
+        "determinism_profile_id",
+        "metric_deltas",
+        "trade_count_delta",
+        "order_fill_differences",
+        "tolerance_specification",
+        "result",
+        "generated_at",
+        "record_hash"
+      ],
+      "type": "object"
+    },
+    "EQSResearchCampaign": {
+      "additionalProperties": false,
+      "properties": {
+        "acceptance_criteria": {
+          "items": {
+            "$ref": "#/$defs/Criterion"
+          },
+          "minItems": 1,
+          "type": "array"
+        },
+        "asset_classes": {
+          "items": {
+            "$ref": "#/$defs/AssetClass"
+          },
+          "minItems": 1,
+          "type": "array",
+          "uniqueItems": true
+        },
+        "campaign_hash": {
+          "$ref": "#/$defs/Sha256"
+        },
+        "campaign_id": {
+          "$ref": "#/$defs/CampaignId"
+        },
+        "campaign_version": {
+          "minimum": 1,
+          "type": "integer"
+        },
+        "canonicalization": {
+          "const": "JCS-RFC8785"
+        },
+        "cost_model_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "created_at": {
+          "$ref": "#/$defs/Timestamp"
+        },
+        "created_by": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "cross_validation_spec_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "data_requirements": {
+          "additionalProperties": false,
+          "properties": {
+            "allowed_source_families": {
+              "items": {
+                "minLength": 1,
+                "type": "string"
+              },
+              "minItems": 1,
+              "type": "array",
+              "uniqueItems": true
+            },
+            "certification_ids": {
+              "items": {
+                "$ref": "#/$defs/Id"
+              },
+              "minItems": 1,
+              "type": "array",
+              "uniqueItems": true
+            },
+            "minimum_pit_status": {
+              "const": "CERTIFIED"
+            }
+          },
+          "required": [
+            "certification_ids",
+            "minimum_pit_status",
+            "allowed_source_families"
+          ],
+          "type": "object"
+        },
+        "date_ranges": {
+          "additionalProperties": false,
+          "properties": {
+            "oos": {
+              "$ref": "#/$defs/DateRange"
+            },
+            "research": {
+              "$ref": "#/$defs/DateRange"
+            },
+            "validation": {
+              "$ref": "#/$defs/DateRange"
+            }
+          },
+          "required": [
+            "research",
+            "validation",
+            "oos"
+          ],
+          "type": "object"
+        },
+        "execution_model_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "feature_family_ids": {
+          "items": {
+            "$ref": "#/$defs/Id"
+          },
+          "minItems": 0,
+          "type": "array",
+          "uniqueItems": true
+        },
+        "hash_algorithm": {
+          "const": "SHA-256"
+        },
+        "label_family_ids": {
+          "items": {
+            "$ref": "#/$defs/Id"
+          },
+          "minItems": 0,
+          "type": "array",
+          "uniqueItems": true
+        },
+        "liquidity_rules": {
+          "type": "object"
+        },
+        "multiple_testing_policy_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "object_type": {
+          "const": "EQSResearchCampaign"
+        },
+        "registered_at": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Timestamp"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "rejection_criteria": {
+          "items": {
+            "$ref": "#/$defs/Criterion"
+          },
+          "minItems": 1,
+          "type": "array"
+        },
+        "schema_version": {
+          "const": "EQS-CAMPAIGN-1.0"
+        },
+        "status": {
+          "enum": [
+            "DRAFT",
+            "PREREGISTRATION_PENDING",
+            "REGISTERED",
+            "RESEARCH_ACTIVE",
+            "VALIDATION_COMPLETE",
+            "CANDIDATE_FREEZE_PENDING",
+            "CANDIDATE_FROZEN",
+            "OOS_LOCKED",
+            "OOS_AUTHORIZED",
+            "OOS_COMPLETE",
+            "HANDOFF_READY",
+            "CLOSED",
+            "INVALID"
+          ]
+        },
+        "strategy_family_ids": {
+          "items": {
+            "$ref": "#/$defs/Id"
+          },
+          "minItems": 1,
+          "type": "array",
+          "uniqueItems": true
+        },
+        "stress_test_policy_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "supersedes_campaign_id": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/CampaignId"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "universe": {
+          "additionalProperties": false,
+          "properties": {
+            "universe_definition_hash": {
+              "$ref": "#/$defs/Sha256"
+            },
+            "universe_definition_id": {
+              "$ref": "#/$defs/Id"
+            }
+          },
+          "required": [
+            "universe_definition_id",
+            "universe_definition_hash"
+          ],
+          "type": "object"
+        }
+      },
+      "required": [
+        "object_type",
+        "schema_version",
+        "campaign_id",
+        "campaign_version",
+        "status",
+        "asset_classes",
+        "universe",
+        "date_ranges",
+        "data_requirements",
+        "liquidity_rules",
+        "execution_model_id",
+        "cost_model_id",
+        "feature_family_ids",
+        "label_family_ids",
+        "strategy_family_ids",
+        "cross_validation_spec_id",
+        "acceptance_criteria",
+        "rejection_criteria",
+        "multiple_testing_policy_id",
+        "stress_test_policy_id",
+        "created_at",
+        "created_by",
+        "registered_at",
+        "supersedes_campaign_id",
+        "canonicalization",
+        "hash_algorithm",
+        "campaign_hash"
+      ],
+      "type": "object"
+    },
+    "EQSResearchEvidenceManifest": {
+      "additionalProperties": false,
+      "properties": {
+        "artifact_refs": {
+          "items": {
+            "$ref": "#/$defs/EvidenceRef"
+          },
+          "minItems": 1,
+          "type": "array"
+        },
+        "campaign_id": {
+          "$ref": "#/$defs/CampaignId"
+        },
+        "candidate_id": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "evidence_manifest_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "generated_at": {
+          "$ref": "#/$defs/Timestamp"
+        },
+        "manifest_hash": {
+          "$ref": "#/$defs/Sha256"
+        },
+        "object_type": {
+          "const": "EQSResearchEvidenceManifest"
+        },
+        "schema_version": {
+          "const": "EQS-EVIDENCE-MANIFEST-1.0"
+        }
+      },
+      "required": [
+        "object_type",
+        "schema_version",
+        "evidence_manifest_id",
+        "campaign_id",
+        "candidate_id",
+        "artifact_refs",
+        "generated_at",
+        "manifest_hash"
+      ],
+      "type": "object"
+    },
+    "EQSResearchPaperHandoff": {
+      "additionalProperties": false,
+      "properties": {
+        "campaign_hash": {
+          "$ref": "#/$defs/Sha256"
+        },
+        "campaign_id": {
+          "$ref": "#/$defs/CampaignId"
+        },
+        "candidate_hash": {
+          "$ref": "#/$defs/Sha256"
+        },
+        "candidate_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "code_binding_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "cost_model_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "data_binding_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "environment_binding_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "execution_model_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "expected_behaviour": {
+          "additionalProperties": false,
+          "properties": {
+            "description": {
+              "minLength": 1,
+              "type": "string"
+            },
+            "expected_exposure": {
+              "type": "object"
+            },
+            "expected_holding_period": {
+              "type": "object"
+            },
+            "expected_trade_frequency": {
+              "type": "object"
+            },
+            "known_failure_modes": {
+              "items": {
+                "minLength": 1,
+                "type": "string"
+              },
+              "minItems": 0,
+              "type": "array",
+              "uniqueItems": true
+            }
+          },
+          "required": [
+            "description",
+            "expected_trade_frequency",
+            "expected_holding_period",
+            "expected_exposure",
+            "known_failure_modes"
+          ],
+          "type": "object"
+        },
+        "generated_at": {
+          "$ref": "#/$defs/Timestamp"
+        },
+        "handoff_hash": {
+          "$ref": "#/$defs/Sha256"
+        },
+        "handoff_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "object_type": {
+          "const": "EQSResearchPaperHandoff"
+        },
+        "oos_evidence_hash": {
+          "$ref": "#/$defs/Sha256"
+        },
+        "oos_evidence_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "oos_lock_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "open_research_risks": {
+          "items": {
+            "minProperties": 1,
+            "type": "object"
+          },
+          "minItems": 0,
+          "type": "array"
+        },
+        "preregistration_hash": {
+          "$ref": "#/$defs/Sha256"
+        },
+        "preregistration_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "qualification_status": {
+          "enum": [
+            "VALID_RESEARCH_HANDOFF",
+            "BLOCKED",
+            "INVALID"
+          ]
+        },
+        "required_paper_inputs": {
+          "additionalProperties": false,
+          "properties": {
+            "execution_inputs": {
+              "items": {
+                "minLength": 1,
+                "type": "string"
+              },
+              "minItems": 1,
+              "type": "array",
+              "uniqueItems": true
+            },
+            "market_data": {
+              "items": {
+                "minLength": 1,
+                "type": "string"
+              },
+              "minItems": 1,
+              "type": "array",
+              "uniqueItems": true
+            },
+            "reference_data": {
+              "items": {
+                "minLength": 1,
+                "type": "string"
+              },
+              "minItems": 0,
+              "type": "array",
+              "uniqueItems": true
+            }
+          },
+          "required": [
+            "market_data",
+            "reference_data",
+            "execution_inputs"
+          ],
+          "type": "object"
+        },
+        "research_search_ledger_hash": {
+          "$ref": "#/$defs/Sha256"
+        },
+        "risk_assumptions": {
+          "type": "object"
+        },
+        "schema_version": {
+          "const": "EQS-PAPER-HANDOFF-1.0"
+        },
+        "stress_evidence_hash": {
+          "$ref": "#/$defs/Sha256"
+        }
+      },
+      "required": [
+        "object_type",
+        "schema_version",
+        "handoff_id",
+        "candidate_id",
+        "candidate_hash",
+        "campaign_id",
+        "campaign_hash",
+        "preregistration_id",
+        "preregistration_hash",
+        "data_binding_id",
+        "code_binding_id",
+        "environment_binding_id",
+        "oos_lock_id",
+        "oos_evidence_id",
+        "oos_evidence_hash",
+        "research_search_ledger_hash",
+        "stress_evidence_hash",
+        "execution_model_id",
+        "cost_model_id",
+        "expected_behaviour",
+        "risk_assumptions",
+        "required_paper_inputs",
+        "open_research_risks",
+        "qualification_status",
+        "generated_at",
+        "handoff_hash"
+      ],
+      "type": "object"
+    },
+    "EQSResearchSearchLedger": {
+      "additionalProperties": false,
+      "properties": {
+        "campaign_id": {
+          "$ref": "#/$defs/CampaignId"
+        },
+        "classification_counts": {
+          "additionalProperties": false,
+          "properties": {
+            "CONFIRMATORY": {
+              "minimum": 0,
+              "type": "integer"
+            },
+            "DIAGNOSTIC": {
+              "minimum": 0,
+              "type": "integer"
+            },
+            "EXPLORATORY": {
+              "minimum": 0,
+              "type": "integer"
+            },
+            "OOS": {
+              "minimum": 0,
+              "type": "integer"
+            },
+            "PREREGISTERED": {
+              "minimum": 0,
+              "type": "integer"
+            }
+          },
+          "required": [
+            "PREREGISTERED",
+            "EXPLORATORY",
+            "DIAGNOSTIC",
+            "CONFIRMATORY",
+            "OOS"
+          ],
+          "type": "object"
+        },
+        "counts": {
+          "additionalProperties": false,
+          "properties": {
+            "blocked": {
+              "minimum": 0,
+              "type": "integer"
+            },
+            "distinct_feature_sets": {
+              "minimum": 0,
+              "type": "integer"
+            },
+            "distinct_labels": {
+              "minimum": 0,
+              "type": "integer"
+            },
+            "experiments": {
+              "minimum": 0,
+              "type": "integer"
+            },
+            "failed": {
+              "minimum": 0,
+              "type": "integer"
+            },
+            "invalid": {
+              "minimum": 0,
+              "type": "integer"
+            },
+            "manual_interventions": {
+              "minimum": 0,
+              "type": "integer"
+            },
+            "parameter_combinations": {
+              "minimum": 0,
+              "type": "integer"
+            },
+            "passed": {
+              "minimum": 0,
+              "type": "integer"
+            },
+            "post_hoc_analyses": {
+              "minimum": 0,
+              "type": "integer"
+            },
+            "strategy_variants": {
+              "minimum": 0,
+              "type": "integer"
+            }
+          },
+          "required": [
+            "experiments",
+            "passed",
+            "failed",
+            "invalid",
+            "blocked",
+            "parameter_combinations",
+            "distinct_feature_sets",
+            "distinct_labels",
+            "strategy_variants",
+            "manual_interventions",
+            "post_hoc_analyses"
+          ],
+          "type": "object"
+        },
+        "experiment_ids": {
+          "items": {
+            "$ref": "#/$defs/Id"
+          },
+          "minItems": 0,
+          "type": "array",
+          "uniqueItems": true
+        },
+        "generated_at": {
+          "$ref": "#/$defs/Timestamp"
+        },
+        "ledger_hash": {
+          "$ref": "#/$defs/Sha256"
+        },
+        "object_type": {
+          "const": "EQSResearchSearchLedger"
+        },
+        "schema_version": {
+          "const": "EQS-SEARCH-LEDGER-1.0"
+        },
+        "search_ledger_id": {
+          "$ref": "#/$defs/Id"
+        }
+      },
+      "required": [
+        "object_type",
+        "schema_version",
+        "search_ledger_id",
+        "campaign_id",
+        "experiment_ids",
+        "counts",
+        "classification_counts",
+        "generated_at",
+        "ledger_hash"
+      ],
+      "type": "object"
+    },
+    "EQSStrategyDefinition": {
+      "additionalProperties": false,
+      "properties": {
+        "asset_classes": {
+          "items": {
+            "$ref": "#/$defs/AssetClass"
+          },
+          "minItems": 1,
+          "type": "array",
+          "uniqueItems": true
+        },
+        "created_at": {
+          "$ref": "#/$defs/Timestamp"
+        },
+        "definition_hash": {
+          "$ref": "#/$defs/Sha256"
+        },
+        "implementation_code_binding_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "object_type": {
+          "const": "EQSStrategyDefinition"
+        },
+        "parameter_schema": {
+          "type": "object"
+        },
+        "required_feature_ids": {
+          "items": {
+            "$ref": "#/$defs/Id"
+          },
+          "minItems": 0,
+          "type": "array",
+          "uniqueItems": true
+        },
+        "required_label_ids": {
+          "items": {
+            "$ref": "#/$defs/Id"
+          },
+          "minItems": 0,
+          "type": "array",
+          "uniqueItems": true
+        },
+        "schema_version": {
+          "const": "EQS-STRATEGY-1.0"
+        },
+        "strategy_definition_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "strategy_family_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "version": {
+          "minLength": 1,
+          "type": "string"
+        }
+      },
+      "required": [
+        "object_type",
+        "schema_version",
+        "strategy_definition_id",
+        "strategy_family_id",
+        "version",
+        "asset_classes",
+        "implementation_code_binding_id",
+        "parameter_schema",
+        "required_feature_ids",
+        "required_label_ids",
+        "created_at",
+        "definition_hash"
+      ],
+      "type": "object"
+    },
+    "EQSStressResult": {
+      "additionalProperties": false,
+      "properties": {
+        "baseline_hash": {
+          "$ref": "#/$defs/Sha256"
+        },
+        "candidate_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "metric_observation_ids": {
+          "items": {
+            "$ref": "#/$defs/Id"
+          },
+          "minItems": 1,
+          "type": "array",
+          "uniqueItems": true
+        },
+        "object_type": {
+          "const": "EQSStressResult"
+        },
+        "pass_rule": {
+          "$ref": "#/$defs/Condition"
+        },
+        "result": {
+          "enum": [
+            "PASS",
+            "FAIL",
+            "INVALID",
+            "INCONCLUSIVE"
+          ]
+        },
+        "result_hash": {
+          "$ref": "#/$defs/Sha256"
+        },
+        "run_at": {
+          "$ref": "#/$defs/Timestamp"
+        },
+        "schema_version": {
+          "const": "EQS-STRESS-1.0"
+        },
+        "severity_spec": {
+          "minProperties": 1,
+          "type": "object"
+        },
+        "stress_run_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "stress_type": {
+          "enum": [
+            "COST_UP",
+            "SLIPPAGE_UP",
+            "EXECUTION_DELAY",
+            "PARAMETER_PERTURBATION",
+            "FEATURE_PERTURBATION",
+            "MISSING_DATA",
+            "LIQUIDITY_REDUCTION",
+            "REGIME_SEGMENTATION",
+            "CRISIS_PERIOD",
+            "CAPACITY",
+            "TIMESTAMP_JITTER",
+            "SIGNAL_DELAY",
+            "CUSTOM"
+          ]
+        }
+      },
+      "required": [
+        "object_type",
+        "schema_version",
+        "stress_run_id",
+        "candidate_id",
+        "stress_type",
+        "severity_spec",
+        "baseline_hash",
+        "metric_observation_ids",
+        "pass_rule",
+        "result",
+        "run_at",
+        "result_hash"
+      ],
+      "type": "object"
+    },
+    "EQSUniverseDefinition": {
+      "additionalProperties": false,
+      "properties": {
+        "asset_classes": {
+          "items": {
+            "$ref": "#/$defs/AssetClass"
+          },
+          "minItems": 1,
+          "type": "array",
+          "uniqueItems": true
+        },
+        "created_at": {
+          "$ref": "#/$defs/Timestamp"
+        },
+        "definition_hash": {
+          "$ref": "#/$defs/Sha256"
+        },
+        "effective_from": {
+          "$ref": "#/$defs/Timestamp"
+        },
+        "effective_to": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Timestamp"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "exclusion_rules": {
+          "type": "object"
+        },
+        "inclusion_rules": {
+          "type": "object"
+        },
+        "membership_asof_semantics": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "object_type": {
+          "const": "EQSUniverseDefinition"
+        },
+        "schema_version": {
+          "const": "EQS-UNIVERSE-1.0"
+        },
+        "survivor_bias_controls": {
+          "type": "object"
+        },
+        "universe_definition_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "version": {
+          "minLength": 1,
+          "type": "string"
+        }
+      },
+      "required": [
+        "object_type",
+        "schema_version",
+        "universe_definition_id",
+        "version",
+        "asset_classes",
+        "inclusion_rules",
+        "exclusion_rules",
+        "membership_asof_semantics",
+        "survivor_bias_controls",
+        "effective_from",
+        "effective_to",
+        "created_at",
+        "definition_hash"
+      ],
+      "type": "object"
+    },
+    "EQSValidationReport": {
+      "additionalProperties": false,
+      "properties": {
+        "aggregate_outcome": {
+          "enum": [
+            "PASS",
+            "BLOCK",
+            "INVALID",
+            "COMPROMISED"
+          ]
+        },
+        "catalog_version": {
+          "const": "EQS-SRF-VALIDATOR-CATALOG-1.0"
+        },
+        "generated_at": {
+          "$ref": "#/$defs/Timestamp"
+        },
+        "object_type": {
+          "const": "EQSValidationReport"
+        },
+        "report_hash": {
+          "$ref": "#/$defs/Sha256"
+        },
+        "result_ids": {
+          "items": {
+            "$ref": "#/$defs/Id"
+          },
+          "minItems": 1,
+          "type": "array",
+          "uniqueItems": true
+        },
+        "schema_version": {
+          "const": "EQS-VALIDATION-REPORT-1.0"
+        },
+        "subject_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "subject_type": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "validation_report_id": {
+          "$ref": "#/$defs/Id"
+        }
+      },
+      "required": [
+        "object_type",
+        "schema_version",
+        "validation_report_id",
+        "subject_type",
+        "subject_id",
+        "catalog_version",
+        "result_ids",
+        "aggregate_outcome",
+        "generated_at",
+        "report_hash"
+      ],
+      "type": "object"
+    },
+    "EQSValidationResult": {
+      "additionalProperties": false,
+      "properties": {
+        "error_code": {
+          "anyOf": [
+            {
+              "pattern": "^EQS-SRF-[A-Z0-9-]+$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "evaluated_at": {
+          "$ref": "#/$defs/Timestamp"
+        },
+        "evidence": {
+          "items": {
+            "$ref": "#/$defs/EvidenceRef"
+          },
+          "minItems": 0,
+          "type": "array"
+        },
+        "message": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "object_type": {
+          "const": "EQSValidationResult"
+        },
+        "outcome": {
+          "$ref": "#/$defs/QualificationEffect"
+        },
+        "rule_id": {
+          "pattern": "^SRF-[A-Z]+-[0-9]{3}$",
+          "type": "string"
+        },
+        "schema_version": {
+          "const": "EQS-VALIDATION-RESULT-1.0"
+        },
+        "subject_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "subject_type": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "validation_result_id": {
+          "$ref": "#/$defs/Id"
+        }
+      },
+      "required": [
+        "object_type",
+        "schema_version",
+        "validation_result_id",
+        "rule_id",
+        "subject_type",
+        "subject_id",
+        "evaluated_at",
+        "outcome",
+        "error_code",
+        "message",
+        "evidence"
+      ],
+      "type": "object"
+    },
+    "EvidenceRef": {
+      "additionalProperties": false,
+      "properties": {
+        "artifact_hash": {
+          "$ref": "#/$defs/Sha256"
+        },
+        "artifact_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "description": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "uri": {
+          "minLength": 1,
+          "type": "string"
+        }
+      },
+      "required": [
+        "artifact_id",
+        "artifact_hash"
+      ],
+      "type": "object"
+    },
+    "Id": {
+      "maxLength": 160,
+      "minLength": 3,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:/-]*$",
+      "type": "string"
+    },
+    "QualificationEffect": {
+      "enum": [
+        "PASS",
+        "BLOCK",
+        "INVALID",
+        "COMPROMISED",
+        "WARN",
+        "NOT_APPLICABLE"
+      ]
+    },
+    "Ref": {
+      "additionalProperties": false,
+      "properties": {
+        "object_hash": {
+          "$ref": "#/$defs/Sha256"
+        },
+        "object_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "object_type": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "object_version": {
+          "type": [
+            "string",
+            "integer"
+          ]
+        }
+      },
+      "required": [
+        "object_type",
+        "object_id",
+        "object_hash"
+      ],
+      "type": "object"
+    },
+    "Severity": {
+      "enum": [
+        "INFO",
+        "WARNING",
+        "ERROR",
+        "FATAL"
+      ]
+    },
+    "Sha256": {
+      "pattern": "^[a-f0-9]{64}$",
+      "type": "string"
+    },
+    "Timestamp": {
+      "format": "date-time",
+      "pattern": ".*(Z|[+-][0-9]{2}:[0-9]{2})$",
+      "type": "string"
+    },
+    "VersionRef": {
+      "additionalProperties": false,
+      "properties": {
+        "definition_hash": {
+          "$ref": "#/$defs/Sha256"
+        },
+        "definition_id": {
+          "$ref": "#/$defs/Id"
+        },
+        "version": {
+          "minLength": 1,
+          "type": "string"
+        }
+      },
+      "required": [
+        "definition_id",
+        "version",
+        "definition_hash"
+      ],
+      "type": "object"
+    }
+  },
+  "$id": "urn:eqs:srf:v1:schema-bundle",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "description": "Strict structural schemas. Cross-object, temporal, hash, PIT and lifecycle semantics are enforced by the companion validator catalogue.",
+  "oneOf": [
+    {
+      "$ref": "#/$defs/EQSUniverseDefinition"
+    },
+    {
+      "$ref": "#/$defs/EQSStrategyDefinition"
+    },
+    {
+      "$ref": "#/$defs/EQSResearchCampaign"
+    },
+    {
+      "$ref": "#/$defs/EQSPreregistration"
+    },
+    {
+      "$ref": "#/$defs/EQSDataBinding"
+    },
+    {
+      "$ref": "#/$defs/EQSCodeBinding"
+    },
+    {
+      "$ref": "#/$defs/EQSEnvironmentBinding"
+    },
+    {
+      "$ref": "#/$defs/EQSFeatureDefinition"
+    },
+    {
+      "$ref": "#/$defs/EQSLabelDefinition"
+    },
+    {
+      "$ref": "#/$defs/EQSCrossValidationSpec"
+    },
+    {
+      "$ref": "#/$defs/EQSExecutionModelDefinition"
+    },
+    {
+      "$ref": "#/$defs/EQSCostModel"
+    },
+    {
+      "$ref": "#/$defs/EQSMetricDefinition"
+    },
+    {
+      "$ref": "#/$defs/EQSMetricObservation"
+    },
+    {
+      "$ref": "#/$defs/EQSExperiment"
+    },
+    {
+      "$ref": "#/$defs/EQSResearchSearchLedger"
+    },
+    {
+      "$ref": "#/$defs/EQSOOSAuthorization"
+    },
+    {
+      "$ref": "#/$defs/EQSOOSLock"
+    },
+    {
+      "$ref": "#/$defs/EQSOOSAccessEvent"
+    },
+    {
+      "$ref": "#/$defs/EQSResearchEvidenceManifest"
+    },
+    {
+      "$ref": "#/$defs/EQSCandidateSeal"
+    },
+    {
+      "$ref": "#/$defs/EQSMarketEvent"
+    },
+    {
+      "$ref": "#/$defs/EQSDecision"
+    },
+    {
+      "$ref": "#/$defs/EQSOrder"
+    },
+    {
+      "$ref": "#/$defs/EQSFill"
+    },
+    {
+      "$ref": "#/$defs/EQSStressResult"
+    },
+    {
+      "$ref": "#/$defs/EQSReproductionRecord"
+    },
+    {
+      "$ref": "#/$defs/EQSResearchPaperHandoff"
+    },
+    {
+      "$ref": "#/$defs/EQSValidationResult"
+    },
+    {
+      "$ref": "#/$defs/EQSValidationReport"
+    }
+  ],
+  "title": "EQS Shared Research Framework V1 - Executable Schema Bundle"
+}

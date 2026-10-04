@@ -1,0 +1,44 @@
+{
+  "campaign_count": 6,
+  "campaigns": [
+    {
+      "campaign_id": "ALPHA-CROSS-SECTION-PERPS-001",
+      "family": "cross-sectional-crypto-perpetuals",
+      "fingerprint": "963436e6735ddafd46e5fda1d5b062d631ed433d0716e0637fa4720813c2068b",
+      "path": "research/preregistrations/v1/ALPHA-CROSS-SECTION-PERPS-001.json"
+    },
+    {
+      "campaign_id": "ALPHA-FUNDING-BASIS-CARRY-001",
+      "family": "funding-basis-carry",
+      "fingerprint": "dc582289a31b955438514257829ccd6ce56f9d8d40c886324c2f5e7f0783fbaf",
+      "path": "research/preregistrations/v1/ALPHA-FUNDING-BASIS-CARRY-001.json"
+    },
+    {
+      "campaign_id": "ALPHA-LIQUIDITY-SHOCK-MR-001",
+      "family": "liquidity-shock-mean-reversion",
+      "fingerprint": "d23b95277f5d5c606541f6a1301baf97e02b7f3a5c72b3d88eccc39c5e9861c0",
+      "path": "research/preregistrations/v1/ALPHA-LIQUIDITY-SHOCK-MR-001.json"
+    },
+    {
+      "campaign_id": "ALPHA-MOMENTUM-TREND-001",
+      "family": "momentum-trend",
+      "fingerprint": "3dadf02243e6a7c5176d165450a333ce622c957ca95ae002aa0ef72880e99a94",
+      "path": "research/preregistrations/v1/ALPHA-MOMENTUM-TREND-001.json"
+    },
+    {
+      "campaign_id": "ALPHA-ORDER-FLOW-MICRO-001",
+      "family": "order-flow-microstructure",
+      "fingerprint": "b1d36e5588ea8c6904f790b6ef416cd8e24988ba92657b444604f43b7541ad7d",
+      "path": "research/preregistrations/v1/ALPHA-ORDER-FLOW-MICRO-001.json"
+    },
+    {
+      "campaign_id": "ALPHA-VOLATILITY-REGIME-001",
+      "family": "volatility-regime",
+      "fingerprint": "4f1fd893730862696786050e57a25011e2a5b705453c1b6d3250abf0bcdacd33",
+      "path": "research/preregistrations/v1/ALPHA-VOLATILITY-REGIME-001.json"
+    }
+  ],
+  "empirical_selection_status": "BLOCKED_PENDING_GENUINE_R1_3_DATASET_EVIDENCE",
+  "schema_version": 1,
+  "synthetic_results_authorization": "NONE"
+}

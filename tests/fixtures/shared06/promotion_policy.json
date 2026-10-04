@@ -1,0 +1,25 @@
+{
+  "policy_id": "eqs00-paper-to-shadow",
+  "policy_version": "1",
+  "target_mode": "SHADOW",
+  "verified": true,
+  "required_operational_gates": [
+    "OPS_G01_SERVICE_HEALTH",
+    "OPS_G02_DATA_HEALTH",
+    "OPS_G03_RISK_HEALTH",
+    "OPS_G04_EXECUTION_HEALTH",
+    "OPS_G05_RECONCILIATION",
+    "OPS_G06_MODE_INTEGRITY",
+    "OPS_G07_COMMISSIONING",
+    "OPS_G08_RECOVERY",
+    "OPS_G09_SECRET_HYGIENE",
+    "OPS_G10_SAFETY_INTERFACE"
+  ],
+  "required_external_gate_refs": [
+    "PIT",
+    "ALPHA",
+    "OOS"
+  ],
+  "allowed_not_applicable_gates": [],
+  "policy_sha256": "1aa56f13e844608dc293c763addc3045cc75edb5705541431776fdb457008a82"
+}

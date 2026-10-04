@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://eqs.local/schemas/shared06/change_event_v1.json",
+  "title": "Change Event V1",
+  "type": "object",
+  "required": [
+    "change_id",
+    "changed_at",
+    "component_id",
+    "change_type",
+    "old_version",
+    "new_version",
+    "evidence_ref"
+  ],
+  "properties": {
+    "change_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "changed_at": {
+      "$ref": "common_defs_v1.json#/$defs/timestamp_utc"
+    },
+    "component_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "change_type": {
+      "enum": [
+        "DEPLOYMENT",
+        "CONFIGURATION",
+        "RESTART",
+        "ADAPTER",
+        "SCHEMA",
+        "POLICY",
+        "OTHER"
+      ]
+    },
+    "old_version": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "new_version": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "evidence_ref": {
+      "type": "string",
+      "minLength": 1
+    }
+  },
+  "additionalProperties": false
+}

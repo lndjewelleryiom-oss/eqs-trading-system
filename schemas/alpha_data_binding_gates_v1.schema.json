@@ -1,0 +1,774 @@
+{
+  "$defs": {
+    "boundary": {
+      "additionalProperties": false,
+      "properties": {
+        "broker_submission_enabled": {
+          "type": "boolean"
+        },
+        "credentials_accessed": {
+          "type": "boolean"
+        },
+        "evidence_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "f7_unchanged": {
+          "type": "boolean"
+        },
+        "live_capital_touched": {
+          "type": "boolean"
+        },
+        "protected_files_changed": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "protected_files_compared": {
+          "minimum": 1,
+          "type": "integer"
+        },
+        "r1_2_unchanged": {
+          "type": "boolean"
+        },
+        "tracker_unchanged": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "r1_2_unchanged",
+        "f7_unchanged",
+        "tracker_unchanged",
+        "broker_submission_enabled",
+        "credentials_accessed",
+        "live_capital_touched",
+        "protected_files_compared",
+        "protected_files_changed",
+        "evidence_sha256"
+      ],
+      "type": "object"
+    },
+    "campaignGate": {
+      "additionalProperties": false,
+      "properties": {
+        "failure_codes": {
+          "items": {
+            "pattern": "^[A-Z0-9_]+$",
+            "type": "string"
+          },
+          "type": "array",
+          "uniqueItems": true
+        },
+        "status": {
+          "enum": [
+            "PASS",
+            "FAIL",
+            "BLOCKED"
+          ]
+        }
+      },
+      "required": [
+        "status",
+        "failure_codes"
+      ],
+      "type": "object"
+    },
+    "campaignIdentity": {
+      "additionalProperties": false,
+      "properties": {
+        "campaign_fingerprint": {
+          "$ref": "#/$defs/sha256"
+        },
+        "campaign_id": {
+          "enum": [
+            "ALPHA-CROSS-SECTION-PERPS-001",
+            "ALPHA-FUNDING-BASIS-CARRY-001",
+            "ALPHA-LIQUIDITY-SHOCK-MR-001",
+            "ALPHA-MOMENTUM-TREND-001",
+            "ALPHA-ORDER-FLOW-MICRO-001",
+            "ALPHA-VOLATILITY-REGIME-001"
+          ]
+        },
+        "preregistration_path": {
+          "pattern": "^research/preregistrations/v1/.+\\.json$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "campaign_id",
+        "campaign_fingerprint",
+        "preregistration_path"
+      ],
+      "type": "object"
+    },
+    "campaignReadiness": {
+      "additionalProperties": false,
+      "properties": {
+        "binding_ready": {
+          "type": "boolean"
+        },
+        "block_reason_codes": {
+          "items": {
+            "pattern": "^[A-Z0-9_]+$",
+            "type": "string"
+          },
+          "type": "array",
+          "uniqueItems": true
+        },
+        "campaign_fingerprint": {
+          "$ref": "#/$defs/sha256"
+        },
+        "campaign_id": {
+          "enum": [
+            "ALPHA-CROSS-SECTION-PERPS-001",
+            "ALPHA-FUNDING-BASIS-CARRY-001",
+            "ALPHA-LIQUIDITY-SHOCK-MR-001",
+            "ALPHA-MOMENTUM-TREND-001",
+            "ALPHA-ORDER-FLOW-MICRO-001",
+            "ALPHA-VOLATILITY-REGIME-001"
+          ]
+        },
+        "candidate_trade_count_status": {
+          "const": "DEFERRED_UNTIL_CANDIDATE_EXECUTION"
+        },
+        "eligibility_mask_fingerprint": {
+          "$ref": "#/$defs/sha256"
+        },
+        "eligible_instrument_count": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "eligible_observations": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "excluded_instrument_times": {
+          "additionalProperties": false,
+          "properties": {
+            "A19": {
+              "minimum": 0,
+              "type": "integer"
+            },
+            "A19_A20": {
+              "minimum": 0,
+              "type": "integer"
+            },
+            "A20": {
+              "minimum": 0,
+              "type": "integer"
+            }
+          },
+          "required": [
+            "A19",
+            "A20",
+            "A19_A20"
+          ],
+          "type": "object"
+        },
+        "feature_coverage_complete": {
+          "type": "boolean"
+        },
+        "gate_statuses": {
+          "additionalProperties": false,
+          "properties": {
+            "A21": {
+              "$ref": "#/$defs/campaignGate"
+            },
+            "A22": {
+              "$ref": "#/$defs/campaignGate"
+            },
+            "A23": {
+              "$ref": "#/$defs/campaignGate"
+            },
+            "A26": {
+              "$ref": "#/$defs/campaignGate"
+            }
+          },
+          "required": [
+            "A21",
+            "A22",
+            "A23",
+            "A26"
+          ],
+          "type": "object"
+        },
+        "independent_samples": {
+          "minimum": 0,
+          "type": "integer"
+        },
+        "locked_oos_status": {
+          "enum": [
+            "SEALED",
+            "VIOLATED"
+          ]
+        },
+        "minimum_candidate_trades": {
+          "minimum": 1,
+          "type": "integer"
+        },
+        "minimum_independent_samples": {
+          "minimum": 1,
+          "type": "integer"
+        },
+        "minimum_walk_forward_folds": {
+          "const": 6
+        },
+        "training_validation_ready": {
+          "type": "boolean"
+        },
+        "walk_forward_fold_count": {
+          "minimum": 0,
+          "type": "integer"
+        }
+      },
+      "required": [
+        "campaign_id",
+        "campaign_fingerprint",
+        "eligibility_mask_fingerprint",
+        "eligible_instrument_count",
+        "eligible_observations",
+        "excluded_instrument_times",
+        "independent_samples",
+        "minimum_independent_samples",
+        "minimum_candidate_trades",
+        "candidate_trade_count_status",
+        "walk_forward_fold_count",
+        "minimum_walk_forward_folds",
+        "feature_coverage_complete",
+        "training_validation_ready",
+        "locked_oos_status",
+        "gate_statuses",
+        "binding_ready",
+        "block_reason_codes"
+      ],
+      "type": "object"
+    },
+    "campaignSet": {
+      "additionalProperties": false,
+      "properties": {
+        "campaign_set_fingerprint": {
+          "$ref": "#/$defs/sha256"
+        },
+        "campaigns": {
+          "items": {
+            "$ref": "#/$defs/campaignIdentity"
+          },
+          "maxItems": 6,
+          "minItems": 6,
+          "type": "array"
+        },
+        "version": {
+          "const": "alpha-campaign-v1"
+        }
+      },
+      "required": [
+        "version",
+        "campaigns",
+        "campaign_set_fingerprint"
+      ],
+      "type": "object"
+    },
+    "dataset": {
+      "additionalProperties": true,
+      "properties": {
+        "coverage": {
+          "type": "object"
+        },
+        "dataset_id": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "decision_time": {
+          "format": "date-time",
+          "type": "string"
+        },
+        "event_count": {
+          "minimum": 1,
+          "type": "integer"
+        },
+        "event_identity_hash": {
+          "$ref": "#/$defs/sha256"
+        },
+        "format_version": {
+          "const": "crypto-perps-research-v1"
+        },
+        "manifest_fingerprint": {
+          "$ref": "#/$defs/sha256"
+        },
+        "partition_count": {
+          "minimum": 1,
+          "type": "integer"
+        },
+        "raw_source_count": {
+          "minimum": 1,
+          "type": "integer"
+        },
+        "replay_fingerprint": {
+          "$ref": "#/$defs/sha256"
+        },
+        "universe_fingerprint": {
+          "$ref": "#/$defs/sha256"
+        },
+        "venues": {
+          "items": {
+            "enum": [
+              "BINANCE_USDM",
+              "BYBIT_LINEAR",
+              "OKX_SWAP"
+            ]
+          },
+          "type": "array",
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "format_version",
+        "dataset_id",
+        "manifest_fingerprint",
+        "universe_fingerprint",
+        "event_identity_hash",
+        "replay_fingerprint",
+        "decision_time",
+        "partition_count",
+        "event_count",
+        "raw_source_count",
+        "venues",
+        "coverage"
+      ],
+      "type": "object"
+    },
+    "evidence": {
+      "additionalProperties": false,
+      "properties": {
+        "classification": {
+          "enum": [
+            "REAL_MARKET",
+            "DERIVED_REAL_MARKET",
+            "CONTROLLED_FAULT_INJECTION",
+            "TEST_FIXTURE"
+          ]
+        },
+        "description": {
+          "type": "string"
+        },
+        "evidence_type": {
+          "enum": [
+            "RAW_RECEIPT_INDEX",
+            "RAW_OBJECT",
+            "PARTITION",
+            "PARTITION_INDEX",
+            "MANIFEST",
+            "UNIVERSE_HISTORY",
+            "UNIVERSE_INDEX",
+            "REPLAY_REPORT",
+            "DETERMINISM_REPORT",
+            "PIT_AUDIT",
+            "COVERAGE_REPORT",
+            "SAMPLE_REPORT",
+            "FEATURE_COVERAGE_REPORT",
+            "FEATURE_RUN_MANIFEST",
+            "TAMPER_TEST",
+            "TEST_LOG",
+            "HASH_REPORT",
+            "PROTECTED_BOUNDARY_REPORT",
+            "OTHER"
+          ]
+        },
+        "sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "uri_or_path": {
+          "minLength": 1,
+          "type": "string"
+        }
+      },
+      "required": [
+        "evidence_type",
+        "uri_or_path",
+        "sha256",
+        "classification"
+      ],
+      "type": "object"
+    },
+    "feature": {
+      "additionalProperties": false,
+      "properties": {
+        "dataset_manifest_fingerprint": {
+          "$ref": "#/$defs/sha256"
+        },
+        "max_decision_time": {
+          "format": "date-time",
+          "type": "string"
+        },
+        "run_manifest_fingerprints": {
+          "items": {
+            "$ref": "#/$defs/sha256"
+          },
+          "minItems": 1,
+          "type": "array",
+          "uniqueItems": true
+        },
+        "universe_fingerprint": {
+          "$ref": "#/$defs/sha256"
+        },
+        "version": {
+          "const": "crypto-perps-feature-engine-v1"
+        }
+      },
+      "required": [
+        "version",
+        "run_manifest_fingerprints",
+        "dataset_manifest_fingerprint",
+        "universe_fingerprint",
+        "max_decision_time"
+      ],
+      "type": "object"
+    },
+    "final": {
+      "additionalProperties": false,
+      "properties": {
+        "ALPHA_DATA_BINDING_READY": {
+          "type": "boolean"
+        },
+        "campaigns_blocked": {
+          "items": {
+            "enum": [
+              "ALPHA-CROSS-SECTION-PERPS-001",
+              "ALPHA-FUNDING-BASIS-CARRY-001",
+              "ALPHA-LIQUIDITY-SHOCK-MR-001",
+              "ALPHA-MOMENTUM-TREND-001",
+              "ALPHA-ORDER-FLOW-MICRO-001",
+              "ALPHA-VOLATILITY-REGIME-001"
+            ]
+          },
+          "type": "array",
+          "uniqueItems": true
+        },
+        "campaigns_ready": {
+          "items": {
+            "enum": [
+              "ALPHA-CROSS-SECTION-PERPS-001",
+              "ALPHA-FUNDING-BASIS-CARRY-001",
+              "ALPHA-LIQUIDITY-SHOCK-MR-001",
+              "ALPHA-MOMENTUM-TREND-001",
+              "ALPHA-ORDER-FLOW-MICRO-001",
+              "ALPHA-VOLATILITY-REGIME-001"
+            ]
+          },
+          "type": "array",
+          "uniqueItems": true
+        },
+        "decision_fingerprint": {
+          "$ref": "#/$defs/sha256"
+        },
+        "decision_reason_codes": {
+          "items": {
+            "pattern": "^[A-Z0-9_]+$",
+            "type": "string"
+          },
+          "type": "array",
+          "uniqueItems": true
+        },
+        "global_hard_gates_passed": {
+          "type": "boolean"
+        },
+        "locked_oos_may_be_opened": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "ALPHA_DATA_BINDING_READY",
+        "global_hard_gates_passed",
+        "campaigns_ready",
+        "campaigns_blocked",
+        "locked_oos_may_be_opened",
+        "decision_reason_codes",
+        "decision_fingerprint"
+      ],
+      "type": "object"
+    },
+    "gate": {
+      "additionalProperties": false,
+      "properties": {
+        "evidence": {
+          "items": {
+            "$ref": "#/$defs/evidence"
+          },
+          "type": "array"
+        },
+        "failure_codes": {
+          "items": {
+            "pattern": "^[A-Z0-9_]+$",
+            "type": "string"
+          },
+          "type": "array",
+          "uniqueItems": true
+        },
+        "gate_id": {
+          "pattern": "^A(0[1-9]|1[0-9]|2[0-8])$"
+        },
+        "name": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "notes": {
+          "type": "string"
+        },
+        "observed": {
+          "type": "object"
+        },
+        "pass_condition": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "scope": {
+          "enum": [
+            "GLOBAL",
+            "INSTRUMENT_FILTER",
+            "CAMPAIGN"
+          ]
+        },
+        "severity": {
+          "enum": [
+            "HARD_BLOCK",
+            "FILTER",
+            "CAMPAIGN_BLOCK",
+            "CAMPAIGN_INVALIDATION"
+          ]
+        },
+        "status": {
+          "enum": [
+            "PASS",
+            "FAIL",
+            "BLOCKED"
+          ]
+        }
+      },
+      "required": [
+        "gate_id",
+        "name",
+        "scope",
+        "severity",
+        "status",
+        "pass_condition",
+        "observed",
+        "evidence",
+        "failure_codes"
+      ],
+      "type": "object"
+    },
+    "parent": {
+      "additionalProperties": false,
+      "properties": {
+        "archive_path": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "archive_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "build_command_fingerprint": {
+          "$ref": "#/$defs/sha256"
+        },
+        "code_version": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "dataset_builder_version": {
+          "minLength": 1,
+          "type": "string"
+        }
+      },
+      "required": [
+        "archive_path",
+        "archive_sha256",
+        "code_version",
+        "dataset_builder_version",
+        "build_command_fingerprint"
+      ],
+      "type": "object"
+    },
+    "sha256": {
+      "pattern": "^[a-f0-9]{64}$",
+      "type": "string"
+    }
+  },
+  "$id": "https://eqs.local/schemas/alpha_data_binding_gates_v1.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "alpha_campaign_set": {
+      "$ref": "#/$defs/campaignSet"
+    },
+    "binding_id": {
+      "$ref": "#/$defs/sha256"
+    },
+    "campaign_readiness": {
+      "items": {
+        "$ref": "#/$defs/campaignReadiness"
+      },
+      "maxItems": 6,
+      "minItems": 6,
+      "type": "array"
+    },
+    "dataset": {
+      "$ref": "#/$defs/dataset"
+    },
+    "evidence_classification": {
+      "const": "REAL_MARKET"
+    },
+    "feature_engine": {
+      "$ref": "#/$defs/feature"
+    },
+    "final_decision": {
+      "$ref": "#/$defs/final"
+    },
+    "gates": {
+      "additionalProperties": false,
+      "properties": {
+        "A01": {
+          "$ref": "#/$defs/gate"
+        },
+        "A02": {
+          "$ref": "#/$defs/gate"
+        },
+        "A03": {
+          "$ref": "#/$defs/gate"
+        },
+        "A04": {
+          "$ref": "#/$defs/gate"
+        },
+        "A05": {
+          "$ref": "#/$defs/gate"
+        },
+        "A06": {
+          "$ref": "#/$defs/gate"
+        },
+        "A07": {
+          "$ref": "#/$defs/gate"
+        },
+        "A08": {
+          "$ref": "#/$defs/gate"
+        },
+        "A09": {
+          "$ref": "#/$defs/gate"
+        },
+        "A10": {
+          "$ref": "#/$defs/gate"
+        },
+        "A11": {
+          "$ref": "#/$defs/gate"
+        },
+        "A12": {
+          "$ref": "#/$defs/gate"
+        },
+        "A13": {
+          "$ref": "#/$defs/gate"
+        },
+        "A14": {
+          "$ref": "#/$defs/gate"
+        },
+        "A15": {
+          "$ref": "#/$defs/gate"
+        },
+        "A16": {
+          "$ref": "#/$defs/gate"
+        },
+        "A17": {
+          "$ref": "#/$defs/gate"
+        },
+        "A18": {
+          "$ref": "#/$defs/gate"
+        },
+        "A19": {
+          "$ref": "#/$defs/gate"
+        },
+        "A20": {
+          "$ref": "#/$defs/gate"
+        },
+        "A21": {
+          "$ref": "#/$defs/gate"
+        },
+        "A22": {
+          "$ref": "#/$defs/gate"
+        },
+        "A23": {
+          "$ref": "#/$defs/gate"
+        },
+        "A24": {
+          "$ref": "#/$defs/gate"
+        },
+        "A25": {
+          "$ref": "#/$defs/gate"
+        },
+        "A26": {
+          "$ref": "#/$defs/gate"
+        },
+        "A27": {
+          "$ref": "#/$defs/gate"
+        },
+        "A28": {
+          "$ref": "#/$defs/gate"
+        }
+      },
+      "required": [
+        "A01",
+        "A02",
+        "A03",
+        "A04",
+        "A05",
+        "A06",
+        "A07",
+        "A08",
+        "A09",
+        "A10",
+        "A11",
+        "A12",
+        "A13",
+        "A14",
+        "A15",
+        "A16",
+        "A17",
+        "A18",
+        "A19",
+        "A20",
+        "A21",
+        "A22",
+        "A23",
+        "A24",
+        "A25",
+        "A26",
+        "A27",
+        "A28"
+      ],
+      "type": "object"
+    },
+    "generated_at": {
+      "format": "date-time",
+      "type": "string"
+    },
+    "parent": {
+      "$ref": "#/$defs/parent"
+    },
+    "protected_boundary": {
+      "$ref": "#/$defs/boundary"
+    },
+    "schema_version": {
+      "const": "eqs-alpha-data-binding-gates-v1"
+    }
+  },
+  "required": [
+    "schema_version",
+    "binding_id",
+    "generated_at",
+    "evidence_classification",
+    "parent",
+    "dataset",
+    "feature_engine",
+    "alpha_campaign_set",
+    "gates",
+    "campaign_readiness",
+    "protected_boundary",
+    "final_decision"
+  ],
+  "title": "EQS R1.3 Alpha-v1 Dataset Binding Gate Report",
+  "type": "object"
+}

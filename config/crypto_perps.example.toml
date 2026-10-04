@@ -1,0 +1,24 @@
+[research.crypto_perpetuals]
+enabled = true
+mode = "read_only"
+schema_version = "crypto-perps-v1"
+raw_capture_required = true
+unknown_instrument_policy = "reject"
+point_in_time_visibility_field = "available_at"
+
+[research.crypto_perpetuals.binance_usdm]
+enabled = true
+public_endpoint = "wss://fstream.binance.com/public"
+market_endpoint = "wss://fstream.binance.com/market"
+streams = ["depth@100ms", "aggTrade", "markPrice@1s", "forceOrder"]
+
+[research.crypto_perpetuals.bybit_linear]
+enabled = true
+public_endpoint = "wss://stream.bybit.com/v5/public/linear"
+channels = ["orderbook.50", "publicTrade", "tickers", "allLiquidation"]
+
+[research.crypto_perpetuals.okx_swap]
+enabled = true
+# Must be replaced by the account/registration-region endpoint where applicable.
+public_endpoint = "wss://ws.okx.com:8443/ws/v5/public"
+channels = ["books", "trades", "mark-price", "funding-rate", "open-interest"]

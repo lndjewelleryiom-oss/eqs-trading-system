@@ -1,0 +1,116 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://eqs.local/schemas/shared06/commissioning_run_v1.json",
+  "title": "Commissioning Run V1",
+  "type": "object",
+  "required": [
+    "run_id",
+    "commissioning_type",
+    "acceptance_plan_id",
+    "acceptance_plan_hash",
+    "configuration_hash",
+    "code_version",
+    "started_at",
+    "required_duration_seconds",
+    "status",
+    "evidence_refs",
+    "checks"
+  ],
+  "properties": {
+    "run_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "commissioning_type": {
+      "enum": [
+        "SOAK",
+        "RESTART",
+        "RECOVERY",
+        "FAILOVER",
+        "RECONCILIATION",
+        "END_TO_END",
+        "OTHER"
+      ]
+    },
+    "acceptance_plan_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "acceptance_plan_hash": {
+      "$ref": "common_defs_v1.json#/$defs/sha256"
+    },
+    "configuration_hash": {
+      "$ref": "common_defs_v1.json#/$defs/sha256"
+    },
+    "code_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "started_at": {
+      "$ref": "common_defs_v1.json#/$defs/timestamp_utc"
+    },
+    "ended_at": {
+      "oneOf": [
+        {
+          "$ref": "common_defs_v1.json#/$defs/timestamp_utc"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "required_duration_seconds": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "status": {
+      "$ref": "common_defs_v1.json#/$defs/commissioning_status"
+    },
+    "evidence_refs": {
+      "$ref": "common_defs_v1.json#/$defs/evidence_refs"
+    },
+    "checks": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "check_id",
+          "required",
+          "result"
+        ],
+        "properties": {
+          "check_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "required": {
+            "type": "boolean"
+          },
+          "result": {
+            "enum": [
+              "PASS",
+              "FAIL",
+              "UNKNOWN",
+              "NOT_APPLICABLE"
+            ]
+          },
+          "evidence_ref": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "terminal_completion_verified": {
+      "type": "boolean"
+    },
+    "seal_verified": {
+      "type": "boolean"
+    }
+  },
+  "additionalProperties": false
+}

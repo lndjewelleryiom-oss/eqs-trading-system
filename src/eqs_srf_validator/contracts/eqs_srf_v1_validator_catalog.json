@@ -1,0 +1,1354 @@
+{
+  "aggregate_precedence": [
+    "COMPROMISED",
+    "INVALID",
+    "BLOCK",
+    "PASS"
+  ],
+  "catalog_version": "EQS-SRF-VALIDATOR-CATALOG-1.0",
+  "default_behavior": {
+    "candidate_mutation": "INVALID",
+    "evaluation_mode": "FAIL_CLOSED",
+    "hash_mismatch": "INVALID",
+    "missing_reference": "BLOCK",
+    "oos_access_control_breach": "COMPROMISED",
+    "rule_execution_error": "BLOCK",
+    "unknown_required_fact": "BLOCK"
+  },
+  "framework_version": "EQS-SRF-V1.0",
+  "hash_contract": {
+    "algorithm": "SHA-256",
+    "canonicalization": "JCS-RFC8785",
+    "encoding": "UTF-8",
+    "hash_field_policy": "Exclude the object's own terminal hash field and any transport-only metadata explicitly designated non-semantic by the schema implementation."
+  },
+  "qualification_pass_condition": "All applicable FATAL/ERROR rules PASS or NOT_APPLICABLE; no COMPROMISED, INVALID or BLOCK result exists.",
+  "rules": [
+    {
+      "description": "Campaign hash must recompute exactly.",
+      "error_code": "EQS-SRF-CAMPAIGN-HASH-MISMATCH",
+      "evidence_required": [],
+      "inputs": "campaign",
+      "on_fail": "INVALID",
+      "phase": "REGISTER",
+      "predicate": "campaign_hash == canonical_hash(campaign)",
+      "rule_id": "SRF-CAM-001",
+      "scope": "EQSResearchCampaign",
+      "severity": "FATAL"
+    },
+    {
+      "description": "Research, validation and OOS ranges must be non-overlapping and strictly ordered.",
+      "error_code": "EQS-SRF-CAMPAIGN-DATE-PARTITION-INVALID",
+      "evidence_required": [],
+      "inputs": [
+        "campaign.date_ranges"
+      ],
+      "on_fail": "BLOCK",
+      "phase": "REGISTER",
+      "predicate": "research.start < research.end <= validation.start < validation.end <= oos.start < oos.end",
+      "rule_id": "SRF-CAM-002",
+      "scope": "EQSResearchCampaign",
+      "severity": "FATAL"
+    },
+    {
+      "description": "A REGISTERED-or-later campaign cannot be changed in place.",
+      "error_code": "EQS-SRF-CAMPAIGN-IMMUTABILITY-VIOLATION",
+      "evidence_required": [],
+      "inputs": [
+        "prior_campaign",
+        "candidate_campaign"
+      ],
+      "on_fail": "INVALID",
+      "phase": "MUTATION",
+      "predicate": "prior.status in ['DRAFT','PREREGISTRATION_PENDING'] or canonical_semantics(prior)==canonical_semantics(candidate)",
+      "rule_id": "SRF-CAM-003",
+      "scope": "EQSResearchCampaign",
+      "severity": "FATAL"
+    },
+    {
+      "description": "Execution and cost models must cover every campaign asset class.",
+      "error_code": "EQS-SRF-CAMPAIGN-ASSET-MODEL-INCOMPATIBLE",
+      "evidence_required": [],
+      "inputs": [
+        "campaign",
+        "execution_model",
+        "cost_model"
+      ],
+      "on_fail": "BLOCK",
+      "phase": "QUALIFICATION",
+      "predicate": "set(campaign.asset_classes) <= set(execution_model.asset_classes) and set(campaign.asset_classes) <= set(cost_model.asset_classes)",
+      "rule_id": "SRF-CAM-004",
+      "scope": "EQSResearchCampaign",
+      "severity": "FATAL"
+    },
+    {
+      "description": "OOS authorization requires candidate status SEALED.",
+      "error_code": "EQS-SRF-CANDIDATE-NOT-SEALED",
+      "evidence_required": [],
+      "inputs": [
+        "candidate.status"
+      ],
+      "on_fail": "BLOCK",
+      "phase": "CANDIDATE_FREEZE",
+      "predicate": "candidate.status == 'SEALED'",
+      "rule_id": "SRF-CAN-001",
+      "scope": "EQSCandidateSeal",
+      "severity": "FATAL"
+    },
+    {
+      "description": "Candidate hash must recompute from all frozen semantic dependencies.",
+      "error_code": "EQS-SRF-CANDIDATE-HASH-MISMATCH",
+      "evidence_required": [],
+      "inputs": [
+        "candidate",
+        "resolved_dependencies"
+      ],
+      "on_fail": "INVALID",
+      "phase": "CANDIDATE_FREEZE",
+      "predicate": "candidate.candidate_hash == canonical_candidate_hash(candidate,resolved_dependencies)",
+      "rule_id": "SRF-CAN-002",
+      "scope": "EQSCandidateSeal",
+      "severity": "FATAL"
+    },
+    {
+      "description": "SEALED candidate semantics are immutable.",
+      "error_code": "EQS-SRF-CANDIDATE-MUTATED-AFTER-FREEZE",
+      "evidence_required": [],
+      "inputs": [
+        "prior_candidate",
+        "candidate"
+      ],
+      "on_fail": "INVALID",
+      "phase": "MUTATION",
+      "predicate": "prior.status not in ['SEALED','OOS_CONSUMED'] or canonical_semantics(prior)==canonical_semantics(candidate)",
+      "rule_id": "SRF-CAN-003",
+      "scope": "EQSCandidateSeal",
+      "severity": "FATAL"
+    },
+    {
+      "description": "Candidate must remain identical after OOS open.",
+      "error_code": "EQS-SRF-CANDIDATE-MUTATED-AFTER-OOS-OPEN",
+      "evidence_required": [],
+      "inputs": [
+        "candidate_at_open",
+        "candidate_at_completion"
+      ],
+      "on_fail": "INVALID",
+      "phase": "OOS",
+      "predicate": "candidate_at_open.candidate_hash == candidate_at_completion.candidate_hash",
+      "rule_id": "SRF-CAN-004",
+      "scope": "EQSCandidateSeal",
+      "severity": "FATAL"
+    },
+    {
+      "description": "Frozen research evidence manifest hash must resolve exactly.",
+      "error_code": "EQS-SRF-CANDIDATE-EVIDENCE-MANIFEST-MISMATCH",
+      "evidence_required": [],
+      "inputs": [
+        "candidate.research_evidence_manifest_hash",
+        "evidence_manifest"
+      ],
+      "on_fail": "INVALID",
+      "phase": "CANDIDATE_FREEZE",
+      "predicate": "candidate.research_evidence_manifest_hash == evidence_manifest.manifest_hash",
+      "rule_id": "SRF-CAN-005",
+      "scope": "EQSCandidateSeal",
+      "severity": "FATAL"
+    },
+    {
+      "description": "Canonical qualification runs require a clean worktree.",
+      "error_code": "EQS-SRF-CODE-DIRTY-WORKTREE",
+      "evidence_required": [],
+      "inputs": [
+        "code_binding.dirty_worktree"
+      ],
+      "on_fail": "BLOCK",
+      "phase": "QUALIFICATION",
+      "predicate": "dirty_worktree == false",
+      "rule_id": "SRF-COD-001",
+      "scope": "EQSCodeBinding",
+      "severity": "FATAL"
+    },
+    {
+      "description": "Executed commit, tree and dependency lock must equal the code binding.",
+      "error_code": "EQS-SRF-CODE-BINDING-MISMATCH",
+      "evidence_required": [],
+      "inputs": [
+        "code_binding",
+        "runtime_code_identity"
+      ],
+      "on_fail": "INVALID",
+      "phase": "EXECUTE",
+      "predicate": "runtime_code_identity == bound_code_identity(code_binding)",
+      "rule_id": "SRF-COD-002",
+      "scope": "EQSCodeBinding",
+      "severity": "FATAL"
+    },
+    {
+      "description": "A valid cost model must be bound to every campaign.",
+      "error_code": "EQS-SRF-COST-MODEL-MISSING",
+      "evidence_required": [],
+      "inputs": [
+        "campaign.cost_model_id",
+        "cost_model_registry"
+      ],
+      "on_fail": "BLOCK",
+      "phase": "QUALIFICATION",
+      "predicate": "resolve(campaign.cost_model_id) != null",
+      "rule_id": "SRF-CST-001",
+      "scope": "EQSResearchCampaign",
+      "severity": "FATAL"
+    },
+    {
+      "description": "Cost model must be effective for each simulated execution timestamp.",
+      "error_code": "EQS-SRF-COST-MODEL-NOT-EFFECTIVE",
+      "evidence_required": [],
+      "inputs": [
+        "cost_model",
+        "fills"
+      ],
+      "on_fail": "BLOCK",
+      "phase": "BACKTEST",
+      "predicate": "all(effective_from <= fill.execution_time < effective_to_or_infinity for fill in fills)",
+      "rule_id": "SRF-CST-002",
+      "scope": "EQSCostModel",
+      "severity": "FATAL"
+    },
+    {
+      "description": "Cost model must support the executed asset class.",
+      "error_code": "EQS-SRF-COST-ASSET-INCOMPATIBLE",
+      "evidence_required": [],
+      "inputs": [
+        "cost_model.asset_classes",
+        "fills"
+      ],
+      "on_fail": "BLOCK",
+      "phase": "BACKTEST",
+      "predicate": "all(asset_class(fill.instrument_id) in cost_model.asset_classes for fill in fills)",
+      "rule_id": "SRF-CST-003",
+      "scope": "EQSCostModel",
+      "severity": "FATAL"
+    },
+    {
+      "description": "Total costs may be zero only if produced explicitly by a nonzero-capable model for that event, never because the model is absent.",
+      "error_code": "EQS-SRF-COST-ZERO-DEFAULT",
+      "evidence_required": [],
+      "inputs": [
+        "cost_model",
+        "fills"
+      ],
+      "on_fail": "BLOCK",
+      "phase": "QUALIFICATION",
+      "predicate": "cost_model exists and no_implicit_zero_default(fills,cost_model)",
+      "rule_id": "SRF-CST-004",
+      "scope": "EQSExperiment",
+      "severity": "FATAL"
+    },
+    {
+      "description": "Every fold must have strictly ordered train and validation intervals.",
+      "error_code": "EQS-SRF-CV-FOLD-ORDER-INVALID",
+      "evidence_required": [],
+      "inputs": [
+        "cv_spec.folds"
+      ],
+      "on_fail": "BLOCK",
+      "phase": "REGISTER",
+      "predicate": "all(f.train.start < f.train.end <= f.validation.start < f.validation.end for f in folds)",
+      "rule_id": "SRF-CV-001",
+      "scope": "EQSCrossValidationSpec",
+      "severity": "FATAL"
+    },
+    {
+      "description": "Train and validation observations must not overlap after purge handling.",
+      "error_code": "EQS-SRF-CV-TRAIN-VALIDATION-OVERLAP",
+      "evidence_required": [],
+      "inputs": [
+        "cv_spec.folds"
+      ],
+      "on_fail": "BLOCK",
+      "phase": "REGISTER",
+      "predicate": "no_forbidden_overlap(folds)",
+      "rule_id": "SRF-CV-002",
+      "scope": "EQSCrossValidationSpec",
+      "severity": "FATAL"
+    },
+    {
+      "description": "Purged CV must satisfy maximum bound label horizon and preregistered purge requirements.",
+      "error_code": "EQS-SRF-CV-PURGE-INSUFFICIENT",
+      "evidence_required": [],
+      "inputs": [
+        "cv_spec",
+        "labels"
+      ],
+      "on_fail": "BLOCK",
+      "phase": "REGISTER",
+      "predicate": "method not in ['PURGED','PURGED_EMBARGOED'] or purge_interval >= max_required_purge(labels)",
+      "rule_id": "SRF-CV-003",
+      "scope": "EQSCrossValidationSpec",
+      "severity": "FATAL"
+    },
+    {
+      "description": "Purged-and-embargoed CV must satisfy maximum bound embargo requirement.",
+      "error_code": "EQS-SRF-CV-EMBARGO-INSUFFICIENT",
+      "evidence_required": [],
+      "inputs": [
+        "cv_spec",
+        "labels"
+      ],
+      "on_fail": "BLOCK",
+      "phase": "REGISTER",
+      "predicate": "method != 'PURGED_EMBARGOED' or embargo_interval >= max_required_embargo(labels)",
+      "rule_id": "SRF-CV-004",
+      "scope": "EQSCrossValidationSpec",
+      "severity": "FATAL"
+    },
+    {
+      "description": "Temporal CV cannot be shuffled.",
+      "error_code": "EQS-SRF-CV-SHUFFLE-PROHIBITED",
+      "evidence_required": [],
+      "inputs": [
+        "cv_spec.shuffle"
+      ],
+      "on_fail": "BLOCK",
+      "phase": "REGISTER",
+      "predicate": "shuffle == false",
+      "rule_id": "SRF-CV-005",
+      "scope": "EQSCrossValidationSpec",
+      "severity": "FATAL"
+    },
+    {
+      "description": "Qualification requires fully certified PIT data.",
+      "error_code": "EQS-SRF-DATA-PIT-NOT-CERTIFIED",
+      "evidence_required": [],
+      "inputs": [
+        "data_binding.pit_certification_status"
+      ],
+      "on_fail": "BLOCK",
+      "phase": "QUALIFICATION",
+      "predicate": "pit_certification_status == 'CERTIFIED'",
+      "rule_id": "SRF-DAT-001",
+      "scope": "EQSDataBinding",
+      "severity": "FATAL"
+    },
+    {
+      "description": "Every market-data certification ID must resolve.",
+      "error_code": "EQS-SRF-DATA-CERTIFICATION-MISSING",
+      "evidence_required": [],
+      "inputs": [
+        "data_binding.market_data_certification_ids"
+      ],
+      "on_fail": "BLOCK",
+      "phase": "QUALIFICATION",
+      "predicate": "all(resolve(id) for id in market_data_certification_ids)",
+      "rule_id": "SRF-DAT-002",
+      "scope": "EQSDataBinding",
+      "severity": "FATAL"
+    },
+    {
+      "description": "Bound dataset manifest hash must equal immutable snapshot manifest hash.",
+      "error_code": "EQS-SRF-DATA-MANIFEST-MISMATCH",
+      "evidence_required": [],
+      "inputs": [
+        "data_binding.dataset_manifest_hash",
+        "dataset_manifest"
+      ],
+      "on_fail": "INVALID",
+      "phase": "QUALIFICATION",
+      "predicate": "dataset_manifest_hash == sha256(dataset_manifest)",
+      "rule_id": "SRF-DAT-003",
+      "scope": "EQSDataBinding",
+      "severity": "FATAL"
+    },
+    {
+      "description": "All bound source snapshot hashes must match the immutable source snapshots used by the dataset manifest.",
+      "error_code": "EQS-SRF-DATA-SOURCE-SNAPSHOT-MISMATCH",
+      "evidence_required": [],
+      "inputs": [
+        "data_binding.source_snapshot_hashes",
+        "source_snapshots"
+      ],
+      "on_fail": "INVALID",
+      "phase": "QUALIFICATION",
+      "predicate": "set(data_binding.source_snapshot_hashes) == set(recompute_source_snapshot_hashes(source_snapshots))",
+      "rule_id": "SRF-DAT-004",
+      "scope": "EQSDataBinding",
+      "severity": "FATAL"
+    },
+    {
+      "description": "Runtime environment must equal the bound runtime identity.",
+      "error_code": "EQS-SRF-ENVIRONMENT-BINDING-MISMATCH",
+      "evidence_required": [],
+      "inputs": [
+        "environment_binding",
+        "runtime_environment_identity"
+      ],
+      "on_fail": "INVALID",
+      "phase": "EXECUTE",
+      "predicate": "runtime_environment_identity == bound_environment_identity(environment_binding)",
+      "rule_id": "SRF-ENV-001",
+      "scope": "EQSEnvironmentBinding",
+      "severity": "FATAL"
+    },
+    {
+      "description": "Canonical evidence requires at least D2 unless the campaign explicitly requires a stronger profile.",
+      "error_code": "EQS-SRF-DETERMINISM-INSUFFICIENT",
+      "evidence_required": [],
+      "inputs": [
+        "environment_binding.determinism_profile_id",
+        "campaign"
+      ],
+      "on_fail": "BLOCK",
+      "phase": "QUALIFICATION",
+      "predicate": "determinism_rank(profile) >= max(2, campaign_required_determinism_rank(campaign))",
+      "rule_id": "SRF-ENV-002",
+      "scope": "EQSEnvironmentBinding",
+      "severity": "ERROR"
+    },
+    {
+      "description": "Campaign execution model must resolve and be version-fixed.",
+      "error_code": "EQS-SRF-EXECUTION-MODEL-MISSING",
+      "evidence_required": [],
+      "inputs": [
+        "campaign.execution_model_id",
+        "execution_model_registry"
+      ],
+      "on_fail": "BLOCK",
+      "phase": "QUALIFICATION",
+      "predicate": "resolve(campaign.execution_model_id) != null",
+      "rule_id": "SRF-EXE-001",
+      "scope": "EQSExperiment",
+      "severity": "FATAL"
+    },
+    {
+      "description": "Execution model must support every instrument/asset used by the experiment.",
+      "error_code": "EQS-SRF-EXECUTION-ASSET-INCOMPATIBLE",
+      "evidence_required": [],
+      "inputs": [
+        "execution_model",
+        "experiment_instruments"
+      ],
+      "on_fail": "BLOCK",
+      "phase": "QUALIFICATION",
+      "predicate": "all(asset_class(i) in execution_model.asset_classes for i in experiment_instruments)",
+      "rule_id": "SRF-EXE-002",
+      "scope": "EQSExecutionModelDefinition",
+      "severity": "FATAL"
+    },
+    {
+      "description": "All lifecycle events required by the asset adapter must be handled.",
+      "error_code": "EQS-SRF-ASSET-LIFECYCLE-NOT-MODELED",
+      "evidence_required": [],
+      "inputs": [
+        "execution_model.lifecycle_handlers",
+        "asset_adapter.required_lifecycle_handlers"
+      ],
+      "on_fail": "INVALID",
+      "phase": "BACKTEST",
+      "predicate": "set(required_lifecycle_handlers) <= set(execution_model.lifecycle_handlers)",
+      "rule_id": "SRF-EXE-003",
+      "scope": "EQSExecutionModelDefinition",
+      "severity": "FATAL"
+    },
+    {
+      "description": "Experiment campaign ID/hash must match canonical campaign.",
+      "error_code": "EQS-SRF-EXPERIMENT-CAMPAIGN-MISMATCH",
+      "evidence_required": [],
+      "inputs": [
+        "experiment",
+        "campaign"
+      ],
+      "on_fail": "INVALID",
+      "phase": "EXECUTE",
+      "predicate": "experiment.campaign_id == campaign.campaign_id and experiment.campaign_hash == campaign.campaign_hash",
+      "rule_id": "SRF-EXP-001",
+      "scope": "EQSExperiment",
+      "severity": "FATAL"
+    },
+    {
+      "description": "Experiment preregistration ID/hash must match canonical preregistration.",
+      "error_code": "EQS-SRF-EXPERIMENT-PREREG-MISMATCH",
+      "evidence_required": [],
+      "inputs": [
+        "experiment",
+        "preregistration"
+      ],
+      "on_fail": "INVALID",
+      "phase": "EXECUTE",
+      "predicate": "experiment.preregistration_id == preregistration.preregistration_id and experiment.preregistration_hash == preregistration.canonical_payload_hash",
+      "rule_id": "SRF-EXP-002",
+      "scope": "EQSExperiment",
+      "severity": "FATAL"
+    },
+    {
+      "description": "Canonical experiment strategy family must be preregistered.",
+      "error_code": "EQS-SRF-PREREG-UNDECLARED-STRATEGY",
+      "evidence_required": [],
+      "inputs": [
+        "experiment",
+        "strategy_definition",
+        "preregistration"
+      ],
+      "on_fail": "BLOCK",
+      "phase": "EXECUTE",
+      "predicate": "strategy_definition.strategy_family_id in preregistration.strategy_families[*].strategy_family_id",
+      "rule_id": "SRF-EXP-003",
+      "scope": "EQSExperiment",
+      "severity": "FATAL"
+    },
+    {
+      "description": "Canonical experiment features must be preregistered unless experiment_class is EXPLORATORY or DIAGNOSTIC.",
+      "error_code": "EQS-SRF-PREREG-UNDECLARED-FEATURE",
+      "evidence_required": [],
+      "inputs": [
+        "experiment",
+        "preregistration"
+      ],
+      "on_fail": "BLOCK",
+      "phase": "EXECUTE",
+      "predicate": "experiment_class in ['EXPLORATORY','DIAGNOSTIC'] or all(binding in preregistration.feature_sets for binding in experiment.feature_bindings)",
+      "rule_id": "SRF-EXP-004",
+      "scope": "EQSExperiment",
+      "severity": "FATAL"
+    },
+    {
+      "description": "Canonical experiment labels must be preregistered unless experiment_class is EXPLORATORY or DIAGNOSTIC.",
+      "error_code": "EQS-SRF-PREREG-UNDECLARED-LABEL",
+      "evidence_required": [],
+      "inputs": [
+        "experiment",
+        "preregistration"
+      ],
+      "on_fail": "BLOCK",
+      "phase": "EXECUTE",
+      "predicate": "experiment_class in ['EXPLORATORY','DIAGNOSTIC'] or all(binding in preregistration.labels for binding in experiment.label_bindings)",
+      "rule_id": "SRF-EXP-005",
+      "scope": "EQSExperiment",
+      "severity": "FATAL"
+    },
+    {
+      "description": "Confirmatory/OOS parameters must lie inside preregistered ranges.",
+      "error_code": "EQS-SRF-PREREG-PARAMETER-OUT-OF-BOUNDS",
+      "evidence_required": [],
+      "inputs": [
+        "experiment.parameter_set",
+        "preregistration"
+      ],
+      "on_fail": "BLOCK",
+      "phase": "EXECUTE",
+      "predicate": "experiment_class in ['EXPLORATORY','DIAGNOSTIC'] or parameters_within_preregistered_domain(experiment,preregistration)",
+      "rule_id": "SRF-EXP-006",
+      "scope": "EQSExperiment",
+      "severity": "FATAL"
+    },
+    {
+      "description": "Phase data consumption must stay inside the authorized campaign date partition.",
+      "error_code": "EQS-SRF-EXPERIMENT-PHASE-DATE-VIOLATION",
+      "evidence_required": [],
+      "inputs": [
+        "experiment.research_phase",
+        "data_lineage",
+        "campaign.date_ranges"
+      ],
+      "on_fail": "INVALID",
+      "phase": "BACKTEST",
+      "predicate": "consumed_data_times within authorized_range(experiment.research_phase,campaign)",
+      "rule_id": "SRF-EXP-007",
+      "scope": "EQSExperiment",
+      "severity": "FATAL"
+    },
+    {
+      "description": "Experiment sequence must be unique within campaign.",
+      "error_code": "EQS-SRF-EXPERIMENT-SEQUENCE-CONFLICT",
+      "evidence_required": [],
+      "inputs": [
+        "experiment.campaign_id",
+        "experiment.experiment_sequence",
+        "experiment_registry"
+      ],
+      "on_fail": "BLOCK",
+      "phase": "REGISTER",
+      "predicate": "unique(campaign_id,experiment_sequence)",
+      "rule_id": "SRF-EXP-008",
+      "scope": "EQSExperiment",
+      "severity": "ERROR"
+    },
+    {
+      "description": "Canonical experiment provenance must resolve code, data, environment, strategy, feature, label and parameter identities.",
+      "error_code": "EQS-SRF-EXPERIMENT-PROVENANCE-INCOMPLETE",
+      "evidence_required": [],
+      "inputs": [
+        "experiment",
+        "registries"
+      ],
+      "on_fail": "INVALID",
+      "phase": "QUALIFICATION",
+      "predicate": "complete_provenance(experiment,registries) == true",
+      "rule_id": "SRF-EXP-009",
+      "scope": "EQSExperiment",
+      "severity": "FATAL"
+    },
+    {
+      "description": "Every bound feature definition/version/hash must resolve exactly.",
+      "error_code": "EQS-SRF-FEATURE-DEFINITION-MISSING",
+      "evidence_required": [],
+      "inputs": [
+        "experiment.feature_bindings",
+        "feature_registry"
+      ],
+      "on_fail": "BLOCK",
+      "phase": "EXECUTE",
+      "predicate": "all(resolve_exact_feature(b) for b in experiment.feature_bindings)",
+      "rule_id": "SRF-FEA-001",
+      "scope": "EQSExperiment",
+      "severity": "FATAL"
+    },
+    {
+      "description": "A feature ID/version cannot map to more than one semantic definition hash.",
+      "error_code": "EQS-SRF-FEATURE-SEMANTIC-ID-REUSE",
+      "evidence_required": [],
+      "inputs": [
+        "feature_registry"
+      ],
+      "on_fail": "INVALID",
+      "phase": "REGISTRY",
+      "predicate": "unique(feature_id,feature_version) -> exactly_one(definition_hash)",
+      "rule_id": "SRF-FEA-002",
+      "scope": "EQSFeatureDefinition",
+      "severity": "FATAL"
+    },
+    {
+      "description": "All information used in the feature snapshot must be knowable by the decision information cutoff.",
+      "error_code": "EQS-SRF-FEATURE-KNOWN-FROM-VIOLATION",
+      "evidence_required": [],
+      "inputs": [
+        "decision",
+        "feature_snapshot_lineage"
+      ],
+      "on_fail": "INVALID",
+      "phase": "BACKTEST",
+      "predicate": "max(feature_snapshot_lineage.known_from) <= decision.information_cutoff",
+      "rule_id": "SRF-FEA-003",
+      "scope": "EQSDecision",
+      "severity": "FATAL"
+    },
+    {
+      "description": "Each experiment feature binding hash must match the registered immutable feature definition.",
+      "error_code": "EQS-SRF-FEATURE-DEFINITION-HASH-MISMATCH",
+      "evidence_required": [],
+      "inputs": [
+        "experiment.feature_bindings",
+        "feature_registry"
+      ],
+      "on_fail": "INVALID",
+      "phase": "EXECUTE",
+      "predicate": "all(binding.definition_hash == resolve_feature(binding).definition_hash for binding in experiment.feature_bindings)",
+      "rule_id": "SRF-FEA-004",
+      "scope": "EQSExperiment",
+      "severity": "FATAL"
+    },
+    {
+      "description": "Object must validate against the declared Draft 2020-12 schema.",
+      "error_code": "EQS-SRF-SCHEMA-INVALID",
+      "evidence_required": [],
+      "inputs": [
+        "object"
+      ],
+      "on_fail": "BLOCK",
+      "phase": "INGEST",
+      "predicate": "jsonschema(object, schema_for(object.schema_version)) == PASS",
+      "rule_id": "SRF-GEN-001",
+      "scope": "ANY",
+      "severity": "FATAL"
+    },
+    {
+      "description": "Schema version must be supported and unambiguous.",
+      "error_code": "EQS-SRF-SCHEMA-VERSION-UNSUPPORTED",
+      "evidence_required": [],
+      "inputs": [
+        "object.schema_version",
+        "supported_schema_versions"
+      ],
+      "on_fail": "BLOCK",
+      "phase": "INGEST",
+      "predicate": "object.schema_version in supported_schema_versions",
+      "rule_id": "SRF-GEN-002",
+      "scope": "ANY",
+      "severity": "FATAL"
+    },
+    {
+      "description": "Stored canonical hash must equal SHA-256 over JCS-RFC8785 canonical content with the hash field excluded.",
+      "error_code": "EQS-SRF-HASH-MISMATCH",
+      "evidence_required": [],
+      "inputs": [
+        "object",
+        "stored_hash"
+      ],
+      "on_fail": "INVALID",
+      "phase": "INGEST",
+      "predicate": "stored_hash == sha256(jcs8785(hash_payload(object)))",
+      "rule_id": "SRF-GEN-003",
+      "scope": "HASHED_OBJECT",
+      "severity": "FATAL"
+    },
+    {
+      "description": "Every required foreign-key reference must resolve to exactly one immutable object.",
+      "error_code": "EQS-SRF-REFERENCE-MISSING",
+      "evidence_required": [],
+      "inputs": [
+        "reference",
+        "object_store"
+      ],
+      "on_fail": "BLOCK",
+      "phase": "INGEST",
+      "predicate": "count(resolve(reference)) == 1",
+      "rule_id": "SRF-GEN-004",
+      "scope": "REFERENCE",
+      "severity": "FATAL"
+    },
+    {
+      "description": "Resolved references must have the expected canonical object type.",
+      "error_code": "EQS-SRF-REFERENCE-TYPE-MISMATCH",
+      "evidence_required": [],
+      "inputs": [
+        "reference",
+        "resolved_object"
+      ],
+      "on_fail": "BLOCK",
+      "phase": "INGEST",
+      "predicate": "resolved_object.object_type == expected_type(reference)",
+      "rule_id": "SRF-GEN-005",
+      "scope": "REFERENCE",
+      "severity": "ERROR"
+    },
+    {
+      "description": "UNKNOWN, UNVERIFIED, PARTIAL or unresolved required state cannot satisfy a qualification dependency.",
+      "error_code": "EQS-SRF-UNKNOWN-REQUIRED-STATE",
+      "evidence_required": [],
+      "inputs": [
+        "state"
+      ],
+      "on_fail": "BLOCK",
+      "phase": "QUALIFICATION",
+      "predicate": "state not in ['UNKNOWN','UNVERIFIED','PARTIAL',None]",
+      "rule_id": "SRF-GEN-006",
+      "scope": "REQUIRED_STATE",
+      "severity": "FATAL"
+    },
+    {
+      "description": "Canonical objects requiring qualification must use the framework hash algorithm.",
+      "error_code": "EQS-SRF-HASH-ALGORITHM-UNSUPPORTED",
+      "evidence_required": [],
+      "inputs": [
+        "object.hash_algorithm",
+        "framework.hash_contract.algorithm"
+      ],
+      "on_fail": "BLOCK",
+      "phase": "INGEST",
+      "predicate": "not has_field(object,'hash_algorithm') or object.hash_algorithm == 'SHA-256'",
+      "rule_id": "SRF-GEN-007",
+      "scope": "HASHED_OBJECT",
+      "severity": "FATAL"
+    },
+    {
+      "description": "A versioned reference must resolve to exactly one immutable version.",
+      "error_code": "EQS-SRF-VERSION-AMBIGUOUS",
+      "evidence_required": [],
+      "inputs": [
+        "reference",
+        "object_store"
+      ],
+      "on_fail": "BLOCK",
+      "phase": "INGEST",
+      "predicate": "not is_versioned_reference(reference) or count(resolve_version(reference)) == 1",
+      "rule_id": "SRF-GEN-008",
+      "scope": "REFERENCE",
+      "severity": "FATAL"
+    },
+    {
+      "description": "Handoff candidate identity/hash must match the OOS-consumed candidate.",
+      "error_code": "EQS-SRF-HANDOFF-CANDIDATE-MISMATCH",
+      "evidence_required": [],
+      "inputs": [
+        "handoff",
+        "candidate",
+        "oos_lock"
+      ],
+      "on_fail": "INVALID",
+      "phase": "HANDOFF",
+      "predicate": "handoff.candidate_id==candidate.candidate_id and handoff.candidate_hash==candidate.candidate_hash==oos_lock.consumed_candidate_hash",
+      "rule_id": "SRF-HOF-001",
+      "scope": "EQSResearchPaperHandoff",
+      "severity": "FATAL"
+    },
+    {
+      "description": "Handoff campaign identity/hash must match canonical campaign.",
+      "error_code": "EQS-SRF-HANDOFF-CAMPAIGN-MISMATCH",
+      "evidence_required": [],
+      "inputs": [
+        "handoff",
+        "campaign"
+      ],
+      "on_fail": "INVALID",
+      "phase": "HANDOFF",
+      "predicate": "handoff.campaign_id==campaign.campaign_id and handoff.campaign_hash==campaign.campaign_hash",
+      "rule_id": "SRF-HOF-002",
+      "scope": "EQSResearchPaperHandoff",
+      "severity": "FATAL"
+    },
+    {
+      "description": "Handoff preregistration identity/hash must match canonical preregistration.",
+      "error_code": "EQS-SRF-HANDOFF-PREREG-MISMATCH",
+      "evidence_required": [],
+      "inputs": [
+        "handoff",
+        "preregistration"
+      ],
+      "on_fail": "INVALID",
+      "phase": "HANDOFF",
+      "predicate": "handoff.preregistration_id==preregistration.preregistration_id and handoff.preregistration_hash==preregistration.canonical_payload_hash",
+      "rule_id": "SRF-HOF-003",
+      "scope": "EQSResearchPaperHandoff",
+      "severity": "FATAL"
+    },
+    {
+      "description": "Valid handoff requires sealed OOS evidence.",
+      "error_code": "EQS-SRF-HANDOFF-OOS-EVIDENCE-MISSING",
+      "evidence_required": [],
+      "inputs": [
+        "handoff.oos_evidence_id",
+        "handoff.oos_evidence_hash",
+        "evidence_store"
+      ],
+      "on_fail": "BLOCK",
+      "phase": "HANDOFF",
+      "predicate": "resolve_exact_hash(oos_evidence_id,oos_evidence_hash)",
+      "rule_id": "SRF-HOF-004",
+      "scope": "EQSResearchPaperHandoff",
+      "severity": "FATAL"
+    },
+    {
+      "description": "Handoff search-ledger hash must match canonical ledger.",
+      "error_code": "EQS-SRF-HANDOFF-SEARCH-LEDGER-MISMATCH",
+      "evidence_required": [],
+      "inputs": [
+        "handoff.research_search_ledger_hash",
+        "search_ledger"
+      ],
+      "on_fail": "INVALID",
+      "phase": "HANDOFF",
+      "predicate": "handoff.research_search_ledger_hash==search_ledger.ledger_hash",
+      "rule_id": "SRF-HOF-005",
+      "scope": "EQSResearchPaperHandoff",
+      "severity": "FATAL"
+    },
+    {
+      "description": "Handoff stress evidence hash must match canonical required stress evidence.",
+      "error_code": "EQS-SRF-HANDOFF-STRESS-EVIDENCE-MISMATCH",
+      "evidence_required": [],
+      "inputs": [
+        "handoff.stress_evidence_hash",
+        "stress_evidence"
+      ],
+      "on_fail": "INVALID",
+      "phase": "HANDOFF",
+      "predicate": "handoff.stress_evidence_hash==canonical_stress_evidence_hash(stress_evidence)",
+      "rule_id": "SRF-HOF-006",
+      "scope": "EQSResearchPaperHandoff",
+      "severity": "FATAL"
+    },
+    {
+      "description": "VALID_RESEARCH_HANDOFF requires all qualification rules PASS and no BLOCK/INVALID/COMPROMISED result.",
+      "error_code": "EQS-SRF-HANDOFF-NOT-ELIGIBLE",
+      "evidence_required": [],
+      "inputs": [
+        "validation_report",
+        "handoff.qualification_status"
+      ],
+      "on_fail": "BLOCK",
+      "phase": "HANDOFF",
+      "predicate": "qualification_status!='VALID_RESEARCH_HANDOFF' or validation_report.aggregate_outcome=='PASS'",
+      "rule_id": "SRF-HOF-007",
+      "scope": "EQSResearchPaperHandoff",
+      "severity": "FATAL"
+    },
+    {
+      "description": "Research handoff may not encode self-authorization for PAPER or LIVE.",
+      "error_code": "EQS-SRF-PAPER-AUTHORITY-VIOLATION",
+      "evidence_required": [],
+      "inputs": [
+        "handoff"
+      ],
+      "on_fail": "BLOCK",
+      "phase": "HANDOFF",
+      "predicate": "not contains_programme_promotion_authority(handoff)",
+      "rule_id": "SRF-HOF-008",
+      "scope": "EQSResearchPaperHandoff",
+      "severity": "FATAL"
+    },
+    {
+      "description": "Every bound label definition/version/hash must resolve exactly.",
+      "error_code": "EQS-SRF-LABEL-DEFINITION-MISSING",
+      "evidence_required": [],
+      "inputs": [
+        "experiment.label_bindings",
+        "label_registry"
+      ],
+      "on_fail": "BLOCK",
+      "phase": "EXECUTE",
+      "predicate": "all(resolve_exact_label(b) for b in experiment.label_bindings)",
+      "rule_id": "SRF-LAB-001",
+      "scope": "EQSExperiment",
+      "severity": "FATAL"
+    },
+    {
+      "description": "No label, future outcome, or derivative of a label may be present in model inputs before it is knowable.",
+      "error_code": "EQS-SRF-LABEL-TARGET-LEAKAGE",
+      "evidence_required": [],
+      "inputs": [
+        "experiment",
+        "feature_lineage",
+        "label_lineage"
+      ],
+      "on_fail": "INVALID",
+      "phase": "BACKTEST",
+      "predicate": "intersects_predecision_future_information(feature_lineage,label_lineage) == false",
+      "rule_id": "SRF-LAB-002",
+      "scope": "EQSExperiment",
+      "severity": "FATAL"
+    },
+    {
+      "description": "Each experiment label binding hash must match the registered immutable label definition.",
+      "error_code": "EQS-SRF-LABEL-DEFINITION-HASH-MISMATCH",
+      "evidence_required": [],
+      "inputs": [
+        "experiment.label_bindings",
+        "label_registry"
+      ],
+      "on_fail": "INVALID",
+      "phase": "EXECUTE",
+      "predicate": "all(binding.definition_hash == resolve_label(binding).definition_hash for binding in experiment.label_bindings)",
+      "rule_id": "SRF-LAB-003",
+      "scope": "EQSExperiment",
+      "severity": "FATAL"
+    },
+    {
+      "description": "Metric observation must resolve exact registered metric ID/version/definition.",
+      "error_code": "EQS-SRF-METRIC-DEFINITION-MISMATCH",
+      "evidence_required": [],
+      "inputs": [
+        "metric_observation",
+        "metric_definition"
+      ],
+      "on_fail": "INVALID",
+      "phase": "QUALIFICATION",
+      "predicate": "exact_metric_definition_match(metric_observation,metric_definition)",
+      "rule_id": "SRF-MET-001",
+      "scope": "EQSMetricObservation",
+      "severity": "FATAL"
+    },
+    {
+      "description": "Required qualification metrics cannot be INSUFFICIENT_DATA or INVALID.",
+      "error_code": "EQS-SRF-METRIC-INSUFFICIENT-DATA",
+      "evidence_required": [],
+      "inputs": [
+        "metric_observation.status",
+        "preregistration.metrics"
+      ],
+      "on_fail": "BLOCK",
+      "phase": "QUALIFICATION",
+      "predicate": "not required_metric(metric_observation) or status == 'VALID'",
+      "rule_id": "SRF-MET-002",
+      "scope": "EQSMetricObservation",
+      "severity": "ERROR"
+    },
+    {
+      "description": "Campaign must have a valid OOS lock covering the campaign OOS interval.",
+      "error_code": "EQS-SRF-OOS-LOCK-MISSING",
+      "evidence_required": [],
+      "inputs": [
+        "campaign",
+        "oos_lock"
+      ],
+      "on_fail": "BLOCK",
+      "phase": "CANDIDATE_FREEZE",
+      "predicate": "oos_lock.campaign_id == campaign.campaign_id and [oos_lock.oos_start,oos_lock.oos_end] == campaign.oos range",
+      "rule_id": "SRF-OOS-001",
+      "scope": "EQSOOSLock",
+      "severity": "FATAL"
+    },
+    {
+      "description": "Outcome-class access is allowed only with a valid EQS-00 authorization and an authorized/open lock.",
+      "error_code": "EQS-SRF-OOS-UNAUTHORIZED-OUTCOME-ACCESS",
+      "evidence_required": [],
+      "inputs": [
+        "access_event",
+        "oos_lock",
+        "authorization"
+      ],
+      "on_fail": "COMPROMISED",
+      "phase": "OOS",
+      "predicate": "access_class != 'OUTCOME' or (decision=='ALLOW' and valid_eqs00_authorization(authorization,oos_lock,access_event))",
+      "rule_id": "SRF-OOS-002",
+      "scope": "EQSOOSAccessEvent",
+      "severity": "FATAL"
+    },
+    {
+      "description": "Authorization campaign, candidate and candidate hash must match the sealed candidate.",
+      "error_code": "EQS-SRF-OOS-AUTHORIZATION-MISMATCH",
+      "evidence_required": [],
+      "inputs": [
+        "authorization",
+        "candidate",
+        "campaign"
+      ],
+      "on_fail": "COMPROMISED",
+      "phase": "OOS",
+      "predicate": "authorization.authority=='EQS-00' and authorization.campaign_id==campaign.campaign_id and authorization.candidate_id==candidate.candidate_id and authorization.candidate_hash==candidate.candidate_hash",
+      "rule_id": "SRF-OOS-003",
+      "scope": "EQSOOSAuthorization",
+      "severity": "FATAL"
+    },
+    {
+      "description": "OOS access events must form a complete append-only hash chain.",
+      "error_code": "EQS-SRF-OOS-ACCESS-LOG-GAP",
+      "evidence_required": [],
+      "inputs": [
+        "oos_access_events"
+      ],
+      "on_fail": "COMPROMISED",
+      "phase": "OOS",
+      "predicate": "valid_contiguous_hash_chain(events)==true",
+      "rule_id": "SRF-OOS-004",
+      "scope": "EQSOOSAccessEvent",
+      "severity": "FATAL"
+    },
+    {
+      "description": "Consumed candidate hash must equal the authorized sealed candidate hash.",
+      "error_code": "EQS-SRF-OOS-CANDIDATE-MISMATCH",
+      "evidence_required": [],
+      "inputs": [
+        "oos_lock",
+        "candidate",
+        "authorization"
+      ],
+      "on_fail": "INVALID",
+      "phase": "OOS",
+      "predicate": "oos_lock.status!='CONSUMED' or oos_lock.consumed_candidate_hash==candidate.candidate_hash==authorization.candidate_hash",
+      "rule_id": "SRF-OOS-005",
+      "scope": "EQSOOSLock",
+      "severity": "FATAL"
+    },
+    {
+      "description": "A lock that ever entered COMPROMISED cannot return to LOCKED/AUTHORIZED/OPEN as if clean.",
+      "error_code": "EQS-SRF-OOS-RELOCK-PROHIBITED",
+      "evidence_required": [],
+      "inputs": [
+        "oos_lock_history"
+      ],
+      "on_fail": "COMPROMISED",
+      "phase": "OOS",
+      "predicate": "not exists transition(COMPROMISED -> [LOCKED,AUTHORIZED,OPEN,CONSUMED])",
+      "rule_id": "SRF-OOS-006",
+      "scope": "EQSOOSLock",
+      "severity": "FATAL"
+    },
+    {
+      "description": "Candidate-specific OOS outcome access cannot occur before the candidate is SEALED.",
+      "error_code": "EQS-SRF-OOS-OUTCOME-READ-BEFORE-FREEZE",
+      "evidence_required": [],
+      "inputs": [
+        "access_event",
+        "candidate"
+      ],
+      "on_fail": "COMPROMISED",
+      "phase": "OOS",
+      "predicate": "access_class!='OUTCOME' or candidate.status in ['SEALED','OOS_CONSUMED'] and candidate.frozen_at <= accessed_at",
+      "rule_id": "SRF-OOS-007",
+      "scope": "EQSOOSAccessEvent",
+      "severity": "FATAL"
+    },
+    {
+      "description": "Preregistration campaign ID and hash must match canonical campaign.",
+      "error_code": "EQS-SRF-PREREG-CAMPAIGN-BINDING-MISMATCH",
+      "evidence_required": [],
+      "inputs": [
+        "preregistration",
+        "campaign"
+      ],
+      "on_fail": "INVALID",
+      "phase": "REGISTER",
+      "predicate": "preregistration.campaign_id == campaign.campaign_id and preregistration.campaign_hash == campaign.campaign_hash",
+      "rule_id": "SRF-PRE-001",
+      "scope": "EQSPreregistration",
+      "severity": "FATAL"
+    },
+    {
+      "description": "Preregistration canonical hash must recompute exactly.",
+      "error_code": "EQS-SRF-PREREG-HASH-MISMATCH",
+      "evidence_required": [],
+      "inputs": [
+        "preregistration"
+      ],
+      "on_fail": "INVALID",
+      "phase": "REGISTER",
+      "predicate": "preregistration.canonical_payload_hash == canonical_hash(preregistration)",
+      "rule_id": "SRF-PRE-002",
+      "scope": "EQSPreregistration",
+      "severity": "FATAL"
+    },
+    {
+      "description": "Registered preregistration cannot be overwritten or changed in place.",
+      "error_code": "EQS-SRF-PREREG-IMMUTABILITY-VIOLATION",
+      "evidence_required": [],
+      "inputs": [
+        "prior_preregistration",
+        "candidate_preregistration"
+      ],
+      "on_fail": "INVALID",
+      "phase": "MUTATION",
+      "predicate": "canonical_semantics(prior)==canonical_semantics(candidate)",
+      "rule_id": "SRF-PRE-003",
+      "scope": "EQSPreregistration",
+      "severity": "FATAL"
+    },
+    {
+      "description": "Canonical confirmatory, validation, stress, and OOS experiments require a resolvable preregistration.",
+      "error_code": "EQS-SRF-PREREG-MISSING",
+      "evidence_required": [],
+      "inputs": [
+        "experiment",
+        "preregistration_registry"
+      ],
+      "on_fail": "BLOCK",
+      "phase": "EXECUTE",
+      "predicate": "experiment.experiment_class in ['EXPLORATORY','DIAGNOSTIC'] or resolve(experiment.preregistration_id) != null",
+      "rule_id": "SRF-PRE-004",
+      "scope": "EQSExperiment",
+      "severity": "FATAL"
+    },
+    {
+      "description": "Required reproducibility evidence must exist for qualification experiments.",
+      "error_code": "EQS-SRF-REPRODUCTION-MISSING",
+      "evidence_required": [],
+      "inputs": [
+        "campaign",
+        "reproduction_records"
+      ],
+      "on_fail": "BLOCK",
+      "phase": "QUALIFICATION",
+      "predicate": "reproduction_required(campaign) == false or has_required_reproduction(reproduction_records)",
+      "rule_id": "SRF-REP-001",
+      "scope": "EQSCandidateSeal",
+      "severity": "ERROR"
+    },
+    {
+      "description": "Required reproduction records must PASS declared tolerance.",
+      "error_code": "EQS-SRF-REPRODUCTION-FAILED",
+      "evidence_required": [],
+      "inputs": [
+        "reproduction_record.result"
+      ],
+      "on_fail": "BLOCK",
+      "phase": "QUALIFICATION",
+      "predicate": "result == 'PASS'",
+      "rule_id": "SRF-REP-002",
+      "scope": "EQSReproductionRecord",
+      "severity": "FATAL"
+    },
+    {
+      "description": "Every canonical experiment in the campaign must appear in the search ledger.",
+      "error_code": "EQS-SRF-SEARCH-LEDGER-EXPERIMENT-OMITTED",
+      "evidence_required": [],
+      "inputs": [
+        "search_ledger",
+        "experiment_registry"
+      ],
+      "on_fail": "BLOCK",
+      "phase": "QUALIFICATION",
+      "predicate": "set(campaign_experiment_ids) <= set(search_ledger.experiment_ids)",
+      "rule_id": "SRF-SRC-001",
+      "scope": "EQSResearchSearchLedger",
+      "severity": "FATAL"
+    },
+    {
+      "description": "Search-ledger counts must exactly reconcile from the experiment registry.",
+      "error_code": "EQS-SRF-SEARCH-LEDGER-COUNT-MISMATCH",
+      "evidence_required": [],
+      "inputs": [
+        "search_ledger",
+        "experiment_registry"
+      ],
+      "on_fail": "BLOCK",
+      "phase": "QUALIFICATION",
+      "predicate": "search_ledger.counts == recompute_counts(experiment_registry,campaign_id) and search_ledger.classification_counts == recompute_classification_counts(...)",
+      "rule_id": "SRF-SRC-002",
+      "scope": "EQSResearchSearchLedger",
+      "severity": "ERROR"
+    },
+    {
+      "description": "The search ledger must not contain experiment IDs that do not resolve within the same campaign.",
+      "error_code": "EQS-SRF-SEARCH-LEDGER-EXPERIMENT-UNKNOWN",
+      "evidence_required": [],
+      "inputs": [
+        "search_ledger.experiment_ids",
+        "experiment_registry"
+      ],
+      "on_fail": "BLOCK",
+      "phase": "QUALIFICATION",
+      "predicate": "all(resolve_experiment(id, search_ledger.campaign_id) != null for id in search_ledger.experiment_ids)",
+      "rule_id": "SRF-SRC-003",
+      "scope": "EQSResearchSearchLedger",
+      "severity": "FATAL"
+    },
+    {
+      "description": "Every preregistered required stress ID/type must have canonical evidence.",
+      "error_code": "EQS-SRF-STRESS-REQUIRED-MISSING",
+      "evidence_required": [],
+      "inputs": [
+        "preregistration.stress_requirements",
+        "stress_results"
+      ],
+      "on_fail": "BLOCK",
+      "phase": "QUALIFICATION",
+      "predicate": "all(required_stress_satisfied(x) for x in preregistration.stress_requirements)",
+      "rule_id": "SRF-STR-001",
+      "scope": "EQSCandidateSeal",
+      "severity": "FATAL"
+    },
+    {
+      "description": "Stress baseline must equal the sealed candidate baseline hash.",
+      "error_code": "EQS-SRF-STRESS-BASELINE-MISMATCH",
+      "evidence_required": [],
+      "inputs": [
+        "stress_result.baseline_hash",
+        "candidate"
+      ],
+      "on_fail": "INVALID",
+      "phase": "QUALIFICATION",
+      "predicate": "stress_result.baseline_hash == canonical_stress_baseline_hash(candidate)",
+      "rule_id": "SRF-STR-002",
+      "scope": "EQSStressResult",
+      "severity": "FATAL"
+    },
+    {
+      "description": "A required stress result cannot qualify when INCONCLUSIVE.",
+      "error_code": "EQS-SRF-STRESS-INCONCLUSIVE",
+      "evidence_required": [],
+      "inputs": [
+        "stress_result.result"
+      ],
+      "on_fail": "BLOCK",
+      "phase": "QUALIFICATION",
+      "predicate": "required(stress_result) == false or stress_result.result != 'INCONCLUSIVE'",
+      "rule_id": "SRF-STR-003",
+      "scope": "EQSStressResult",
+      "severity": "FATAL"
+    },
+    {
+      "description": "signal_time must not exceed decision_time.",
+      "error_code": "EQS-SRF-TIME-SIGNAL-AFTER-DECISION",
+      "evidence_required": [],
+      "inputs": [
+        "decision.signal_time",
+        "decision.decision_time"
+      ],
+      "on_fail": "INVALID",
+      "phase": "BACKTEST",
+      "predicate": "signal_time <= decision_time",
+      "rule_id": "SRF-TIM-001",
+      "scope": "EQSDecision",
+      "severity": "FATAL"
+    },
+    {
+      "description": "order_time must not precede its decision_time.",
+      "error_code": "EQS-SRF-TIME-DECISION-AFTER-ORDER",
+      "evidence_required": [],
+      "inputs": [
+        "order",
+        "decision"
+      ],
+      "on_fail": "INVALID",
+      "phase": "BACKTEST",
+      "predicate": "decision.decision_time <= order.order_time",
+      "rule_id": "SRF-TIM-002",
+      "scope": "EQSOrder",
+      "severity": "FATAL"
+    },
+    {
+      "description": "execution_time must not precede order_time.",
+      "error_code": "EQS-SRF-TIME-ORDER-AFTER-EXECUTION",
+      "evidence_required": [],
+      "inputs": [
+        "fill",
+        "order"
+      ],
+      "on_fail": "INVALID",
+      "phase": "BACKTEST",
+      "predicate": "order.order_time <= fill.execution_time",
+      "rule_id": "SRF-TIM-003",
+      "scope": "EQSFill",
+      "severity": "FATAL"
+    },
+    {
+      "description": "Every market/reference event used by a decision must satisfy known_from <= information_cutoff <= decision_time.",
+      "error_code": "EQS-SRF-TIME-KNOWN-FROM-AFTER-DECISION",
+      "evidence_required": [],
+      "inputs": [
+        "decision",
+        "information_lineage"
+      ],
+      "on_fail": "INVALID",
+      "phase": "BACKTEST",
+      "predicate": "max(lineage.known_from) <= decision.information_cutoff <= decision.decision_time",
+      "rule_id": "SRF-TIM-004",
+      "scope": "EQSDecision",
+      "severity": "FATAL"
+    },
+    {
+      "description": "Aggregate fills may not exceed order quantity.",
+      "error_code": "EQS-SRF-FILL-QUANTITY-EXCEEDS-ORDER",
+      "evidence_required": [],
+      "inputs": [
+        "order",
+        "fills"
+      ],
+      "on_fail": "INVALID",
+      "phase": "BACKTEST",
+      "predicate": "sum(abs(fill.quantity) for fill in fills_for(order)) <= order.quantity",
+      "rule_id": "SRF-TIM-005",
+      "scope": "EQSFill",
+      "severity": "FATAL"
+    },
+    {
+      "description": "Every fill must bind to a resolvable immutable market-state snapshot.",
+      "error_code": "EQS-SRF-FILL-MARKET-STATE-MISSING",
+      "evidence_required": [],
+      "inputs": [
+        "fill.market_state_hash",
+        "market_state_store"
+      ],
+      "on_fail": "BLOCK",
+      "phase": "BACKTEST",
+      "predicate": "resolve_hash(fill.market_state_hash) != null",
+      "rule_id": "SRF-TIM-006",
+      "scope": "EQSFill",
+      "severity": "FATAL"
+    },
+    {
+      "description": "Where a source timing model declares receipt cannot precede known-from, enforce receipt_time >= known_from.",
+      "error_code": "EQS-SRF-TIME-RECEIPT-BEFORE-KNOWN-FROM",
+      "evidence_required": [],
+      "inputs": [
+        "market_event",
+        "source_timing_model"
+      ],
+      "on_fail": "INVALID",
+      "phase": "BACKTEST",
+      "predicate": "source_timing_model.allows_receipt_before_known_from == true or market_event.receipt_time >= market_event.known_from",
+      "rule_id": "SRF-TIM-007",
+      "scope": "EQSMarketEvent",
+      "severity": "FATAL"
+    }
+  ],
+  "schema_bundle_id": "urn:eqs:srf:v1:schema-bundle"
+}

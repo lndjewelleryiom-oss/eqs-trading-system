@@ -1,0 +1,42 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test-data-live-evidence-guard:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install project test dependencies
+        run: python -m pip install -e ".[dev]"
+      - name: Reject TEST_DATA in live evidence and authorization fields
+        run: python -m quant_system.ci.test_data_evidence_guard --root .
+      - name: Run EQS-SRF-V1 canonical workflow commissioning tests
+        run: pytest -q tests/test_srf_v1_canonical_workflow.py
+      - name: Run repository tests
+        run: pytest -q
+
+  infrastructure-boundary-guard:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install project test dependencies
+        run: python -m pip install -e ".[dev]"
+      - name: Run infrastructure-boundary containment suite
+        run: >-
+          pytest -q
+          tests/test_infrastructure_boundary_e2e.py
+          tests/test_infrastructure_dataset_gate.py
+          tests/test_infrastructure_lineage_hard_gate.py
+          tests/test_nonlive_execution_path.py
+          tests/test_interface_live_runtime.py
+      - name: Fail closed on forbidden infrastructure consumers
+        run: python -m quant_system.ci.infrastructure_boundary_guard

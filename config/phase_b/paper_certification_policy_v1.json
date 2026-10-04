@@ -1,0 +1,143 @@
+{
+  "accepted_evidence_classes": [
+    "CANONICAL_CONTROL",
+    "DOMAIN_AUTHORITY",
+    "EXTERNAL_TRUTH",
+    "PRIMARY_OBSERVATION",
+    "SEALED_COMMISSIONING"
+  ],
+  "authority_bindings": {
+    "CAPITAL_RISK_STATE": [
+      {
+        "allowed_evidence_classes": [
+          "DOMAIN_AUTHORITY"
+        ],
+        "producer_service_id": "EQS-SHARED-03",
+        "rank": 0
+      }
+    ],
+    "COMMISSIONING_RESULT": [
+      {
+        "allowed_evidence_classes": [
+          "SEALED_COMMISSIONING"
+        ],
+        "producer_service_id": "EQS-SHARED-06",
+        "rank": 0
+      }
+    ],
+    "EXECUTION_INTERNAL_STATE": [
+      {
+        "allowed_evidence_classes": [
+          "DOMAIN_AUTHORITY"
+        ],
+        "producer_service_id": "EQS-SHARED-04",
+        "rank": 0
+      }
+    ],
+    "EXTERNAL_ORDER_POSITION_FILL_TRUTH": [
+      {
+        "allowed_evidence_classes": [
+          "EXTERNAL_TRUTH"
+        ],
+        "producer_service_id": "EQS-SHARED-04-READONLY-EXTERNAL",
+        "rank": 0
+      }
+    ],
+    "MARKET_DATA_HEALTH": [
+      {
+        "allowed_evidence_classes": [
+          "DOMAIN_AUTHORITY",
+          "PRIMARY_OBSERVATION"
+        ],
+        "producer_service_id": "EQS-SHARED-01",
+        "rank": 0
+      }
+    ],
+    "PORTFOLIO_STATE": [
+      {
+        "allowed_evidence_classes": [
+          "DOMAIN_AUTHORITY"
+        ],
+        "producer_service_id": "EQS-SHARED-05",
+        "rank": 0
+      }
+    ],
+    "PROGRAMME_MODE": [
+      {
+        "allowed_evidence_classes": [
+          "CANONICAL_CONTROL"
+        ],
+        "producer_service_id": "EQS-00",
+        "rank": 0
+      }
+    ],
+    "RESEARCH_OPERATIONAL_STATE": [
+      {
+        "allowed_evidence_classes": [
+          "DOMAIN_AUTHORITY"
+        ],
+        "producer_service_id": "EQS-SHARED-02",
+        "rank": 0
+      }
+    ],
+    "SERVICE_RUNTIME_HEALTH": [
+      {
+        "allowed_evidence_classes": [
+          "DOMAIN_AUTHORITY",
+          "PRIMARY_OBSERVATION"
+        ],
+        "producer_service_id": "EQS-SHARED-06",
+        "rank": 0
+      }
+    ]
+  },
+  "environment": "PAPER",
+  "gate_policies": {
+    "OPS_G01_SERVICE_HEALTH": {
+      "allow_degraded": false,
+      "required": true
+    },
+    "OPS_G02_DATA_HEALTH": {
+      "required": true
+    },
+    "OPS_G03_RISK_HEALTH": {
+      "required": true
+    },
+    "OPS_G04_EXECUTION_HEALTH": {
+      "required": true
+    },
+    "OPS_G05_RECONCILIATION": {
+      "required": true
+    },
+    "OPS_G06_MODE_INTEGRITY": {
+      "required": true,
+      "required_authorised_mode": "PAPER"
+    },
+    "OPS_G07_COMMISSIONING": {
+      "required": true,
+      "timing_policy_id": "eqs-phase-b-commissioning-timing-v1"
+    },
+    "OPS_G08_RECOVERY": {
+      "required": true
+    },
+    "OPS_G09_SECRET_HYGIENE": {
+      "required": true,
+      "required_seal_artifact_types": [
+        "SECRET_HYGIENE_SCAN_PASS"
+      ]
+    },
+    "OPS_G10_SAFETY_INTERFACE": {
+      "authorising_policy_ids": [
+        "risk-safety-v1"
+      ],
+      "required": true
+    }
+  },
+  "policy_id": "eqs-phase-b-paper-cert-v1",
+  "policy_sha256": "aad9737aaf8fde16bb18553d7d344a185ce102d4235f93db7239dc721b83db02",
+  "policy_version": "1",
+  "safety_action_policy_bindings": [
+    "risk-safety-v1"
+  ],
+  "verified": true
+}

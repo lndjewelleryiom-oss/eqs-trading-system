@@ -1,0 +1,58 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://eqs.local/schemas/shared06/heartbeat_v1.json",
+  "title": "Heartbeat V1",
+  "type": "object",
+  "required": [
+    "heartbeat_id",
+    "service_id",
+    "emitted_at",
+    "received_at",
+    "policy_id",
+    "sequence",
+    "restart_generation",
+    "health_state"
+  ],
+  "properties": {
+    "heartbeat_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "service_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "emitted_at": {
+      "$ref": "common_defs_v1.json#/$defs/timestamp_utc"
+    },
+    "received_at": {
+      "$ref": "common_defs_v1.json#/$defs/timestamp_utc"
+    },
+    "policy_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "sequence": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "restart_generation": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "health_state": {
+      "$ref": "common_defs_v1.json#/$defs/health_state"
+    },
+    "payload_hash": {
+      "oneOf": [
+        {
+          "$ref": "common_defs_v1.json#/$defs/sha256"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    }
+  },
+  "additionalProperties": false
+}

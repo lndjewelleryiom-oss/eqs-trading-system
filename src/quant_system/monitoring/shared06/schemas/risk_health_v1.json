@@ -1,0 +1,70 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://eqs.local/schemas/shared06/risk_health_v1.json",
+  "title": "Capital & Risk Health V1",
+  "type": "object",
+  "required": [
+    "risk_service_id",
+    "observed_at",
+    "policy_version",
+    "reservation_state",
+    "account_freshness_state",
+    "margin_state",
+    "kill_switch_state",
+    "reconciliation_state",
+    "health_state"
+  ],
+  "properties": {
+    "risk_service_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "observed_at": {
+      "$ref": "common_defs_v1.json#/$defs/timestamp_utc"
+    },
+    "policy_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "reservation_state": {
+      "enum": [
+        "CONSISTENT",
+        "INCONSISTENT",
+        "UNKNOWN"
+      ]
+    },
+    "account_freshness_state": {
+      "enum": [
+        "FRESH",
+        "STALE",
+        "UNKNOWN"
+      ]
+    },
+    "margin_state": {
+      "enum": [
+        "NORMAL",
+        "BREACH",
+        "UNKNOWN",
+        "NOT_APPLICABLE"
+      ]
+    },
+    "kill_switch_state": {
+      "enum": [
+        "CLEAR",
+        "SCOPED_ACTIVE",
+        "PORTFOLIO_ACTIVE",
+        "UNKNOWN"
+      ]
+    },
+    "reconciliation_state": {
+      "$ref": "common_defs_v1.json#/$defs/reconciliation_state"
+    },
+    "health_state": {
+      "$ref": "common_defs_v1.json#/$defs/health_state"
+    },
+    "reason_codes": {
+      "$ref": "common_defs_v1.json#/$defs/reason_codes"
+    }
+  },
+  "additionalProperties": false
+}

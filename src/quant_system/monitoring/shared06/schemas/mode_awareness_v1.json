@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://eqs.local/schemas/shared06/mode_awareness_v1.json",
+  "title": "Mode Awareness V1",
+  "type": "object",
+  "required": [
+    "observation_id",
+    "observed_at",
+    "authorised_mode",
+    "actual_mode",
+    "match",
+    "health_state"
+  ],
+  "properties": {
+    "observation_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "observed_at": {
+      "$ref": "common_defs_v1.json#/$defs/timestamp_utc"
+    },
+    "authorised_mode": {
+      "$ref": "common_defs_v1.json#/$defs/programme_mode"
+    },
+    "actual_mode": {
+      "$ref": "common_defs_v1.json#/$defs/programme_mode"
+    },
+    "match": {
+      "type": "boolean"
+    },
+    "health_state": {
+      "$ref": "common_defs_v1.json#/$defs/health_state"
+    },
+    "reason_codes": {
+      "$ref": "common_defs_v1.json#/$defs/reason_codes"
+    }
+  },
+  "additionalProperties": false
+}

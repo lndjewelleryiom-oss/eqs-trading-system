@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://eqs.local/schemas/shared06/evidence_seal_v1.json",
+  "title": "Evidence Seal V1",
+  "type": "object",
+  "required": [
+    "seal_id",
+    "artifact_type",
+    "artifact_id",
+    "schema_version",
+    "created_at",
+    "content_sha256",
+    "input_evidence_refs",
+    "verification_status"
+  ],
+  "properties": {
+    "seal_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "artifact_type": {
+      "type": "string",
+      "minLength": 1
+    },
+    "artifact_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "schema_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "created_at": {
+      "$ref": "common_defs_v1.json#/$defs/timestamp_utc"
+    },
+    "content_sha256": {
+      "$ref": "common_defs_v1.json#/$defs/sha256"
+    },
+    "input_evidence_refs": {
+      "$ref": "common_defs_v1.json#/$defs/evidence_refs"
+    },
+    "verification_status": {
+      "enum": [
+        "VERIFIED",
+        "FAILED",
+        "UNKNOWN"
+      ]
+    }
+  },
+  "additionalProperties": false
+}

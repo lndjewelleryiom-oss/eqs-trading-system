@@ -1,0 +1,198 @@
+{
+  "campaign": {
+    "bootstrap_monte_carlo": [
+      "circular block bootstrap of net return mean, >=5000 simulations, 95% interval, deterministic campaign seed",
+      "block size = max(1, empirically estimated dependence horizon rounded to observations) and fixed before OOS",
+      "Monte Carlo trade-path resampling >=5000 simulations with terminal equity and maximum-drawdown distribution",
+      "bootstrap lower 95% bound of mean net return must be >0 for promotion"
+    ],
+    "campaign_id": "ALPHA-MOMENTUM-TREND-001",
+    "capacity_liquidity_constraints": [
+      "simulated participation <=1% of observed interval traded quote volume",
+      "simulated marketable size <=5% of reconstructed top-5 book notional when L2 is required",
+      "candidate rejected if >10% of its gross pre-cost P&L arises from fills that violate liquidity caps",
+      "candidate rejected if a single instrument contributes >40% of net OOS P&L without passing leave-one-out robustness",
+      "capacity estimate must remain positive after 2x costs and at half the volume-liquidity threshold"
+    ],
+    "economic_hypothesis": "Persistent PIT multi-horizon returns with directional efficiency can continue over intraday horizons, particularly outside stressed liquidity states, after turnover, funding and impact costs.",
+    "empirical_status": "UNVIEWED",
+    "family": "momentum-trend",
+    "feature_inputs": [
+      "momentum.return_60s_bps",
+      "momentum.return_300s_bps",
+      "momentum.efficiency_300s",
+      "volatility.realized_300s_bps",
+      "open_interest.change_300s_pct",
+      "regime.state",
+      "regime.stress_score"
+    ],
+    "funding_financing_treatment": [
+      "apply realized/known funding cashflows only at their PIT settlement/availability times; never backfill future funding",
+      "funding is included in net P&L for every position spanning a funding settlement, regardless of strategy family",
+      "quote-cash financing stress: 0%, 5%, and 10% annualized ACT/365; promotion must survive 5%",
+      "missing required funding observations fail closed for intervals that cross a settlement rather than assuming zero"
+    ],
+    "max_family_trials": 256,
+    "max_parameter_combinations": 192,
+    "minimum_requirements": [
+      [
+        "bootstrap_simulations",
+        5000
+      ],
+      [
+        "independent_samples",
+        180
+      ],
+      [
+        "monte_carlo_simulations",
+        5000
+      ],
+      [
+        "trades",
+        200
+      ]
+    ],
+    "multiple_testing": [
+      "count every attempted family configuration, abandoned run and parameter combination in the trial ledger",
+      "Holm-Bonferroni family-wise alpha=0.05 across primary candidate p-values",
+      "White-style family reality check with >=5000 common-index block-bootstrap samples",
+      "Deflated Sharpe probability >=0.95 using total family trial count",
+      "CSCV/PBO <=0.25 using the complete comparable candidate matrix",
+      "research budget cannot be reset after rejection or code refactor"
+    ],
+    "parameter_space": [
+      {
+        "choices": [],
+        "high": 100,
+        "kind": "float",
+        "low": 5,
+        "name": "short_return_bps",
+        "step": 5
+      },
+      {
+        "choices": [],
+        "high": 250,
+        "kind": "float",
+        "low": 10,
+        "name": "long_return_bps",
+        "step": 10
+      },
+      {
+        "choices": [],
+        "high": 0.9,
+        "kind": "float",
+        "low": 0.2,
+        "name": "efficiency_min",
+        "step": 0.1
+      },
+      {
+        "choices": [],
+        "high": 240,
+        "kind": "int",
+        "low": 5,
+        "name": "holding_minutes",
+        "step": 5
+      },
+      {
+        "choices": [
+          "long_short",
+          "long_only",
+          "short_only"
+        ],
+        "high": null,
+        "kind": "choice",
+        "low": null,
+        "name": "direction",
+        "step": null
+      }
+    ],
+    "periods": {
+      "oos_end": "2026-09-21T23:59:59+00:00",
+      "oos_start": "2026-04-01T00:00:00+00:00",
+      "training_end": "2025-06-30T23:59:59+00:00",
+      "training_start": "2023-01-01T00:00:00+00:00",
+      "validation_end": "2026-03-31T23:59:59+00:00",
+      "validation_start": "2025-07-01T00:00:00+00:00"
+    },
+    "preregistered_at": "2026-09-22T21:55:00+00:00",
+    "promotion_requirements": [
+      "all preregistered statistical, leakage, sample, cost, sensitivity and capacity gates pass",
+      "locked OOS net mean >0 after fees, slippage, impact, funding and financing",
+      "no tuning, universe edits or feature-definition edits after locked OOS is opened",
+      "R1.3 dataset manifest, universe fingerprint, FeatureRunManifest fingerprints and experiment manifest are retained",
+      "promotion creates a research CANDIDATE only; PAPER/SHADOW evidence is still required and no live authorization is implied"
+    ],
+    "random_seed": 1401,
+    "rejection_conditions": [
+      "any point-in-time leakage, future revision use, universe survivorship leak or lineage mismatch",
+      "locked OOS net mean <=0 after all costs/funding/financing",
+      "walk-forward positive fraction <2/3 or parameter profitable fraction <2/3",
+      "DSR probability <0.95, PBO >0.25, reality-check p>0.05, or multiplicity correction fails",
+      "2x transaction-cost stress is not net-positive",
+      "bootstrap lower 95% bound of mean net return <=0",
+      "net effect disappears after excluding the highest-return instrument or month"
+    ],
+    "required_dataset_format": "crypto-perps-research-v1",
+    "required_feature_engine": "crypto-perps-feature-engine-v1",
+    "sensitivity_tests": [
+      "one-step perturbation on every numeric parameter and all adjacent categorical choices",
+      "full bounded coarse parameter surface; reject isolated optimum islands",
+      "transaction costs at 1.0x,1.5x,2.0x",
+      "signal latency +100ms,+500ms,+1000ms where source granularity supports it",
+      "venue leave-one-out and top-volume-instrument leave-one-out",
+      "subperiod and regime slices including high-volatility/high-stress periods",
+      "remove open-interest conditioning",
+      "exclude TREND regime label and use raw momentum only"
+    ],
+    "statistical_gate": {
+      "alpha": 0.05,
+      "bootstrap_confidence": 0.95,
+      "bootstrap_lower_mean_gt": 0.0,
+      "max_pbo": 0.25,
+      "max_reality_check_p": 0.05,
+      "min_dsr_probability": 0.95,
+      "min_oos_mean_after_costs": 0.0,
+      "min_parameter_robust_fraction": 0.6666666666666666,
+      "min_walk_forward_positive_fraction": 0.6666666666666666
+    },
+    "transaction_cost_assumptions": [
+      [
+        "fee_policy",
+        "use PIT venue/tier fees when available; otherwise floor maker=2bps,taker=5bps"
+      ],
+      [
+        "impact",
+        "coefficient 10bps at 100% participation; exponent 0.5"
+      ],
+      [
+        "order_style",
+        "marketable at next eligible event; turnover costs charged on every rebalance"
+      ],
+      [
+        "slippage",
+        "half-spread + adverse 2bps floor + square-root participation impact"
+      ],
+      [
+        "stress",
+        "re-run at 1.0x,1.5x,2.0x base transaction costs; 2.0x must remain net-positive"
+      ]
+    ],
+    "universe_rules": [
+      "Binance USD-M, Bybit Linear and OKX SWAP linear crypto perpetuals only",
+      "instrument must be ACTIVE/TRADING/OPEN in the R1.3 point-in-time universe at each decision time",
+      "minimum 90 calendar days of PIT history before first eligible signal",
+      "rolling 30-day median quote volume must be >= 10000000 USD equivalent per day",
+      "no survivor-only filtering; delisted instruments remain in historical samples until PIT inactive",
+      "no post-hoc asset exclusions after campaign results are inspected"
+    ],
+    "validation_design": [
+      "chronological train/validation/locked-OOS periods exactly as preregistered",
+      "rolling walk-forward: 180d train, 30d test, 30d step; minimum 6 completed folds",
+      "purge observations whose label/information windows overlap test spans; minimum purge 48h",
+      "24h embargo after each test span before training observations can re-enter",
+      "all parameter selection occurs on training/validation only; locked OOS is single-use"
+    ],
+    "version": "1.0.0"
+  },
+  "campaign_fingerprint": "3dadf02243e6a7c5176d165450a333ce622c957ca95ae002aa0ef72880e99a94"
+}

@@ -1,0 +1,64 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://eqs.local/schemas/shared06/reconciliation_v1.json",
+  "title": "Reconciliation V1",
+  "type": "object",
+  "required": [
+    "reconciliation_id",
+    "scope",
+    "internal_snapshot_id",
+    "external_snapshot_id",
+    "observed_at",
+    "state",
+    "differences",
+    "materiality_policy_id"
+  ],
+  "properties": {
+    "reconciliation_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "scope": {
+      "enum": [
+        "POSITIONS",
+        "CASH",
+        "BALANCES",
+        "ORDERS",
+        "FILLS",
+        "FEES",
+        "MULTI"
+      ]
+    },
+    "internal_snapshot_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "external_snapshot_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "observed_at": {
+      "$ref": "common_defs_v1.json#/$defs/timestamp_utc"
+    },
+    "state": {
+      "$ref": "common_defs_v1.json#/$defs/reconciliation_state"
+    },
+    "differences": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "materiality_policy_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "material_unresolved": {
+      "type": "boolean"
+    },
+    "evidence_refs": {
+      "$ref": "common_defs_v1.json#/$defs/evidence_refs"
+    }
+  },
+  "additionalProperties": false
+}

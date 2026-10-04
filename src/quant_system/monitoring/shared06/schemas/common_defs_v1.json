@@ -1,0 +1,77 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://eqs.local/schemas/shared06/common_defs_v1.json",
+  "title": "EQS-SHARED-06 Common Definitions V1",
+  "$defs": {
+    "timestamp_utc": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "(Z|[+-]00:00)$"
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[A-Fa-f0-9]{64}$"
+    },
+    "health_state": {
+      "enum": [
+        "HEALTHY",
+        "DEGRADED",
+        "BLOCKED",
+        "UNKNOWN"
+      ]
+    },
+    "severity": {
+      "enum": [
+        "INFO",
+        "WARNING",
+        "HIGH",
+        "CRITICAL"
+      ]
+    },
+    "programme_mode": {
+      "enum": [
+        "DISABLED",
+        "PAPER",
+        "SHADOW",
+        "LIVE_PROBATION",
+        "LIVE_LIMITED",
+        "LIVE_FULL"
+      ]
+    },
+    "commissioning_status": {
+      "enum": [
+        "PLANNED",
+        "RUNNING",
+        "PASS",
+        "FAIL",
+        "INCOMPLETE",
+        "BLOCKED",
+        "UNKNOWN"
+      ]
+    },
+    "reconciliation_state": {
+      "enum": [
+        "MATCHED",
+        "MISMATCH",
+        "UNKNOWN",
+        "STALE"
+      ]
+    },
+    "reason_codes": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "evidence_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    }
+  }
+}

@@ -1,0 +1,443 @@
+{
+  "catalog_id": "EQS-SHARED-06-RULE-CATALOG-V1",
+  "catalog_version": "1.0.0",
+  "canonical_gate_status": "PROPOSED_INTERFACE_ONLY_UNTIL_EQS00_ACCEPTS",
+  "failure_codes": {
+    "OPS_UNKNOWN_CRITICAL_DEPENDENCY": "Safety-critical dependency state is unknown.",
+    "OPS_MODE_MISMATCH": "Actual runtime mode differs from authorised mode.",
+    "OPS_MATERIAL_RECON_MISMATCH": "Material reconciliation mismatch is unresolved.",
+    "OPS_HEARTBEAT_POLICY_BREACH": "Safety-critical heartbeat policy has been breached.",
+    "OPS_INVALID_COMMISSIONING_PASS": "Commissioning PASS lacks required PASS checks, terminal completion or verified seal.",
+    "OPS_EVIDENCE_CLASSIFICATION_BREACH": "Non-real-market evidence was represented as real-market evidence.",
+    "OPS_SILENT_SEMANTIC_FAILOVER": "Failover occurred across differing source semantics without explicit transition.",
+    "OPS_SECRET_EXPOSURE": "Credential/secret material detected in logging/evidence.",
+    "OPS_PROMOTION_AUTHORITY_BREACH": "Monitoring attempted capital/programme promotion.",
+    "OPS_DASHBOARD_EVIDENCE_CONFLICT": "Dashboard state conflicts with underlying evidence.",
+    "OPS_TIME_REGRESSION": "Timestamp ordering is impossible or regressed.",
+    "OPS_POLICY_REFERENCE_MISSING": "A required policy reference is absent.",
+    "OPS_INCIDENT_TIME_INVALID": "Incident lifecycle timestamps are inconsistent.",
+    "OPS_RECOVERY_NOT_AUTHORITATIVE": "Recovery completed without authoritative state restoration.",
+    "OPS_RECON_UNKNOWN_ON_RECOVERY": "Recovery ended with reconciliation UNKNOWN/STALE.",
+    "OPS_UNKNOWN_ORDER_OUTCOME": "Unknown execution outcome exists in a safety-critical execution state.",
+    "OPS_HEALTHY_WITH_BLOCKING_REASON": "HEALTHY state contains a blocking reason.",
+    "OPS_FAILING_REQUIRED_CHECK": "Required commissioning check is FAIL/UNKNOWN.",
+    "OPS_PASS_WITHOUT_DURATION": "Soak PASS ended before preregistered required duration.",
+    "OPS_UNVERIFIED_SEAL": "Evidence or commissioning seal is not verified."
+  },
+  "proposed_gate_hooks": {
+    "OPS_G01_SERVICE_HEALTH": "All safety-critical services have non-UNKNOWN authoritative health.",
+    "OPS_G02_DATA_HEALTH": "Market-data health is acceptable under bound policies.",
+    "OPS_G03_RISK_HEALTH": "Capital & Risk health is authoritative and reconciled.",
+    "OPS_G04_EXECUTION_HEALTH": "Execution health has no unresolved unknown order outcomes.",
+    "OPS_G05_RECONCILIATION": "Material internal/external state is reconciled.",
+    "OPS_G06_MODE_INTEGRITY": "Actual mode equals authorised mode.",
+    "OPS_G07_COMMISSIONING": "Required commissioning evidence is complete and sealed.",
+    "OPS_G08_RECOVERY": "Restart/recovery returns to authoritative reconciled state.",
+    "OPS_G09_SECRET_HYGIENE": "No secret leakage detected.",
+    "OPS_G10_SAFETY_INTERFACE": "Safety-action requests route through authorised Capital & Risk policy."
+  },
+  "rules": [
+    {
+      "rule_id": "OPS-R001",
+      "severity": "CRITICAL",
+      "scope": [
+        "service_health"
+      ],
+      "inputs": [
+        "dependency_states"
+      ],
+      "predicate": "exists dependency where safety_critical=true and health_state=UNKNOWN",
+      "failure_code": "OPS_UNKNOWN_CRITICAL_DEPENDENCY",
+      "on_failure": {
+        "health_state": "UNKNOWN",
+        "block": true
+      },
+      "gate_hooks": [
+        "OPS_G01_SERVICE_HEALTH"
+      ]
+    },
+    {
+      "rule_id": "OPS-R002",
+      "severity": "CRITICAL",
+      "scope": [
+        "service_health",
+        "mode_awareness"
+      ],
+      "inputs": [
+        "authorised_mode",
+        "actual_mode"
+      ],
+      "predicate": "authorised_mode != actual_mode",
+      "failure_code": "OPS_MODE_MISMATCH",
+      "on_failure": {
+        "health_state": "BLOCKED",
+        "incident_required": true
+      },
+      "gate_hooks": [
+        "OPS_G06_MODE_INTEGRITY"
+      ]
+    },
+    {
+      "rule_id": "OPS-R003",
+      "severity": "CRITICAL",
+      "scope": [
+        "reconciliation"
+      ],
+      "inputs": [
+        "state",
+        "material_unresolved"
+      ],
+      "predicate": "material_unresolved=true or state=UNKNOWN",
+      "failure_code": "OPS_MATERIAL_RECON_MISMATCH",
+      "on_failure": {
+        "block": true,
+        "incident_required": true
+      },
+      "gate_hooks": [
+        "OPS_G05_RECONCILIATION"
+      ]
+    },
+    {
+      "rule_id": "OPS-R004",
+      "severity": "HIGH",
+      "scope": [
+        "heartbeat"
+      ],
+      "inputs": [
+        "policy_id",
+        "health_state"
+      ],
+      "predicate": "external heartbeat evaluator reports policy breach for safety-critical service",
+      "failure_code": "OPS_HEARTBEAT_POLICY_BREACH",
+      "on_failure": {
+        "health_state_must_not": "HEALTHY"
+      },
+      "gate_hooks": [
+        "OPS_G01_SERVICE_HEALTH"
+      ]
+    },
+    {
+      "rule_id": "OPS-R005",
+      "severity": "CRITICAL",
+      "scope": [
+        "commissioning_run"
+      ],
+      "inputs": [
+        "status",
+        "checks",
+        "terminal_completion_verified",
+        "seal_verified"
+      ],
+      "predicate": "status=PASS and (any required check != PASS or terminal_completion_verified!=true or seal_verified!=true)",
+      "failure_code": "OPS_INVALID_COMMISSIONING_PASS",
+      "on_failure": {
+        "status": "FAIL"
+      },
+      "gate_hooks": [
+        "OPS_G07_COMMISSIONING"
+      ]
+    },
+    {
+      "rule_id": "OPS-R006",
+      "severity": "CRITICAL",
+      "scope": [
+        "evidence_metadata"
+      ],
+      "inputs": [
+        "evidence_class",
+        "represented_class"
+      ],
+      "predicate": "source evidence class is TEST_FIXTURE/SIMULATION/PAPER/SHADOW and represented_class=REAL_PUBLIC_MARKET",
+      "failure_code": "OPS_EVIDENCE_CLASSIFICATION_BREACH",
+      "on_failure": {
+        "acceptance": "REJECT"
+      },
+      "gate_hooks": [
+        "OPS_G07_COMMISSIONING"
+      ]
+    },
+    {
+      "rule_id": "OPS-R007",
+      "severity": "HIGH",
+      "scope": [
+        "failover_event"
+      ],
+      "inputs": [
+        "source_semantics_equal",
+        "transition_recorded",
+        "downstream_notified"
+      ],
+      "predicate": "source_semantics_equal=false and (transition_recorded=false or downstream_notified=false)",
+      "failure_code": "OPS_SILENT_SEMANTIC_FAILOVER",
+      "on_failure": {
+        "health_state": "BLOCKED"
+      },
+      "gate_hooks": [
+        "OPS_G02_DATA_HEALTH"
+      ]
+    },
+    {
+      "rule_id": "OPS-R008",
+      "severity": "CRITICAL",
+      "scope": [
+        "logs",
+        "evidence"
+      ],
+      "inputs": [
+        "secret_scan_result"
+      ],
+      "predicate": "secret_scan_result=DETECTED",
+      "failure_code": "OPS_SECRET_EXPOSURE",
+      "on_failure": {
+        "incident_required": true,
+        "acceptance": "REJECT"
+      },
+      "gate_hooks": [
+        "OPS_G09_SECRET_HYGIENE"
+      ]
+    },
+    {
+      "rule_id": "OPS-R009",
+      "severity": "CRITICAL",
+      "scope": [
+        "safety_action_request"
+      ],
+      "inputs": [
+        "requested_action"
+      ],
+      "predicate": "requested_action not in allowed safety-action enum or action semantically promotes capital/programme state",
+      "failure_code": "OPS_PROMOTION_AUTHORITY_BREACH",
+      "on_failure": {
+        "request_status": "REJECTED"
+      },
+      "gate_hooks": [
+        "OPS_G10_SAFETY_INTERFACE"
+      ]
+    },
+    {
+      "rule_id": "OPS-R010",
+      "severity": "HIGH",
+      "scope": [
+        "dashboard_snapshot"
+      ],
+      "inputs": [
+        "dashboard_state",
+        "evidence_state"
+      ],
+      "predicate": "dashboard_state conflicts with underlying evidence_state",
+      "failure_code": "OPS_DASHBOARD_EVIDENCE_CONFLICT",
+      "on_failure": {
+        "dashboard_authoritative": false,
+        "health_state": "UNKNOWN"
+      },
+      "gate_hooks": [
+        "OPS_G01_SERVICE_HEALTH"
+      ]
+    },
+    {
+      "rule_id": "OPS-R011",
+      "severity": "HIGH",
+      "scope": [
+        "heartbeat",
+        "incident",
+        "commissioning_run",
+        "restart_recovery_test"
+      ],
+      "inputs": [
+        "timestamps"
+      ],
+      "predicate": "timestamp ordering regresses or end precedes start",
+      "failure_code": "OPS_TIME_REGRESSION",
+      "on_failure": {
+        "acceptance": "REJECT"
+      },
+      "gate_hooks": [
+        "OPS_G01_SERVICE_HEALTH",
+        "OPS_G07_COMMISSIONING",
+        "OPS_G08_RECOVERY"
+      ]
+    },
+    {
+      "rule_id": "OPS-R012",
+      "severity": "HIGH",
+      "scope": [
+        "heartbeat",
+        "data_health",
+        "reconciliation",
+        "alert_event",
+        "safety_action_request"
+      ],
+      "inputs": [
+        "policy_id fields"
+      ],
+      "predicate": "required policy reference missing or blank",
+      "failure_code": "OPS_POLICY_REFERENCE_MISSING",
+      "on_failure": {
+        "state": "UNKNOWN"
+      },
+      "gate_hooks": [
+        "OPS_G01_SERVICE_HEALTH",
+        "OPS_G02_DATA_HEALTH",
+        "OPS_G05_RECONCILIATION",
+        "OPS_G10_SAFETY_INTERFACE"
+      ]
+    },
+    {
+      "rule_id": "OPS-R013",
+      "severity": "HIGH",
+      "scope": [
+        "incident"
+      ],
+      "inputs": [
+        "started_at",
+        "detected_at",
+        "recovered_at",
+        "resolved_at"
+      ],
+      "predicate": "detected_at < started_at or recovered_at < started_at or resolved_at < started_at",
+      "failure_code": "OPS_INCIDENT_TIME_INVALID",
+      "on_failure": {
+        "record_valid": false
+      },
+      "gate_hooks": [
+        "OPS_G01_SERVICE_HEALTH"
+      ]
+    },
+    {
+      "rule_id": "OPS-R014",
+      "severity": "CRITICAL",
+      "scope": [
+        "restart_recovery_test"
+      ],
+      "inputs": [
+        "result",
+        "authoritative_state_restored"
+      ],
+      "predicate": "result=PASS and authoritative_state_restored!=true",
+      "failure_code": "OPS_RECOVERY_NOT_AUTHORITATIVE",
+      "on_failure": {
+        "result": "FAIL"
+      },
+      "gate_hooks": [
+        "OPS_G08_RECOVERY"
+      ]
+    },
+    {
+      "rule_id": "OPS-R015",
+      "severity": "CRITICAL",
+      "scope": [
+        "restart_recovery_test"
+      ],
+      "inputs": [
+        "result",
+        "reconciliation_state"
+      ],
+      "predicate": "result=PASS and reconciliation_state in [UNKNOWN,STALE,MISMATCH]",
+      "failure_code": "OPS_RECON_UNKNOWN_ON_RECOVERY",
+      "on_failure": {
+        "result": "FAIL"
+      },
+      "gate_hooks": [
+        "OPS_G08_RECOVERY",
+        "OPS_G05_RECONCILIATION"
+      ]
+    },
+    {
+      "rule_id": "OPS-R016",
+      "severity": "CRITICAL",
+      "scope": [
+        "execution_health"
+      ],
+      "inputs": [
+        "unknown_order_outcome_count",
+        "health_state"
+      ],
+      "predicate": "unknown_order_outcome_count > 0 and health_state=HEALTHY",
+      "failure_code": "OPS_UNKNOWN_ORDER_OUTCOME",
+      "on_failure": {
+        "health_state": "BLOCKED"
+      },
+      "gate_hooks": [
+        "OPS_G04_EXECUTION_HEALTH"
+      ]
+    },
+    {
+      "rule_id": "OPS-R017",
+      "severity": "HIGH",
+      "scope": [
+        "service_health"
+      ],
+      "inputs": [
+        "health_state",
+        "reason_codes"
+      ],
+      "predicate": "health_state=HEALTHY and reason_codes contains a policy-defined blocking reason",
+      "failure_code": "OPS_HEALTHY_WITH_BLOCKING_REASON",
+      "on_failure": {
+        "health_state": "UNKNOWN"
+      },
+      "gate_hooks": [
+        "OPS_G01_SERVICE_HEALTH"
+      ]
+    },
+    {
+      "rule_id": "OPS-R018",
+      "severity": "CRITICAL",
+      "scope": [
+        "commissioning_run"
+      ],
+      "inputs": [
+        "status",
+        "checks"
+      ],
+      "predicate": "status=PASS and any required check result in [FAIL,UNKNOWN]",
+      "failure_code": "OPS_FAILING_REQUIRED_CHECK",
+      "on_failure": {
+        "status": "FAIL"
+      },
+      "gate_hooks": [
+        "OPS_G07_COMMISSIONING"
+      ]
+    },
+    {
+      "rule_id": "OPS-R019",
+      "severity": "CRITICAL",
+      "scope": [
+        "commissioning_run"
+      ],
+      "inputs": [
+        "commissioning_type",
+        "status",
+        "started_at",
+        "ended_at",
+        "required_duration_seconds"
+      ],
+      "predicate": "commissioning_type=SOAK and status=PASS and actual_duration < required_duration_seconds",
+      "failure_code": "OPS_PASS_WITHOUT_DURATION",
+      "on_failure": {
+        "status": "FAIL"
+      },
+      "gate_hooks": [
+        "OPS_G07_COMMISSIONING"
+      ]
+    },
+    {
+      "rule_id": "OPS-R020",
+      "severity": "CRITICAL",
+      "scope": [
+        "evidence_seal"
+      ],
+      "inputs": [
+        "verification_status"
+      ],
+      "predicate": "verification_status != VERIFIED when artifact is required for acceptance",
+      "failure_code": "OPS_UNVERIFIED_SEAL",
+      "on_failure": {
+        "acceptance": "REJECT"
+      },
+      "gate_hooks": [
+        "OPS_G07_COMMISSIONING"
+      ]
+    }
+  ]
+}

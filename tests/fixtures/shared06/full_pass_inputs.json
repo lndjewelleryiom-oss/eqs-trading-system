@@ -1,0 +1,302 @@
+[
+  {
+    "record_id": "svc",
+    "record_type": "service_health",
+    "schema_version": "1.0.0",
+    "producer_service_id": "svc-health",
+    "authority_domain": "SERVICE_RUNTIME_HEALTH",
+    "environment": "PAPER",
+    "effective_at": "2026-09-27T16:59:00Z",
+    "observed_at": "2026-09-27T16:59:00Z",
+    "received_at": "2026-09-27T16:59:01Z",
+    "payload_sha256": "45c9fc0e10ba7bc21fdd593776d4f1107ae0c9055bf4c1da47a23092f7944227",
+    "payload": {
+      "service_id": "core",
+      "service_version": "1",
+      "environment": "PAPER",
+      "runtime_id": "rt",
+      "host_id": "h",
+      "observed_at": "2026-09-27T16:59:00Z",
+      "health_state": "HEALTHY",
+      "reason_codes": [],
+      "dependency_states": [
+        {
+          "dependency_id": "risk",
+          "health_state": "HEALTHY",
+          "safety_critical": true,
+          "observed_at": "2026-09-27T16:59:00Z"
+        }
+      ],
+      "authorised_mode": "PAPER",
+      "actual_mode": "PAPER",
+      "config_version": "c",
+      "code_version": "v",
+      "schema_version": "1.0.0"
+    },
+    "evidence_class": "DOMAIN_AUTHORITY",
+    "source_status": "ACTIVE",
+    "expires_at": null
+  },
+  {
+    "record_id": "portfolio",
+    "record_type": "portfolio_health",
+    "schema_version": "1.0.0",
+    "producer_service_id": "portfolio",
+    "authority_domain": "PORTFOLIO_STATE",
+    "environment": "PAPER",
+    "effective_at": "2026-09-27T16:59:00Z",
+    "observed_at": "2026-09-27T16:59:00Z",
+    "received_at": "2026-09-27T16:59:01Z",
+    "payload_sha256": "a42cd127c275b10aaec6b9538cdf44e4d84e5dc143d8ed25d6e034e8845a1fec",
+    "payload": {
+      "portfolio_service_id": "portfolio",
+      "observed_at": "2026-09-27T16:59:00Z",
+      "target_generation_state": "NORMAL",
+      "strategy_input_state": "FRESH",
+      "exposure_input_state": "FRESH",
+      "rebalance_state": "IDLE",
+      "allocation_state": "NORMAL",
+      "health_state": "HEALTHY",
+      "reason_codes": []
+    },
+    "evidence_class": "DOMAIN_AUTHORITY",
+    "source_status": "ACTIVE",
+    "expires_at": null
+  },
+  {
+    "record_id": "data",
+    "record_type": "data_health",
+    "schema_version": "1.0.0",
+    "producer_service_id": "market-data",
+    "authority_domain": "MARKET_DATA_HEALTH",
+    "environment": "PAPER",
+    "effective_at": "2026-09-27T16:59:00Z",
+    "observed_at": "2026-09-27T16:59:00Z",
+    "received_at": "2026-09-27T16:59:01Z",
+    "payload_sha256": "6b4bc5791448e9aeb88fc1c43fe763901dc98e6da0c692bfc9958e9b4dcbbc97",
+    "payload": {
+      "source_id": "md",
+      "instrument_scope": [
+        "BTCUSDT"
+      ],
+      "observed_at": "2026-09-27T16:59:00Z",
+      "freshness_state": "FRESH",
+      "sequence_state": "CONTIGUOUS",
+      "coverage_state": "COMPLETE",
+      "clock_state": "SYNCHRONIZED",
+      "replay_live_divergence": "NOT_APPLICABLE",
+      "health_state": "HEALTHY",
+      "policy_id": "md-policy",
+      "reason_codes": []
+    },
+    "evidence_class": "DOMAIN_AUTHORITY",
+    "source_status": "ACTIVE",
+    "expires_at": null
+  },
+  {
+    "record_id": "risk",
+    "record_type": "risk_health",
+    "schema_version": "1.0.0",
+    "producer_service_id": "risk",
+    "authority_domain": "CAPITAL_RISK_STATE",
+    "environment": "PAPER",
+    "effective_at": "2026-09-27T16:59:00Z",
+    "observed_at": "2026-09-27T16:59:00Z",
+    "received_at": "2026-09-27T16:59:01Z",
+    "payload_sha256": "47d1a93cfd9ddf929d3ddc20203fc9d0d3bd6719b848b634342c1d226a3201fd",
+    "payload": {
+      "risk_service_id": "risk",
+      "observed_at": "2026-09-27T16:59:00Z",
+      "policy_version": "r1",
+      "reservation_state": "CONSISTENT",
+      "account_freshness_state": "FRESH",
+      "margin_state": "NORMAL",
+      "kill_switch_state": "CLEAR",
+      "reconciliation_state": "MATCHED",
+      "health_state": "HEALTHY",
+      "reason_codes": []
+    },
+    "evidence_class": "DOMAIN_AUTHORITY",
+    "source_status": "ACTIVE",
+    "expires_at": null
+  },
+  {
+    "record_id": "exec",
+    "record_type": "execution_health",
+    "schema_version": "1.0.0",
+    "producer_service_id": "exec",
+    "authority_domain": "EXECUTION_INTERNAL_STATE",
+    "environment": "PAPER",
+    "effective_at": "2026-09-27T16:59:00Z",
+    "observed_at": "2026-09-27T16:59:00Z",
+    "received_at": "2026-09-27T16:59:01Z",
+    "payload_sha256": "c235b1e1c148e23a052b366bed2f0d53e619b7750f9cff6484e9564f9bb682a1",
+    "payload": {
+      "execution_service_id": "exec",
+      "observed_at": "2026-09-27T16:59:00Z",
+      "submission_state": "DISABLED",
+      "ack_state": "NORMAL",
+      "fill_state": "NORMAL",
+      "cancel_state": "NORMAL",
+      "reject_state": "NORMAL",
+      "unknown_order_outcome_count": 0,
+      "reconciliation_state": "MATCHED",
+      "health_state": "HEALTHY",
+      "reason_codes": []
+    },
+    "evidence_class": "DOMAIN_AUTHORITY",
+    "source_status": "ACTIVE",
+    "expires_at": null
+  },
+  {
+    "record_id": "recon",
+    "record_type": "reconciliation",
+    "schema_version": "1.0.0",
+    "producer_service_id": "broker-truth",
+    "authority_domain": "EXTERNAL_ORDER_POSITION_FILL_TRUTH",
+    "environment": "PAPER",
+    "effective_at": "2026-09-27T16:59:00Z",
+    "observed_at": "2026-09-27T16:59:00Z",
+    "received_at": "2026-09-27T16:59:01Z",
+    "payload_sha256": "a79980b219847f9a8a899d422ddb5cf0182d4666acf7e2c3aed2bcdcca1c7ac1",
+    "payload": {
+      "reconciliation_id": "rec1",
+      "scope": "MULTI",
+      "internal_snapshot_id": "i",
+      "external_snapshot_id": "e",
+      "observed_at": "2026-09-27T16:59:00Z",
+      "state": "MATCHED",
+      "differences": [],
+      "materiality_policy_id": "mat1",
+      "material_unresolved": false,
+      "evidence_refs": [
+        "snap"
+      ]
+    },
+    "evidence_class": "EXTERNAL_TRUTH",
+    "source_status": "ACTIVE",
+    "expires_at": null
+  },
+  {
+    "record_id": "mode",
+    "record_type": "mode_awareness",
+    "schema_version": "1.0.0",
+    "producer_service_id": "eqs00",
+    "authority_domain": "PROGRAMME_MODE",
+    "environment": "PAPER",
+    "effective_at": "2026-09-27T16:59:00Z",
+    "observed_at": "2026-09-27T16:59:00Z",
+    "received_at": "2026-09-27T16:59:01Z",
+    "payload_sha256": "b27a4c68e0fc0e1a77729139b10d45019b72e578ac2bf705937c3987431785e6",
+    "payload": {
+      "observation_id": "m1",
+      "observed_at": "2026-09-27T16:59:00Z",
+      "authorised_mode": "PAPER",
+      "actual_mode": "PAPER",
+      "match": true,
+      "health_state": "HEALTHY",
+      "reason_codes": []
+    },
+    "evidence_class": "CANONICAL_CONTROL",
+    "source_status": "ACTIVE",
+    "expires_at": null
+  },
+  {
+    "record_id": "comm",
+    "record_type": "commissioning_run",
+    "schema_version": "1.0.0",
+    "producer_service_id": "ops06",
+    "authority_domain": "COMMISSIONING_RESULT",
+    "environment": "PAPER",
+    "effective_at": "2026-09-27T16:59:00Z",
+    "observed_at": "2026-09-27T16:59:00Z",
+    "received_at": "2026-09-27T16:59:01Z",
+    "payload_sha256": "46258ac78077362d83b7f51a5e2b6e6b1f59f883e487c76fdba7eff36e499d0b",
+    "payload": {
+      "run_id": "formal-soak",
+      "commissioning_type": "SOAK",
+      "acceptance_plan_id": "ap",
+      "acceptance_plan_hash": "0000000000000000000000000000000000000000000000000000000000000000",
+      "configuration_hash": "1111111111111111111111111111111111111111111111111111111111111111",
+      "code_version": "v",
+      "started_at": "2026-09-26T16:58:00Z",
+      "ended_at": "2026-09-27T16:58:00Z",
+      "required_duration_seconds": 86400,
+      "status": "PASS",
+      "evidence_refs": [
+        "e"
+      ],
+      "checks": [
+        {
+          "check_id": "all",
+          "required": true,
+          "result": "PASS",
+          "evidence_ref": "e"
+        }
+      ],
+      "terminal_completion_verified": true,
+      "seal_verified": true
+    },
+    "evidence_class": "SEALED_COMMISSIONING",
+    "source_status": "ACTIVE",
+    "expires_at": null
+  },
+  {
+    "record_id": "recovery",
+    "record_type": "restart_recovery_test",
+    "schema_version": "1.0.0",
+    "producer_service_id": "ops06",
+    "authority_domain": "COMMISSIONING_RESULT",
+    "environment": "PAPER",
+    "effective_at": "2026-09-27T16:59:00Z",
+    "observed_at": "2026-09-27T16:59:00Z",
+    "received_at": "2026-09-27T16:59:01Z",
+    "payload_sha256": "d03cfd4652329ecad28cbeb87c175c79bb15017cfa40a96642e58e029bb23a04",
+    "payload": {
+      "test_run_id": "rr",
+      "component_id": "core",
+      "fault_type": "process_crash",
+      "pre_state": "HEALTHY",
+      "fault_injected_at": "2026-09-27T16:50:00Z",
+      "recovery_started_at": "2026-09-27T16:51:00Z",
+      "recovered_at": "2026-09-27T16:52:00Z",
+      "post_state": "HEALTHY",
+      "authoritative_state_restored": true,
+      "reconciliation_state": "MATCHED",
+      "result": "PASS",
+      "evidence_refs": [
+        "e"
+      ]
+    },
+    "evidence_class": "SEALED_COMMISSIONING",
+    "source_status": "ACTIVE",
+    "expires_at": null
+  },
+  {
+    "record_id": "secret",
+    "record_type": "evidence_seal",
+    "schema_version": "1.0.0",
+    "producer_service_id": "ops06",
+    "authority_domain": "COMMISSIONING_RESULT",
+    "environment": "PAPER",
+    "effective_at": "2026-09-27T16:59:00Z",
+    "observed_at": "2026-09-27T16:59:00Z",
+    "received_at": "2026-09-27T16:59:01Z",
+    "payload_sha256": "1ebe7f2fb04e70bb4c586ba7aa52598a09584d7a4a0cc00cd89ee5c9837f3011",
+    "payload": {
+      "seal_id": "sec",
+      "artifact_type": "SECRET_HYGIENE_SCAN_PASS",
+      "artifact_id": "secret-scan",
+      "schema_version": "1.0.0",
+      "created_at": "2026-09-27T16:59:00Z",
+      "content_sha256": "2222222222222222222222222222222222222222222222222222222222222222",
+      "input_evidence_refs": [
+        "scan"
+      ],
+      "verification_status": "VERIFIED"
+    },
+    "evidence_class": "SEALED_COMMISSIONING",
+    "source_status": "ACTIVE",
+    "expires_at": null
+  }
+]
