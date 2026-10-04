@@ -1,0 +1,70 @@
+{
+  "schema_id": "EQS-FEASIBILITY-DATA-SCOPE-V4",
+  "scope_id": "FEAS-BINANCE-BTC-BASIS-V4",
+  "version": "4.0.0",
+  "classification": "PREOUTCOME_EXPLORATORY_DATA_SCOPE",
+  "purpose": "Expand the feasibility-first BTC perpetual research scope with low-storage, economically interpretable basis/mark/index information after V3 produced no managed-PAPER candidate.",
+  "venue": "BINANCE_USDM",
+  "instrument": "BTCUSDT",
+  "bar_interval": "5m",
+  "window": {
+    "start_month": "2023-01",
+    "end_month": "2026-03",
+    "month_count": 39,
+    "locked_oos_start": "2026-04-01T00:00:00Z",
+    "locked_oos_access": "SEALED_NOT_PERMITTED"
+  },
+  "series": [
+    {
+      "id": "MARK_PRICE_5M",
+      "url_pattern": "https://data.binance.vision/data/futures/um/monthly/markPriceKlines/BTCUSDT/5m/BTCUSDT-5m-{YYYY-MM}.zip",
+      "expected_months": 39,
+      "availability_probe_passed_months": 39,
+      "compressed_bytes_from_head_probe": 8796519,
+      "signed_values": false
+    },
+    {
+      "id": "INDEX_PRICE_5M",
+      "url_pattern": "https://data.binance.vision/data/futures/um/monthly/indexPriceKlines/BTCUSDT/5m/BTCUSDT-5m-{YYYY-MM}.zip",
+      "expected_months": 39,
+      "availability_probe_passed_months": 39,
+      "compressed_bytes_from_head_probe": 9036336,
+      "signed_values": false
+    },
+    {
+      "id": "PREMIUM_INDEX_5M",
+      "url_pattern": "https://data.binance.vision/data/futures/um/monthly/premiumIndexKlines/BTCUSDT/5m/BTCUSDT-5m-{YYYY-MM}.zip",
+      "expected_months": 39,
+      "availability_probe_passed_months": 39,
+      "compressed_bytes_from_head_probe": 6988826,
+      "signed_values": true
+    }
+  ],
+  "availability_summary": {
+    "required_objects": 117,
+    "verified_available_objects": 117,
+    "missing_objects": 0,
+    "total_compressed_bytes_from_head_probe": 24821681
+  },
+  "storage": {
+    "destination": "H:\\My Drive\\EQS\\feasibility_v4_basis",
+    "production_runtime_db": false,
+    "local_c_drive_growth_permitted": false
+  },
+  "explicitly_deferred": [
+    "AGG_TRADES_MONTHLY_ARCHIVES",
+    "RAW_TRADES_MONTHLY_ARCHIVES",
+    "ORDER_BOOK_DEPTH_HISTORY",
+    "BOOK_TICKER_HISTORY",
+    "R1.3_FULL_EIGHT_SERIES_CONTRACT"
+  ],
+  "research_authority": {
+    "strategy_outcomes_permitted_by_this_scope": false,
+    "new_strategy_campaign_requires_separate_preregistration": true,
+    "r13_certification_authority": false,
+    "j25_j26_candidate_authority": false,
+    "managed_paper_authority": false,
+    "live_authority": false
+  },
+  "failure_this_scope_is_designed_to_prevent": "Prevent another strategy programme from being frozen around unavailable or storage-prohibitive inputs; acquire only complete, cheap public series before defining the next economic hypothesis."
+}
