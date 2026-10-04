@@ -1,10 +1,10 @@
 {
-  "index_sha256": "19e03ef7dc9eba78b1a9bfa2fb62ba4285b7fd2ba95f1b34b8745673f3094017",
+  "index_sha256": "1a931187b47b170def0465409a4a75fddb21265b23231d097622252fcf37d862",
   "maximum_campaigns": 2,
-  "methodology_fingerprint": "7e0017ef9674cedb7811cb70fce8833091f8b91ddb350a47f16af6782e70e49c",
+  "methodology_fingerprint": "49063d8cc8756572ed975c6dc2aaf97299b116728859a3319c62a57ff5a86599",
   "ordered_campaigns": [
     {
-      "campaign_fingerprint": "d0a625e78b8e09d6c43fb6f6a6e4acd6b8c9cd599457686752540d5a545fee3d",
+      "campaign_fingerprint": "253adb51ee40bb5a61fe9fbd653db86267f8e554adb0ac0a093be694d15e87ea",
       "campaign_id": "FEAS-V4-PREMIUM-MR-001",
       "campaign_number": 1,
       "family": "PREMIUM_BASIS_MEAN_REVERSION",
@@ -12,7 +12,7 @@
       "version": "4.1.0"
     },
     {
-      "campaign_fingerprint": "7531e279e1fc68fba85af719d6c56991a302624f242f78db7ecff5ba5ff44595",
+      "campaign_fingerprint": "a11c0bf2fec726d1b2e1d5645f89050ebeac50a6fa0e8c813ca8c6c6820d8216",
       "campaign_id": "FEAS-V4-FUNDING-BASIS-002",
       "campaign_number": 2,
       "family": "FUNDING_BASIS_CONFIRMED_CARRY",
@@ -21,6 +21,7 @@
     }
   ],
   "outcomes_accessed_after_freeze": false,
+  "paper_entry_policy_sha256": "e046150cd151be5aa49ec26760c1be01a39535d529fb24231d6affe66169f9b2",
   "programme_version": "4.0.0",
   "schema_id": "EQS-FEASIBILITY-V4-CAMPAIGN-INDEX"
 }
