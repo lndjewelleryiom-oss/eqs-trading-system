@@ -105,15 +105,15 @@ def assess_paper_entry(
     max_dd = Decimal(str(result.get("maximum_drawdown_fraction", "1")))
     if max_dd > Decimal(str(screen["maximum_drawdown_fraction"])):
         blockers.append("MAXIMUM_DRAWDOWN_EXCEEDED")
-    cost_share = Decimal(str(result.get("cost_share_of_gross_profit_fraction", "1")))
-    if cost_share > Decimal(str(screen["maximum_cost_share_of_gross_profit_fraction"])):
-        blockers.append("COST_SHARE_EXCEEDED")
+    cost_share = Decimal(str(result.get("commission_cost_share_of_gross_profit_fraction", "1")))
+    if cost_share > Decimal(str(screen["maximum_commission_cost_share_of_gross_profit_fraction"])):
+        blockers.append("COMMISSION_COST_SHARE_EXCEEDED")
     max_leverage = Decimal(str(result.get("maximum_observed_gross_leverage", "999")))
     if max_leverage > Decimal(str(sizing["maximum_gross_leverage"])):
         blockers.append("MAXIMUM_GROSS_LEVERAGE_EXCEEDED")
-    position_fraction = Decimal(str(result.get("maximum_position_notional_fraction", "999")))
-    if position_fraction > Decimal(str(sizing["target_position_notional_fraction_max"])):
-        blockers.append("POSITION_NOTIONAL_FRACTION_EXCEEDED")
+    entry_fraction = Decimal(str(result.get("maximum_entry_notional_fraction", "999")))
+    if entry_fraction > Decimal(str(screen["maximum_entry_notional_fraction"])):
+        blockers.append("ENTRY_NOTIONAL_FRACTION_EXCEEDED")
 
     if bool(screen["journal_reconciliation_required"]):
         if result.get("core_journal_reconciled") is not True or result.get("funding_journal_reconciled") is not True:

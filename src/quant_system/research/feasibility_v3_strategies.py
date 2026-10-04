@@ -172,6 +172,7 @@ class FundingSignCarry:
             if self._desired_target == 0 or (self._desired_target is not None and self._desired_target != current):
                 return 0, "FUNDING_SIGN_EXIT", {"desired_target": str(self._desired_target)}
             if self._bars_in_position >= self.max_holding_bars:
+                self._desired_target = None
                 return 0, "MAX_HOLD_EXIT", {"bars_held": str(self._bars_in_position)}
             return None
         self._bars_in_position = 0

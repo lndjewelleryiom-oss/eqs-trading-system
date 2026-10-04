@@ -1,9 +1,9 @@
 {
-  "index_sha256": "a925da549d78493423ea7cbfe3b6f783ec23a3e5961dc042b24ef2bae3cf3562",
+  "index_sha256": "e1ea79026e214ba44719e00227fb957bc8bfaab79f1e636920766777c56bef1a",
   "maximum_campaigns": 3,
   "ordered_campaigns": [
     {
-      "campaign_fingerprint": "5fcfbfba93f15859b0e1a07e2962df5837b0da3b5de271b1d12c69815318e77b",
+      "campaign_fingerprint": "1342c2683945fca3b4434e81940d74a42e66564681f05ed3368a4b57021e2a3e",
       "campaign_id": "FEAS-V3-MR-001",
       "campaign_number": 1,
       "family": "VOLATILITY_NORMALIZED_MEAN_REVERSION",
@@ -11,7 +11,7 @@
       "version": "3.1.0"
     },
     {
-      "campaign_fingerprint": "27b1074e7ce971b392c9961f630827de789b904bea99b43d7f2d1d92aa684f3c",
+      "campaign_fingerprint": "a4756ed04878bd3c98d7f97cab09ee5f0de7679fbda9bcc8867488bf70e268dd",
       "campaign_id": "FEAS-V3-VOLBREAK-002",
       "campaign_number": 2,
       "family": "VOLATILITY_COMPRESSION_BREAKOUT",
@@ -19,7 +19,7 @@
       "version": "3.2.0"
     },
     {
-      "campaign_fingerprint": "4a8cc749ac47025bbec27bf3af059d7f4c6068db6eccda92d00ebc78fbbfff0c",
+      "campaign_fingerprint": "0b12d8ccd966cc80254b1f4bcd04a446f237af7c951d8516ac067b45457812af",
       "campaign_id": "FEAS-V3-CARRY-003",
       "campaign_number": 3,
       "family": "FUNDING_SIGN_CARRY",
@@ -28,6 +28,7 @@
     }
   ],
   "outcomes_accessed_after_freeze": false,
+  "paper_entry_policy_sha256": "9ee3b2c455b5da88361337bd33af64ca73e53aa4087c83cfc8651f1695eb0cf8",
   "programme_version": "3.0.0",
   "schema_id": "EQS-FEASIBILITY-V3-CAMPAIGN-INDEX"
 }

@@ -1,6 +1,6 @@
 {
   "schema_id": "EQS-PAPER-ENTRY-RESEARCH-GATE-V1",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "classification": "EXPLORATORY_PAPER_ENTRY_PREOUTCOME_POLICY",
   "purpose": "Permit a distinct counted exploratory crypto strategy to enter non-submitting managed PAPER without granting R1.3, J25/J26 or LIVE authority.",
   "scope": {
@@ -30,7 +30,8 @@
     "validation_net_pnl_after_costs_must_be_positive": true,
     "whole_window_net_pnl_after_costs_must_be_positive": true,
     "maximum_drawdown_fraction": "0.20",
-    "maximum_cost_share_of_gross_profit_fraction": "0.50",
+    "maximum_commission_cost_share_of_gross_profit_fraction": "0.50",
+    "maximum_entry_notional_fraction": "0.10",
     "journal_reconciliation_required": true,
     "final_position_flat_required": true,
     "pending_orders_zero_required": true
