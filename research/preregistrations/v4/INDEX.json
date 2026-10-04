@@ -1,0 +1,26 @@
+{
+  "index_sha256": "19e03ef7dc9eba78b1a9bfa2fb62ba4285b7fd2ba95f1b34b8745673f3094017",
+  "maximum_campaigns": 2,
+  "methodology_fingerprint": "7e0017ef9674cedb7811cb70fce8833091f8b91ddb350a47f16af6782e70e49c",
+  "ordered_campaigns": [
+    {
+      "campaign_fingerprint": "d0a625e78b8e09d6c43fb6f6a6e4acd6b8c9cd599457686752540d5a545fee3d",
+      "campaign_id": "FEAS-V4-PREMIUM-MR-001",
+      "campaign_number": 1,
+      "family": "PREMIUM_BASIS_MEAN_REVERSION",
+      "file": "FEAS-V4-PREMIUM-MR-001.json",
+      "version": "4.1.0"
+    },
+    {
+      "campaign_fingerprint": "7531e279e1fc68fba85af719d6c56991a302624f242f78db7ecff5ba5ff44595",
+      "campaign_id": "FEAS-V4-FUNDING-BASIS-002",
+      "campaign_number": 2,
+      "family": "FUNDING_BASIS_CONFIRMED_CARRY",
+      "file": "FEAS-V4-FUNDING-BASIS-002.json",
+      "version": "4.2.0"
+    }
+  ],
+  "outcomes_accessed_after_freeze": false,
+  "programme_version": "4.0.0",
+  "schema_id": "EQS-FEASIBILITY-V4-CAMPAIGN-INDEX"
+}

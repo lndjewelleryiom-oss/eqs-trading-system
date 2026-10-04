@@ -1,0 +1,66 @@
+{
+  "authority": {
+    "broker_submission_enabled": false,
+    "historical_forward_credit": false,
+    "j25_j26_authority": false,
+    "live_authority": false,
+    "r13_authority": false
+  },
+  "classification": "PREOUTCOME_EXPLORATORY_METHODOLOGY",
+  "coverage": {
+    "eligible_month_count": 36,
+    "excluded_months": [
+      "2023-02",
+      "2023-04",
+      "2023-11"
+    ],
+    "imputation_permitted": false,
+    "partial_month_use_permitted": false,
+    "strategy_state_reset_after_excluded_interval": true
+  },
+  "execution": {
+    "adverse_slippage_bps_per_side": 2,
+    "decision_time": "BAR_CLOSE",
+    "entry_cutoff_bars_before_segment_end": 289,
+    "fee_bps_per_side": 5,
+    "fill_time": "NEXT_BAR_OPEN",
+    "funding_treatment": "ARCHIVED_REALIZED_FUNDING",
+    "same_bar_fill_allowed": false
+  },
+  "methodology_fingerprint": "7e0017ef9674cedb7811cb70fce8833091f8b91ddb350a47f16af6782e70e49c",
+  "paper_entry_policy_sha256": "9ee3b2c455b5da88361337bd33af64ca73e53aa4087c83cfc8651f1695eb0cf8",
+  "periods": {
+    "locked_oos_access": "SEALED_NOT_PERMITTED",
+    "locked_oos_end": "2026-09-21T23:59:59Z",
+    "locked_oos_start": "2026-04-01T00:00:00Z",
+    "training_end": "2025-06-30T23:59:59Z",
+    "training_start": "2023-01-01T00:00:00Z",
+    "validation_end": "2026-03-31T23:59:59Z",
+    "validation_start": "2025-07-01T00:00:00Z"
+  },
+  "purpose": "Test basis-aware BTC perpetual hypotheses only after complete low-storage mark/index/premium data is acquired and independently rehashed.",
+  "research_rules": {
+    "all_runs_counted": true,
+    "maximum_campaigns": 2,
+    "may_claim_clean_validation": false,
+    "may_open_locked_oos": false,
+    "may_write_r13_admission_ledger": false,
+    "on_no_candidate": "STOP_V4_AND_REVIEW_SCOPE_WITHOUT_TUNING",
+    "post_result_parameter_tuning_within_campaign": false,
+    "validation_window_already_consumed": true
+  },
+  "schema_id": "EQS-FEASIBILITY-METHODOLOGY-V4",
+  "sizing": {
+    "max_gross_leverage": "1.00",
+    "quantity_step": "0.00001",
+    "starting_equity": "10000",
+    "target_position_notional_fraction": "0.10"
+  },
+  "source_bindings": {
+    "v2_price_funding_manifest_file_sha256": "0a466c8ba272fddfcc1b92adbce3571818554f9b7af4122eef608a6deb71245f",
+    "v4_acquisition_acceptance_record_sha256": "af0e13d9469bbbd5b9da39eef43dc4b6a104bdca309fc3c6603ab7ad801fbcf3",
+    "v4_basis_manifest_file_sha256": "d6cbef12c5c6e364228fb4a8543a12d5627e7066805146d98fc87121ebc56d51",
+    "v4_data_scope_sha256": "72e57e11059f972c55bfc79a34bdd836b906e524434fb9a1a202484d44ada739"
+  },
+  "version": "4.0.0"
+}

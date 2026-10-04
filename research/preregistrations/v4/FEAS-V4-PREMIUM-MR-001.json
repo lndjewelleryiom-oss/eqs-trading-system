@@ -1,0 +1,103 @@
+{
+  "campaign": {
+    "campaign_id": "FEAS-V4-PREMIUM-MR-001",
+    "campaign_number": 1,
+    "classification": "EXPLORATORY_NON_EVIDENTIARY",
+    "coverage": {
+      "eligible_month_count": 36,
+      "excluded_months": [
+        "2023-02",
+        "2023-04",
+        "2023-11"
+      ],
+      "imputation_permitted": false,
+      "partial_month_use_permitted": false,
+      "strategy_state_reset_after_excluded_interval": true
+    },
+    "execution_model": {
+      "adverse_slippage_bps_per_side": 2,
+      "decision_time": "BAR_CLOSE",
+      "entry_cutoff_bars_before_segment_end": 289,
+      "fee_bps_per_side": 5,
+      "fill_time": "NEXT_BAR_OPEN",
+      "funding_treatment": "ARCHIVED_REALIZED_FUNDING",
+      "same_bar_fill_allowed": false
+    },
+    "methodology_fingerprint": "7e0017ef9674cedb7811cb70fce8833091f8b91ddb350a47f16af6782e70e49c",
+    "methodology_version": "4.0.0",
+    "paper_entry_policy_sha256": "9ee3b2c455b5da88361337bd33af64ca73e53aa4087c83cfc8651f1695eb0cf8",
+    "periods": {
+      "locked_oos_access": "SEALED_NOT_PERMITTED",
+      "locked_oos_end": "2026-09-21T23:59:59Z",
+      "locked_oos_start": "2026-04-01T00:00:00Z",
+      "training_end": "2025-06-30T23:59:59Z",
+      "training_start": "2023-01-01T00:00:00Z",
+      "validation_end": "2026-03-31T23:59:59Z",
+      "validation_start": "2025-07-01T00:00:00Z"
+    },
+    "programme_exit_rule": {
+      "maximum_campaigns": 2,
+      "on_no_candidate": "STOP_V4_AND_REVIEW_SCOPE_WITHOUT_TUNING"
+    },
+    "promotion_prohibitions": [
+      "R13_CERTIFICATION",
+      "J25_LOCKED_OOS",
+      "J26_GENUINE_CANDIDATE",
+      "LIVE_PROMOTION",
+      "FORWARD_168H_100_TRADE_CREDIT"
+    ],
+    "purpose": "Perpetual premium dislocations mean-revert toward index; require premium z-score extreme and mark-index basis sign confirmation before taking the contrarian side.",
+    "research_rules": {
+      "all_runs_counted": true,
+      "may_claim_clean_validation": false,
+      "may_open_locked_oos": false,
+      "post_result_parameter_tuning_allowed": false,
+      "single_fixed_configuration": true,
+      "validation_window_already_consumed": true
+    },
+    "safety": {
+      "broker_submission_enabled": false,
+      "futures_dependency": false,
+      "live_authority": false,
+      "options_included": false
+    },
+    "scope": {
+      "asset_class": "CRYPTO_LINEAR_PERPETUAL",
+      "bar_interval": "5m",
+      "instrument": "BTCUSDT",
+      "required_series": [
+        "KLINES_5M",
+        "FUNDING_RATE",
+        "MARK_PRICE_5M",
+        "INDEX_PRICE_5M",
+        "PREMIUM_INDEX_5M"
+      ],
+      "venue": "BINANCE_USDM"
+    },
+    "sizing": {
+      "max_gross_leverage": "1.00",
+      "quantity_step": "0.00001",
+      "starting_equity": "10000",
+      "target_position_notional_fraction": "0.10"
+    },
+    "source_bindings": {
+      "v2_price_funding_manifest_file_sha256": "0a466c8ba272fddfcc1b92adbce3571818554f9b7af4122eef608a6deb71245f",
+      "v4_acquisition_acceptance_record_sha256": "af0e13d9469bbbd5b9da39eef43dc4b6a104bdca309fc3c6603ab7ad801fbcf3",
+      "v4_basis_manifest_file_sha256": "d6cbef12c5c6e364228fb4a8543a12d5627e7066805146d98fc87121ebc56d51",
+      "v4_data_scope_sha256": "72e57e11059f972c55bfc79a34bdd836b906e524434fb9a1a202484d44ada739"
+    },
+    "strategy": {
+      "direction": "LONG_SHORT",
+      "entry_zscore": "2.00",
+      "exit_zscore": "0.25",
+      "family": "PREMIUM_BASIS_MEAN_REVERSION",
+      "max_holding_bars": 288,
+      "parameter_tuning_allowed": false,
+      "premium_lookback_bars": 2016,
+      "require_mark_index_sign_confirmation": true
+    },
+    "version": "4.1.0"
+  },
+  "campaign_fingerprint": "d0a625e78b8e09d6c43fb6f6a6e4acd6b8c9cd599457686752540d5a545fee3d",
+  "schema_id": "EQS-FEASIBILITY-CRYPTO-CAMPAIGN-V4"
+}
