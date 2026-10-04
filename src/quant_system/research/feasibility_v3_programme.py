@@ -130,6 +130,11 @@ def load_archive(acquisition_root: str | Path, campaign_id: str) -> tuple[str, t
     manifest_bytes = manifest_path.read_bytes()
     manifest_sha = sha256(manifest_bytes).hexdigest()
     manifest = json.loads(manifest_bytes)
+    acquisition_campaign_id = str(manifest.get("campaign_id", ""))
+    if acquisition_campaign_id != "FEAS-BINANCE-BTC-MA-001":
+        raise RuntimeError("unexpected acquisition campaign identity")
+    if not campaign_id.startswith("FEAS-V3-"):
+        raise RuntimeError("V3 replay campaign identity invalid")
     receipts = list(manifest.get("receipts", []))
     if len(receipts) != 78:
         raise RuntimeError("expected exactly 78 admitted feasibility archive objects")
@@ -142,7 +147,7 @@ def load_archive(acquisition_root: str | Path, campaign_id: str) -> tuple[str, t
             raise RuntimeError("archive hash mismatch")
         receipt, rows = validate_archive(
             payload,
-            campaign_id=campaign_id,
+            campaign_id=acquisition_campaign_id,
             series=str(entry["series"]),
             month=str(entry["month"]),
             source_url=str(entry["source_url"]),

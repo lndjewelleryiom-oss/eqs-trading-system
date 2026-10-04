@@ -66,6 +66,9 @@ def main() -> int:
         "methodology_fingerprint": methodology_doc["methodology_fingerprint"],
         "paper_entry_policy_sha256": sha_file(policy_path),
         "acquisition_manifest_sha256": acquisition_sha,
+        "runner_sha256": sha_file(Path(__file__)),
+        "programme_sha256": sha_file(ROOT / "src" / "quant_system" / "research" / "feasibility_v3_programme.py"),
+        "strategy_sha256": sha_file(ROOT / "src" / "quant_system" / "research" / "feasibility_v3_strategies.py"),
     }
     configuration_sha = sha256(canonical(configuration)).hexdigest()
     trial_id = str(uuid5(NAMESPACE_URL, f"EQS-V3:{campaign_record['campaign_fingerprint']}:{acquisition_sha}:{configuration_sha}"))
