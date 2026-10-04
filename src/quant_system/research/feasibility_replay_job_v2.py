@@ -7,7 +7,7 @@ import json
 from pathlib import Path
 from typing import Any
 
-from quant_system.operations.storage_guard import evaluate_storage_guard
+from quant_system.operations.storage_guard import evaluate_bounded_offhost_write, evaluate_storage_guard
 from quant_system.research.feasibility_v2 import archive_urls, load_and_validate
 
 
@@ -120,7 +120,25 @@ def prepare_replay_job(
         )
     )
     guard = evaluate_storage_guard(destination if destination.exists() else destination.parent)
-    if not guard.allow_new_research:
+    storage_state = guard.state
+    if manifest is not None and manifest.get("storage_authority") == "BOUNDED_OFFHOST":
+        try:
+            expected_bytes = int(manifest.get("expected_compressed_bytes", 0))
+            offhost = evaluate_bounded_offhost_write(
+                destination if destination.exists() else destination.parent,
+                expected_bytes=expected_bytes,
+                local_safety_path=root,
+                max_expected_bytes=64 * 1024 ** 2,
+                destination_floor_bytes=1024 ** 3,
+                local_critical_bytes=4 * 1024 ** 3,
+                cache_multiplier=4,
+            )
+            storage_state = offhost.state
+            if not offhost.allowed:
+                blockers.append("BOUNDED_OFFHOST_STORAGE_NO_LONGER_SAFE")
+        except (ValueError, OSError):
+            blockers.append("BOUNDED_OFFHOST_STORAGE_REVALIDATION_FAILED")
+    elif not guard.allow_new_research:
         blockers.append("STORAGE_GUARD_BLOCKS_NEW_RESEARCH")
     blockers = sorted(set(blockers))
     admitted = 0
@@ -135,7 +153,7 @@ def prepare_replay_job(
         expected_archive_objects=len(plan),
         admitted_archive_objects=admitted,
         destination=str(destination),
-        storage_state=guard.state,
+        storage_state=storage_state,
         broker_submission_enabled=False,
         live_authority=False,
         locked_oos_opened=False,
