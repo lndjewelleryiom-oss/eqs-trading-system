@@ -472,8 +472,8 @@ def execute_dependency_safe_jobs(repair: bool, boundaries: dict) -> list[dict]:
     ]
     if r12_progress.is_file():
         prereqs.append(r12_progress)
-    base_updater = TOOLS / "reconcile_canonical_tracker_v4.py"
-    forward_updater = TOOLS / "reconcile_forward_gates.py"
+    base_updater = ROOT / "scripts" / "reconcile_canonical_tracker_v4.py"
+    forward_updater = ROOT / "scripts" / "reconcile_forward_gates.py"
     forward_inputs = [
         EV / "EQS02_ALPACA_FORWARD_PAPER_STATUS.json",
         EV / "EQS03_FX_FORWARD_PAPER_STATUS.json",
