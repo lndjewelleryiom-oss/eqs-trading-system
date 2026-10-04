@@ -27,6 +27,63 @@ def _canonical(value: object) -> bytes:
     return json.dumps(value, sort_keys=True, separators=(",", ":"), default=str).encode("utf-8")
 
 
+class FixedCloseChannelBreakout:
+    """Fixed close-channel breakout with separate exit lookback and hard max hold.
+
+    The current close is compared only with prior closes, so the signal does not
+    use its own bar in the breakout threshold.  It emits a target position and
+    leaves next-bar execution to the existing simulator.
+    """
+
+    def __init__(self, *, entry_lookback_bars: int, exit_lookback_bars: int, max_holding_bars: int) -> None:
+        if entry_lookback_bars <= exit_lookback_bars or exit_lookback_bars < 2:
+            raise ValueError("require entry_lookback_bars > exit_lookback_bars >= 2")
+        if max_holding_bars <= entry_lookback_bars:
+            raise ValueError("max_holding_bars must exceed entry lookback")
+        self.entry_lookback_bars = int(entry_lookback_bars)
+        self.exit_lookback_bars = int(exit_lookback_bars)
+        self.max_holding_bars = int(max_holding_bars)
+        self._closes: deque[Decimal] = deque(maxlen=self.entry_lookback_bars + 1)
+        self._bars_in_position = 0
+
+    def observe(self, close: Decimal, position_quantity: Decimal) -> tuple[int, str, dict[str, str]] | None:
+        current_close = Decimal(close)
+        prior = tuple(self._closes)
+        if position_quantity != ZERO:
+            self._bars_in_position += 1
+        else:
+            self._bars_in_position = 0
+
+        signal = None
+        if len(prior) >= self.entry_lookback_bars:
+            entry_window = prior[-self.entry_lookback_bars :]
+            exit_window = prior[-self.exit_lookback_bars :]
+            entry_high = max(entry_window)
+            entry_low = min(entry_window)
+            exit_high = max(exit_window)
+            exit_low = min(exit_window)
+            current = 1 if position_quantity > ZERO else -1 if position_quantity < ZERO else 0
+            metrics = {
+                "entry_high": str(entry_high),
+                "entry_low": str(entry_low),
+                "exit_high": str(exit_high),
+                "exit_low": str(exit_low),
+            }
+            if current == 0:
+                if current_close > entry_high:
+                    signal = (1, "CHANNEL_BREAKOUT_LONG", metrics)
+                elif current_close < entry_low:
+                    signal = (-1, "CHANNEL_BREAKOUT_SHORT", metrics)
+            elif current > 0 and current_close < exit_low:
+                signal = (0, "CHANNEL_EXIT_LONG", metrics)
+            elif current < 0 and current_close > exit_high:
+                signal = (0, "CHANNEL_EXIT_SHORT", metrics)
+            elif self._bars_in_position >= self.max_holding_bars:
+                signal = (0, "MAX_HOLD_EXIT", metrics)
+        self._closes.append(current_close)
+        return signal
+
+
 class FixedSmaCrossover:
     def __init__(self, *, fast_bars: int, slow_bars: int, max_holding_bars: int) -> None:
         if not 1 < fast_bars < slow_bars:

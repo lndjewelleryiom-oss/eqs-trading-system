@@ -19,7 +19,7 @@ from quant_system.research.feasibility_archive_v2 import (
     FeasibilityFunding,
     validate_archive,
 )
-from quant_system.research.feasibility_strategy_v2 import FixedSmaCrossover
+from quant_system.research.feasibility_strategy_v2 import FixedCloseChannelBreakout, FixedSmaCrossover
 from quant_system.research.feasibility_v2 import load_and_validate
 
 
@@ -167,11 +167,21 @@ def run_fixed_campaign_replay(
     )
     simulator = ConservativeBarExecutionSimulator(assumptions, max_volume_participation=Decimal("0.01"))
     ledger = Ledger.with_cash(Decimal("10000"))
-    strategy = FixedSmaCrossover(
-        fast_bars=int(strategy_cfg["fast_bars"]),
-        slow_bars=int(strategy_cfg["slow_bars"]),
-        max_holding_bars=int(strategy_cfg["max_holding_bars"]),
-    )
+    family = str(strategy_cfg["family"])
+    if family == "SIMPLE_MOVING_AVERAGE_CROSSOVER":
+        strategy = FixedSmaCrossover(
+            fast_bars=int(strategy_cfg["fast_bars"]),
+            slow_bars=int(strategy_cfg["slow_bars"]),
+            max_holding_bars=int(strategy_cfg["max_holding_bars"]),
+        )
+    elif family == "CLOSE_CHANNEL_BREAKOUT":
+        strategy = FixedCloseChannelBreakout(
+            entry_lookback_bars=int(strategy_cfg["entry_lookback_bars"]),
+            exit_lookback_bars=int(strategy_cfg["exit_lookback_bars"]),
+            max_holding_bars=int(strategy_cfg["max_holding_bars"]),
+        )
+    else:
+        raise ValueError(f"unsupported feasibility strategy family: {family}")
     strategy_id = uuid5(NAMESPACE_URL, str(campaign["campaign_id"]))
     cutoff = int(execution["entry_cutoff_bars_before_window_end"])
     funding_index = 0
