@@ -18,7 +18,7 @@
       ],
       "properties": {
         "campaign_id": {"type": "string", "minLength": 1},
-        "version": {"const": "2.0.0"},
+        "version": {"const": "2.1.1"},
         "classification": {"const": "EXPLORATORY_NON_EVIDENTIARY"},
         "purpose": {"type": "string", "minLength": 1},
         "scope": {
@@ -80,14 +80,18 @@
         "execution_model": {
           "type": "object",
           "additionalProperties": false,
-          "required": ["decision_time", "fill_time", "fee_bps_per_side", "adverse_slippage_bps_per_side", "same_bar_fill_allowed", "funding_treatment"],
+          "required": ["decision_time", "decision_timestamp_convention", "fill_time", "fee_bps_per_side", "adverse_slippage_bps_per_side", "same_bar_fill_allowed", "funding_treatment", "funding_price_proxy", "funding_event_ordering", "entry_cutoff_bars_before_window_end"],
           "properties": {
             "decision_time": {"const": "BAR_CLOSE"},
+            "decision_timestamp_convention": {"const": "BAR_END_MINUS_1_MICROSECOND_FOR_NEXT_BAR_ELIGIBILITY"},
             "fill_time": {"const": "NEXT_BAR_OPEN"},
             "fee_bps_per_side": {"const": 5},
             "adverse_slippage_bps_per_side": {"const": 2},
             "same_bar_fill_allowed": {"const": false},
-            "funding_treatment": {"const": "APPLY_ARCHIVED_FUNDING_WHEN_POSITION_SPANS_SETTLEMENT"}
+            "funding_treatment": {"const": "APPLY_ARCHIVED_FUNDING_WHEN_POSITION_SPANS_SETTLEMENT"},
+            "funding_price_proxy": {"const": "MOST_RECENT_CLOSED_5M_CLOSE"},
+            "funding_event_ordering": {"const": "SETTLE_BEFORE_SAME_TIMESTAMP_NEXT_BAR_FILL"},
+            "entry_cutoff_bars_before_window_end": {"const": 13}
           }
         },
         "research_rules": {

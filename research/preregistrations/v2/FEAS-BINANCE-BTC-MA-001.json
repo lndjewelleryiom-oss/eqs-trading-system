@@ -5,8 +5,12 @@
     "execution_model": {
       "adverse_slippage_bps_per_side": 2,
       "decision_time": "BAR_CLOSE",
+      "decision_timestamp_convention": "BAR_END_MINUS_1_MICROSECOND_FOR_NEXT_BAR_ELIGIBILITY",
+      "entry_cutoff_bars_before_window_end": 13,
       "fee_bps_per_side": 5,
       "fill_time": "NEXT_BAR_OPEN",
+      "funding_event_ordering": "SETTLE_BEFORE_SAME_TIMESTAMP_NEXT_BAR_FILL",
+      "funding_price_proxy": "MOST_RECENT_CLOSED_5M_CLOSE",
       "funding_treatment": "APPLY_ARCHIVED_FUNDING_WHEN_POSITION_SPANS_SETTLEMENT",
       "same_bar_fill_allowed": false
     },
@@ -77,8 +81,8 @@
       "parameter_tuning_allowed": false,
       "slow_bars": 48
     },
-    "version": "2.0.0"
+    "version": "2.1.1"
   },
-  "campaign_fingerprint": "ae83b5f65fc48e8ba58982ee3ed9ae2075a6098d59aed5696c18e42b129787a5",
+  "campaign_fingerprint": "13af920ce5a38bd7f4918f706ebf8a97ff22e582e2d0a5446ff7508f14b0718d",
   "schema_id": "EQS-FEASIBILITY-CRYPTO-CAMPAIGN-V2"
 }

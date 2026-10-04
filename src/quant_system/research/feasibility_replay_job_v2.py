@@ -74,7 +74,8 @@ def validate_acquisition_manifest(
     if not isinstance(receipts, list):
         blockers.append("ACQUISITION_RECEIPTS_MISSING")
         receipts = []
-    expected = {(row["series"], row["month"]) for row in expected_plan}
+    expected_urls = {(row["series"], row["month"]): row["url"] for row in expected_plan}
+    expected = set(expected_urls)
     observed: set[tuple[str, str]] = set()
     for receipt in receipts:
         if not isinstance(receipt, dict):
@@ -84,6 +85,8 @@ def validate_acquisition_manifest(
         if key in observed:
             blockers.append("ACQUISITION_DUPLICATE_SERIES_MONTH")
         observed.add(key)
+        if key in expected_urls and str(receipt.get("source_url", "")) != expected_urls[key]:
+            blockers.append("ACQUISITION_SOURCE_URL_MISMATCH")
         for name in ("archive_sha256", "receipt_sha256"):
             value = str(receipt.get(name, ""))
             if len(value) != 64 or any(ch not in "0123456789abcdef" for ch in value.lower()):

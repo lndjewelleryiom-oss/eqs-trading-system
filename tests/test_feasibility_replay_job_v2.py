@@ -21,6 +21,7 @@ def complete_manifest() -> dict:
                 "index": index,
                 "series": item["series"],
                 "month": item["month"],
+                "source_url": item["url"],
                 "archive_sha256": f"{index:064x}"[-64:],
                 "receipt_sha256": f"{index + 100:064x}"[-64:],
                 "raw_path": f"raw/{index}.zip",

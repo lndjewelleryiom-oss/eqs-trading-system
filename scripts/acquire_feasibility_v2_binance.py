@@ -117,6 +117,7 @@ def main() -> int:
                 "index": index,
                 "series": series,
                 "month": month,
+                "source_url": url,
                 "archive_sha256": receipt.archive_sha256,
                 "receipt_sha256": receipt.receipt_sha256,
                 "raw_path": str(raw_path),
