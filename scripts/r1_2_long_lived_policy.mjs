@@ -1,6 +1,7 @@
 export const HEARTBEAT_PROOF_MS = 11 * 60 * 1000;
 export const DOCUMENTED_ROLLOVER_MS = 24 * 60 * 60 * 1000;
 export const ROLLOVER_ACCEPT_EARLIEST_MS = (23 * 60 + 45) * 60 * 1000;
+export const RAW_SAMPLE_INTERVAL_MS = 60 * 1000;
 
 export function heartbeatSurvivalProved(connectionAgeMs, messageCount) {
   return Number(connectionAgeMs) >= HEARTBEAT_PROOF_MS && Number(messageCount) > 0;
@@ -14,4 +15,11 @@ export function classifyConnectionClose(connectionAgeMs) {
 
 export function rolloverDeviationSeconds(connectionAgeMs) {
   return Math.round((Number(connectionAgeMs) - DOCUMENTED_ROLLOVER_MS) / 1000);
+}
+
+export function shouldPersistRawSample(lastSampleAtMs, nowMs, messageCount) {
+  const now = Number(nowMs);
+  if (!Number.isFinite(now) || now < 0) throw new RangeError('nowMs must be non-negative');
+  if (Number(messageCount) <= 1 || !Number.isFinite(Number(lastSampleAtMs))) return true;
+  return now - Number(lastSampleAtMs) >= RAW_SAMPLE_INTERVAL_MS;
 }

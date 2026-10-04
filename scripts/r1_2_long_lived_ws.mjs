@@ -5,19 +5,23 @@ import {
   heartbeatSurvivalProved,
   classifyConnectionClose,
   rolloverDeviationSeconds,
+  shouldPersistRawSample,
 } from './r1_2_long_lived_policy.mjs';
 
 const root = process.env.EQS_LONG_LIVED_DIR;
 if (!root) throw new Error('EQS_LONG_LIVED_DIR is required');
 fs.mkdirSync(root, { recursive: true });
 const statePath = path.join(root, 'state.json');
-const rawPath = path.join(root, 'mark_price_raw.jsonl');
+const samplePath = path.join(root, 'sampled_raw.jsonl');
 const eventPath = path.join(root, 'events.jsonl');
-const url = 'wss://fstream.binance.com/ws/btcusdt@markPrice@1s';
+const url = 'wss://fstream.binance.com/public/ws/btcusdt@depth@100ms';
 const runStartedAt = Date.now();
 let attempt = 0;
 let active = null;
 let totalMessages = 0;
+let totalBytesSeen = 0;
+let sampledMessages = 0;
+let rollingMessageHash = '0'.repeat(64);
 let expectedRollovers = 0;
 let prematureCloses = 0;
 let reconnects = 0;
@@ -29,9 +33,9 @@ function append(pathname, row) {
 }
 function atomicState(extra = {}) {
   const now = Date.now();
-  const age = active ? now - active.openedAt : 0;
+  const age = active?.openedAt ? now - active.openedAt : 0;
   const state = {
-    schema_id: 'EQS-R1.2-LONG-LIVED-WS-STATE-V1',
+    schema_id: 'EQS-R1.2-LONG-LIVED-WS-STATE-V2',
     test_data: false,
     read_only: true,
     broker_submission_enabled: false,
@@ -41,10 +45,13 @@ function atomicState(extra = {}) {
     run_started_at: iso(runStartedAt),
     updated_at: iso(now),
     attempt,
-    active_connection_opened_at: active ? iso(active.openedAt) : null,
+    active_connection_opened_at: active?.openedAt ? iso(active.openedAt) : null,
     active_connection_age_seconds: Math.floor(age / 1000),
     active_attempt_messages: active?.messages ?? 0,
     total_messages: totalMessages,
+    total_bytes_seen: totalBytesSeen,
+    sampled_messages: sampledMessages,
+    rolling_message_hash: rollingMessageHash,
     last_message_at: active?.lastMessageAt ? iso(active.lastMessageAt) : null,
     heartbeat_survival_proved: active ? heartbeatSurvivalProved(age, active.messages) : false,
     expected_rollovers: expectedRollovers,
@@ -61,7 +68,7 @@ function connect() {
   attempt += 1;
   const ws = new WebSocket(url);
   const createdAt = Date.now();
-  active = { ws, createdAt, openedAt: 0, messages: 0, lastMessageAt: 0 };
+  active = { ws, createdAt, openedAt: 0, messages: 0, lastMessageAt: 0, lastSampleAt: NaN };
   append(eventPath, { event: 'CONNECTING', attempt, at: iso(createdAt), url });
   ws.onopen = () => {
     if (active?.ws !== ws) return;
@@ -73,16 +80,24 @@ function connect() {
     if (active?.ws !== ws) return;
     const receivedAt = Date.now();
     const raw = String(event.data);
+    const rawSha = hash(raw);
+    const size = Buffer.byteLength(raw);
     active.messages += 1;
     active.lastMessageAt = receivedAt;
     totalMessages += 1;
-    append(rawPath, {
-      received_at: iso(receivedAt),
-      raw_sha256: hash(raw),
-      size_bytes: Buffer.byteLength(raw),
-      raw_b64: Buffer.from(raw).toString('base64'),
-    });
-    if (active.messages === 1 || active.messages % 60 === 0) atomicState();
+    totalBytesSeen += size;
+    rollingMessageHash = hash(`${rollingMessageHash}|${receivedAt}|${rawSha}|${size}`);
+    if (shouldPersistRawSample(active.lastSampleAt, receivedAt, active.messages)) {
+      active.lastSampleAt = receivedAt;
+      sampledMessages += 1;
+      append(samplePath, {
+        received_at: iso(receivedAt), attempt, message_number: active.messages,
+        raw_sha256: rawSha, size_bytes: size,
+        raw_b64: Buffer.from(raw).toString('base64'),
+        rolling_message_hash: rollingMessageHash,
+      });
+    }
+    if (active.messages === 1 || active.messages % 250 === 0) atomicState();
   };
   ws.onerror = () => {
     append(eventPath, { event: 'WS_ERROR', attempt, at: iso(Date.now()) });
@@ -99,7 +114,7 @@ function connect() {
       event: 'CLOSE', attempt, at: iso(closedAt), code: event.code,
       reason: event.reason || '', connection_age_seconds: Math.floor(ageMs / 1000),
       classification, rollover_deviation_seconds: rolloverDeviationSeconds(ageMs),
-      messages: active.messages,
+      messages: active.messages, rolling_message_hash: rollingMessageHash,
     });
     atomicState({ last_close_classification: classification, last_close_code: event.code });
     active = null;

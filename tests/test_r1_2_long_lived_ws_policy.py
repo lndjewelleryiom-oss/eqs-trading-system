@@ -30,3 +30,11 @@ console.log(JSON.stringify({early:classifyConnectionClose(60*60*1000),near:class
     assert result["near"] == "EXPECTED_24H_ROLLOVER_WINDOW"
     assert result["exact"] == "EXPECTED_24H_ROLLOVER_WINDOW"
     assert result["deviation"] == 0
+
+
+def test_long_lived_policy_samples_raw_at_most_once_per_minute_after_first_message():
+    result = _node("""
+import {shouldPersistRawSample} from './scripts/r1_2_long_lived_policy.mjs';
+console.log(JSON.stringify({first:shouldPersistRawSample(NaN,1000,1),tooSoon:shouldPersistRawSample(1000,60999,2),due:shouldPersistRawSample(1000,61000,3)}));
+""")
+    assert result == {"first": True, "tooSoon": False, "due": True}
