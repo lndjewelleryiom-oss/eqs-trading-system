@@ -26,6 +26,7 @@ const counters = {
   rate_limit_responses: 0,
   rest_retries: 0,
   backoff_ms: 0,
+  graceful_rotations: 0,
 };
 
 function sha256(text) {
@@ -103,6 +104,9 @@ async function openBufferedCycle(liveMs = 8000, forceClose = true) {
   if (forceClose) {
     counters.forced_disconnects += 1;
     try { ws.close(1000, 'forced failure injection'); } catch {}
+  } else {
+    counters.graceful_rotations += 1;
+    try { ws.close(1000, 'planned soak cycle rotation'); } catch {}
   }
   await sleep(250);
 
@@ -208,17 +212,15 @@ async function runSoak() {
   let last = null;
   let nextCheckpoint = startedAt.getTime() + 3_600_000;
   let nextFailure = startedAt.getTime() + 120_000;
+  let sessions = 0;
   while (true) {
-    const duration = Math.max(5000, Math.min(60_000, nextFailure - now()));
-    last = await openBufferedCycle(duration, false);
+    const injectFailure = now() >= nextFailure;
+    const duration = injectFailure ? 10_000 : Math.max(5000, Math.min(60_000, nextFailure - now()));
+    if (sessions > 0) counters.reconnects += 1;
+    last = await openBufferedCycle(duration, injectFailure);
+    sessions += 1;
     writeState(last);
-    if (now() >= nextFailure) {
-      counters.forced_disconnects += 1;
-      counters.reconnects += 1;
-      nextFailure += 3_600_000;
-      last = await openBufferedCycle(10_000, false);
-      writeState(last);
-    }
+    if (injectFailure) nextFailure += 3_600_000;
     while (now() >= nextCheckpoint) {
       const checkpoint = writeHourlyCheckpoint();
       console.log(`CHECKPOINT ${JSON.stringify(checkpoint)}`);
