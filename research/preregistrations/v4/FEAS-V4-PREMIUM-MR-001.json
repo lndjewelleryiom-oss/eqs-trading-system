@@ -23,9 +23,9 @@
       "funding_treatment": "ARCHIVED_REALIZED_FUNDING",
       "same_bar_fill_allowed": false
     },
-    "methodology_fingerprint": "49063d8cc8756572ed975c6dc2aaf97299b116728859a3319c62a57ff5a86599",
+    "methodology_fingerprint": "b28363acb5e98abb0571a2bfead4a71211e96cad046a85cd5f9a0ed8bc4eedac",
     "methodology_version": "4.0.0",
-    "paper_entry_policy_sha256": "e046150cd151be5aa49ec26760c1be01a39535d529fb24231d6affe66169f9b2",
+    "paper_entry_policy_sha256": "b8853cb138028846160921037b79a6aaec8dccb1486c75ac89eb8395d1a60cf6",
     "periods": {
       "locked_oos_access": "SEALED_NOT_PERMITTED",
       "locked_oos_end": "2026-09-21T23:59:59Z",
@@ -98,6 +98,6 @@
     },
     "version": "4.1.0"
   },
-  "campaign_fingerprint": "253adb51ee40bb5a61fe9fbd653db86267f8e554adb0ac0a093be694d15e87ea",
+  "campaign_fingerprint": "839451a99647cecc053db2214372675f04eb75503ef28a1ff34a6f64717be4bd",
   "schema_id": "EQS-FEASIBILITY-CRYPTO-CAMPAIGN-V4"
 }

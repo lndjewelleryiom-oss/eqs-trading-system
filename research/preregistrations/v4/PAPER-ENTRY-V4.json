@@ -47,7 +47,7 @@
   "sizing": {
     "fixed_one_btc_override_permitted": false,
     "maximum_gross_leverage": "1.00",
-    "required_methodology_version": "3.0.0",
+    "required_methodology_version": "4.0.0",
     "target_position_notional_fraction_max": "0.10"
   },
   "trial_discipline": {
