@@ -434,6 +434,34 @@ def execute_dependency_safe_jobs(repair: bool, boundaries: dict) -> list[dict]:
             append_event("JOB_EXECUTION", job=row["job"], status=row["status"])
         jobs.append(row)
 
+    # Publish current R1.2 evidence as a sealed projection. This does not write the
+    # legacy tracker; the canonical V4 writer remains the sole tracker publisher.
+    r12_progress_tool = ROOT / "scripts" / "reconcile_r1_2_tracker.py"
+    r12_progress = EV / "EQS_R1_2_PROGRESS_PROJECTION.json"
+    r12_inputs = [
+        EV / "EQS_R1_2_RETRY_BACKOFF_ACCEPTANCE.json",
+        EV / "R1_2_LIVE_SOAK_20261005_V2" / "binance_soak_state.json",
+        EV / "R1_2_LIVE_SOAK_20261005_V2" / "binance_storage_metrics.jsonl",
+        EV / "EQS_R1_2_LONG_LIVED_WS_V2_PREREGISTRATION.json",
+        EV / "R1_2_LONG_LIVED_WS_20261005_V2" / "state.json",
+    ]
+    required_r12 = r12_inputs[0].is_file() and r12_inputs[3].is_file() and r12_progress_tool.is_file()
+    if required_r12:
+        observed_r12 = [p for p in r12_inputs if p.is_file()]
+        newest_r12 = max(p.stat().st_mtime for p in observed_r12)
+        r12_stale = not r12_progress.is_file() or r12_progress.stat().st_mtime < newest_r12
+        if r12_stale:
+            row = {"job": "R1_2_PROGRESS_PROJECTION", "status": "READY"}
+            if repair:
+                cp = run([sys.executable, str(r12_progress_tool)], timeout=60)
+                row["returncode"] = cp.returncode
+                row["process_result"] = "PASS" if cp.returncode == 0 else "FAILED"
+                row["status"] = "VERIFIED_COMPLETE" if cp.returncode == 0 and verified_artifact(r12_progress, "record_sha256") else "FAILED"
+                row["stdout"] = cp.stdout.strip()[-2000:]
+                row["stderr"] = cp.stderr.strip()[-2000:]
+                append_event("JOB_EXECUTION", job=row["job"], status=row["status"], process_result=row["process_result"])
+            jobs.append(row)
+
     # Keep one canonical tracker projection current. V2/V3 writers are retained as
     # historical tools only; the supervisor owns the V4 + forward-gate projection.
     prereqs = [
@@ -442,6 +470,8 @@ def execute_dependency_safe_jobs(repair: bool, boundaries: dict) -> list[dict]:
         EV / "EQS_SHARED06_FINAL_READINESS_SEAL.json",
         HEALTH_LATEST,
     ]
+    if r12_progress.is_file():
+        prereqs.append(r12_progress)
     base_updater = TOOLS / "reconcile_canonical_tracker_v4.py"
     forward_updater = TOOLS / "reconcile_forward_gates.py"
     forward_inputs = [
