@@ -143,6 +143,7 @@ def run_fixed_campaign_replay(
     bars: tuple[FeasibilityBar, ...],
     funding: tuple[FeasibilityFunding, ...],
     campaign_record: dict[str, object],
+    sizing_policy: object | None = None,
 ) -> FeasibilityReplayResult:
     campaign = dict(campaign_record["campaign"])
     _validate_series(bars, funding, campaign)
@@ -261,7 +262,11 @@ def run_fixed_campaign_replay(
             if target != current:
                 if current == 0 and target != 0:
                     side = Side.BUY if target > 0 else Side.SELL
-                    quantity = ONE
+                    if sizing_policy is None:
+                        quantity = ONE
+                    else:
+                        quantity = sizing_policy.entry_quantity(bar.close)
+                        sizing_policy.assert_entry_within_policy(quantity=quantity, reference_price=bar.close)
                     reduce_only = False
                 elif current != 0 and target == 0:
                     side = Side.SELL if current > 0 else Side.BUY

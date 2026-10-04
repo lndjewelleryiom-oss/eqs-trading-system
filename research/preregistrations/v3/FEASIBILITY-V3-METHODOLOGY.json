@@ -1,0 +1,41 @@
+{
+  "methodology": {
+    "classification": "EXPLORATORY_NON_EVIDENTIARY_PREOUTCOME_METHODOLOGY",
+    "inherited_counted_trials": 3,
+    "locked_oos_access": "SEALED_NOT_PERMITTED",
+    "prior_validation_window_status": "CONSUMED_NOT_CLEAN_HOLDOUT",
+    "promotion_prohibitions": [
+      "R13_CERTIFICATION",
+      "J25_LOCKED_OOS",
+      "J26_GENUINE_CANDIDATE",
+      "LIVE_PROMOTION",
+      "FORWARD_168H_100_TRADE_CREDIT"
+    ],
+    "reason": "Correct the V2 fixed-one-BTC capital-realism limitation without altering or rerunning V2 contracts in place.",
+    "research_rules": {
+      "all_future_runs_counted": true,
+      "may_claim_clean_validation": false,
+      "may_open_locked_oos": false,
+      "may_write_r13_admission_ledger": false,
+      "reused_v2_train_validation_is_exploratory_only": true
+    },
+    "safety": {
+      "broker_submission_enabled": false,
+      "futures_dependency": false,
+      "live_authority": false,
+      "options_included": false
+    },
+    "schema_id": "EQS-FEASIBILITY-V3-METHODOLOGY-V1",
+    "sizing": {
+      "allow_fixed_one_btc_override": false,
+      "btc_quantity_step": "0.00001",
+      "capital_basis": "FIXED_STARTING_EQUITY",
+      "max_gross_leverage": "1.00",
+      "rounding": "DOWN",
+      "starting_equity": "10000",
+      "target_position_notional_fraction": "0.10"
+    },
+    "version": "3.0.0"
+  },
+  "methodology_fingerprint": "4712647cef8966d01ed765d0d0cc568173e320c16b47787573a29a94f0f2c066"
+}
