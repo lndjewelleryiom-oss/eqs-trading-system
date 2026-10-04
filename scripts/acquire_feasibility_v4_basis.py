@@ -60,15 +60,26 @@ def main() -> int:
     month_list = months(str(window["start_month"]), str(window["end_month"]))
     if len(month_list) != int(window["month_count"]):
         raise SystemExit("V4_MONTH_COUNT_INVALID")
+    coverage = dict(contract["coverage_policy"])
+    if coverage.get("mode") != "SYNCHRONIZED_COMPLETE_MONTH_INTERSECTION":
+        raise SystemExit("V4_COVERAGE_POLICY_INVALID")
+    if coverage.get("imputation_permitted") is not False or coverage.get("partial_month_use_permitted") is not False:
+        raise SystemExit("V4_COVERAGE_POLICY_MUST_FAIL_CLOSED")
+    excluded = set(str(value) for value in coverage.get("excluded_months", []))
+    eligible_months = [month for month in month_list if month not in excluded]
+    if len(eligible_months) != int(coverage["eligible_month_count"]):
+        raise SystemExit("V4_ELIGIBLE_MONTH_COUNT_INVALID")
 
     jobs: list[dict[str, str]] = []
     for series in contract["series"]:
         if int(series["availability_probe_passed_months"]) != len(month_list):
             raise SystemExit("V4_AVAILABILITY_PROBE_INCOMPLETE")
+        if int(series["synchronized_eligible_months"]) != len(eligible_months):
+            raise SystemExit("V4_SERIES_ELIGIBLE_MONTH_COUNT_INVALID")
         pattern = str(series["url_pattern"])
-        for month in month_list:
+        for month in eligible_months:
             jobs.append({"series": str(series["id"]), "month": month, "url": pattern.replace("{YYYY-MM}", month)})
-    if len(jobs) != int(contract["availability_summary"]["required_objects"]):
+    if len(jobs) != int(contract["availability_summary"]["synchronized_required_objects"]):
         raise SystemExit("V4_REQUIRED_OBJECT_COUNT_INVALID")
 
     def acquire(job: dict[str, str]) -> dict[str, object]:
@@ -123,6 +134,9 @@ def main() -> int:
         "source_contract_path": str(CONTRACT.relative_to(ROOT)),
         "source_contract_sha256": contract_sha,
         "destination": str(destination),
+        "coverage_policy": coverage,
+        "excluded_months": sorted(excluded),
+        "eligible_months": eligible_months,
         "object_count": len(receipts),
         "series_summary": by_series,
         "locked_oos_touched": False,
