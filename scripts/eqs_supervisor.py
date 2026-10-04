@@ -94,6 +94,18 @@ def valid_seal(doc: dict, field: str) -> bool:
     expected = x.pop(field)
     return hashlib.sha256(canonical(x)).hexdigest() == expected
 
+
+def eqs02_source_authority_satisfied(auth: dict) -> bool:
+    return bool(
+        valid_seal(auth, "seal_sha256")
+        and auth.get("result") == "PASS"
+        and auth.get("classification") == "AUTHENTICATED_PRODUCTION_MARKET_DATA_READ_ONLY"
+        and auth.get("production_paper_market_data_authority") is True
+        and auth.get("trading_endpoint_used") is False
+        and auth.get("broker_submission_enabled") is False
+        and auth.get("live_authority") is False
+    )
+
 def atomic_json(path: Path, doc: dict) -> None:
     tmp = path.with_suffix(path.suffix + ".tmp")
     tmp.write_text(json.dumps(doc, indent=2, sort_keys=True) + "\n", encoding="utf-8")
@@ -672,12 +684,23 @@ def build_blocker_queue() -> dict:
             "auto_bypass_permitted": False,
         })
 
-    # Sealed EQS-02 gate: the source approval is external; forward acceptance is deferred until that exists.
+    # EQS-02 supersession-aware gate. The earlier pre-PAPER certificate can retain a historical
+    # source-authority blocker after a later sealed production-data acceptance has satisfied it.
     e2 = EV / "EQS02_PRE_PAPER_STAGE_CERTIFICATION.json"
+    e2_auth = EV / "EQS02_ALPACA_AUTHENTICATED_ACCEPTANCE.json"
+    e2_source_authorised = False
+    if e2_auth.is_file():
+        try:
+            auth = load_json(e2_auth)
+            e2_source_authorised = eqs02_source_authority_satisfied(auth)
+        except Exception:
+            e2_source_authorised = False
     if e2.is_file():
         try:
             doc = load_json(e2)
             for blocker in doc.get("blockers", []):
+                if blocker == "APPROVED_PRODUCTION_STOCKS_ETFS_MARKET_DATA_SOURCE_REQUIRED" and e2_source_authorised:
+                    continue
                 target = external if blocker == "APPROVED_PRODUCTION_STOCKS_ETFS_MARKET_DATA_SOURCE_REQUIRED" else deferred
                 target.append({
                     "workstream": "EQS-02-PAPER",
