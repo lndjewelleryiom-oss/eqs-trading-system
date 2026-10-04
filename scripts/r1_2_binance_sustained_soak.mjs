@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
+import { fetchWithBackoff } from './r1_2_retry_backoff.mjs';
 
 const mode = process.argv[2] || 'probe';
 const root = process.env.EQS_SOAK_DIR || process.cwd();
@@ -21,6 +22,10 @@ const counters = {
   forced_disconnects: 0,
   reconnects: 0,
   resynchronizations: 0,
+  rest_requests: 0,
+  rate_limit_responses: 0,
+  rest_retries: 0,
+  backoff_ms: 0,
 };
 
 function sha256(text) {
@@ -60,7 +65,12 @@ function crossed(bids, asks) {
 }
 
 async function fetchSnapshot() {
-  const response = await fetch('https://fapi.binance.com/fapi/v1/depth?symbol=BTCUSDT&limit=1000');
+  const response = await fetchWithBackoff('https://fapi.binance.com/fapi/v1/depth?symbol=BTCUSDT&limit=1000', {
+    maxAttempts: 5,
+    onAttempt: () => { counters.rest_requests += 1; },
+    onResponse: ({ status }) => { if (status === 429) counters.rate_limit_responses += 1; },
+    onRetry: ({ delayMs }) => { counters.rest_retries += 1; counters.backoff_ms += delayMs; },
+  });
   if (!response.ok) throw new Error(`snapshot HTTP ${response.status}`);
   return response.json();
 }
