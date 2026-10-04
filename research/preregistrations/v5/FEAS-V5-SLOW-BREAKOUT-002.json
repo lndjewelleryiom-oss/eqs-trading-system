@@ -1,0 +1,104 @@
+{
+  "campaign": {
+    "campaign_id": "FEAS-V5-SLOW-BREAKOUT-002",
+    "campaign_number": 2,
+    "classification": "EXPLORATORY_NON_EVIDENTIARY",
+    "coverage": {
+      "eligible_month_count": 36,
+      "excluded_months": [
+        "2023-02",
+        "2023-04",
+        "2023-11"
+      ],
+      "imputation_permitted": false,
+      "partial_month_use_permitted": false,
+      "strategy_state_reset_after_excluded_interval": true
+    },
+    "execution_model": {
+      "adverse_slippage_bps_per_side": 2,
+      "decision_time": "4H_BAR_CLOSE",
+      "entry_cutoff_bars_before_segment_end": 6,
+      "fee_bps_per_side": 5,
+      "fill_time": "NEXT_4H_BAR_OPEN",
+      "funding_treatment": "ARCHIVED_REALIZED_FUNDING",
+      "same_bar_fill_allowed": false
+    },
+    "methodology_fingerprint": "86224fa6fcdb6ba7183f015081e418045c86ee95754b3f38898789225fd350be",
+    "methodology_version": "5.0.0",
+    "paper_entry_policy_sha256": "296578950fd7b02313151c961c31f67ada4c052c6ecc2f949b2b20ab49ac8ad5",
+    "periods": {
+      "locked_oos_access": "SEALED_NOT_PERMITTED",
+      "locked_oos_end": "2026-09-21T23:59:59Z",
+      "locked_oos_start": "2026-04-01T00:00:00Z",
+      "training_end": "2025-06-30T23:59:59Z",
+      "training_start": "2023-01-01T00:00:00Z",
+      "validation_end": "2026-03-31T23:59:59Z",
+      "validation_start": "2025-07-01T00:00:00Z"
+    },
+    "programme_exit_rule": {
+      "maximum_campaigns": 2,
+      "on_no_candidate": "STOP_V5_AND_REVIEW_SCOPE_WITHOUT_TUNING"
+    },
+    "promotion_prohibitions": [
+      "R13_CERTIFICATION",
+      "J25_LOCKED_OOS",
+      "J26_GENUINE_CANDIDATE",
+      "LIVE_PROMOTION",
+      "FORWARD_168H_100_TRADE_CREDIT"
+    ],
+    "purpose": "Multi-day price breakouts can persist long enough to overcome conservative execution costs when entries are evaluated only every four hours and extreme premium states are excluded.",
+    "research_rules": {
+      "all_runs_counted": true,
+      "may_claim_clean_validation": false,
+      "may_open_locked_oos": false,
+      "post_result_parameter_tuning_allowed": false,
+      "single_fixed_configuration": true,
+      "validation_window_already_consumed": true
+    },
+    "safety": {
+      "broker_submission_enabled": false,
+      "futures_dependency": false,
+      "live_authority": false,
+      "options_included": false
+    },
+    "scope": {
+      "asset_class": "CRYPTO_LINEAR_PERPETUAL",
+      "decision_bar_interval": "4h",
+      "instrument": "BTCUSDT",
+      "required_series": [
+        "KLINES_5M",
+        "FUNDING_RATE",
+        "MARK_PRICE_5M",
+        "INDEX_PRICE_5M",
+        "PREMIUM_INDEX_5M"
+      ],
+      "source_bar_interval": "5m",
+      "venue": "BINANCE_USDM"
+    },
+    "sizing": {
+      "fixed_one_btc_override_permitted": false,
+      "max_gross_leverage": "1.00",
+      "quantity_step": "0.00001",
+      "starting_equity": "10000",
+      "target_position_notional_fraction": "0.10"
+    },
+    "source_bindings": {
+      "v2_price_funding_manifest_file_sha256": "0a466c8ba272fddfcc1b92adbce3571818554f9b7af4122eef608a6deb71245f",
+      "v4_basis_manifest_file_sha256": "d6cbef12c5c6e364228fb4a8543a12d5627e7066805146d98fc87121ebc56d51",
+      "v4_data_scope_sha256": "72e57e11059f972c55bfc79a34bdd836b906e524434fb9a1a202484d44ada739",
+      "v4_programme_review_record_sha256": "beb17b67c1091e6b376fee333bf4bc04f26abf90af76b799db01a1362a24f7bb"
+    },
+    "strategy": {
+      "direction": "LONG_SHORT",
+      "entry_lookback_bars": 42,
+      "exit_lookback_bars": 18,
+      "family": "SLOW_DONCHIAN_BREAKOUT",
+      "max_holding_bars": 90,
+      "parameter_tuning_allowed": false,
+      "premium_abs_max_fraction": "0.0020"
+    },
+    "version": "5.2.0"
+  },
+  "campaign_fingerprint": "89d1e3420ba68aea3afbf340e8ebe14396e4f5443e4a1e76246541d066802ffc",
+  "schema_id": "EQS-FEASIBILITY-CRYPTO-CAMPAIGN-V5"
+}

@@ -1,0 +1,53 @@
+{
+  "classification": "EXPLORATORY_PAPER_ENTRY_PREOUTCOME_POLICY",
+  "minimum_research_screen": {
+    "final_position_flat_required": true,
+    "journal_reconciliation_required": true,
+    "maximum_commission_cost_share_of_gross_profit_fraction": "0.35",
+    "maximum_drawdown_fraction": "0.20",
+    "maximum_entry_notional_fraction": "0.10",
+    "minimum_training_completed_trades": 30,
+    "minimum_validation_completed_trades": 10,
+    "pending_orders_zero_required": true,
+    "training_net_pnl_after_costs_must_be_positive": true,
+    "validation_net_pnl_after_costs_must_be_positive": true,
+    "whole_window_net_pnl_after_costs_must_be_positive": true
+  },
+  "paper_authority": {
+    "broker_submission_enabled": false,
+    "counts_historical_trades_toward_168h_100_trade_gate": false,
+    "eligible_output": "MANAGED_PAPER_CANDIDATE",
+    "j25_j26_candidate_authority": false,
+    "live_authority": false,
+    "r13_certification_authority": false,
+    "requires_shakedown_mechanics_pass": true
+  },
+  "promotion_boundary": {
+    "live_requires_separate_r13_j25_j26_and_explicit_human_authority": true,
+    "managed_paper_only": true,
+    "paper_result_must_be_counted_as_additional_registered_trial": true
+  },
+  "purpose": "Allow a materially lower-frequency V5 crypto strategy to enter non-submitting managed PAPER only after positive costed exploratory economics and reconciled mechanics.",
+  "schema_id": "EQS-PAPER-ENTRY-RESEARCH-GATE-V1",
+  "scope": {
+    "allowed_source_class": "PUBLIC_UNADMITTED_EXPLORATORY",
+    "decision_bar_interval": "4h",
+    "instrument": "BTCUSDT",
+    "locked_oos_access": false,
+    "source_bar_interval": "5m",
+    "validation_is_clean_holdout": false,
+    "venue": "BINANCE_USDM"
+  },
+  "sizing": {
+    "fixed_one_btc_override_permitted": false,
+    "maximum_gross_leverage": "1.00",
+    "required_methodology_version": "5.0.0",
+    "target_position_notional_fraction_max": "0.10"
+  },
+  "trial_discipline": {
+    "all_trials_counted": true,
+    "maximum_campaigns": 2,
+    "post_result_parameter_tuning_within_campaign": false
+  },
+  "version": "2.0.0"
+}

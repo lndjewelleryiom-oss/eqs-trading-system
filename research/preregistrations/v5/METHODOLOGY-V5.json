@@ -1,0 +1,82 @@
+{
+  "aggregation": {
+    "decision_interval": "4h",
+    "feature_rule": "USE_FINAL_SOURCE_BAR_PREMIUM_MARK_INDEX_VALUES",
+    "gaps": "FAIL_CLOSED_AND_RESET_STATE_ACROSS_EXCLUDED_MONTHS",
+    "ohlcv_rule": "OPEN_FIRST_HIGH_MAX_LOW_MIN_CLOSE_LAST_VOLUME_SUM",
+    "source_bars_per_decision_bar": 48,
+    "source_interval": "5m"
+  },
+  "authority": {
+    "broker_submission_enabled": false,
+    "historical_forward_credit": false,
+    "j25_j26_authority": false,
+    "live_authority": false,
+    "r13_authority": false
+  },
+  "basis_for_new_scope": {
+    "reason": "Reduce decision/trade frequency and test multi-day price structure while preserving the same conservative cost model.",
+    "v4_exit_rule_triggered": true,
+    "v4_parameters_reused": false
+  },
+  "classification": "PREOUTCOME_EXPLORATORY_METHODOLOGY",
+  "coverage": {
+    "eligible_month_count": 36,
+    "excluded_months": [
+      "2023-02",
+      "2023-04",
+      "2023-11"
+    ],
+    "imputation_permitted": false,
+    "partial_month_use_permitted": false,
+    "strategy_state_reset_after_excluded_interval": true
+  },
+  "execution": {
+    "adverse_slippage_bps_per_side": 2,
+    "decision_time": "4H_BAR_CLOSE",
+    "entry_cutoff_bars_before_segment_end": 6,
+    "fee_bps_per_side": 5,
+    "fill_time": "NEXT_4H_BAR_OPEN",
+    "funding_treatment": "ARCHIVED_REALIZED_FUNDING",
+    "same_bar_fill_allowed": false
+  },
+  "locked_oos_access": "SEALED_NOT_PERMITTED",
+  "methodology_fingerprint": "86224fa6fcdb6ba7183f015081e418045c86ee95754b3f38898789225fd350be",
+  "paper_entry_policy_sha256": "296578950fd7b02313151c961c31f67ada4c052c6ecc2f949b2b20ab49ac8ad5",
+  "periods": {
+    "locked_oos_access": "SEALED_NOT_PERMITTED",
+    "locked_oos_end": "2026-09-21T23:59:59Z",
+    "locked_oos_start": "2026-04-01T00:00:00Z",
+    "training_end": "2025-06-30T23:59:59Z",
+    "training_start": "2023-01-01T00:00:00Z",
+    "validation_end": "2026-03-31T23:59:59Z",
+    "validation_start": "2025-07-01T00:00:00Z"
+  },
+  "purpose": "Test materially lower-frequency BTC perpetual hypotheses after V4 stopped for high cost share and negative economics; this is a new temporal/hypothesis scope, not V4 parameter tuning.",
+  "research_rules": {
+    "all_future_runs_counted": true,
+    "all_runs_counted": true,
+    "maximum_campaigns": 2,
+    "may_claim_clean_validation": false,
+    "may_open_locked_oos": false,
+    "may_write_r13_admission_ledger": false,
+    "on_no_candidate": "STOP_V5_AND_REVIEW_SCOPE_WITHOUT_TUNING",
+    "post_result_parameter_tuning_within_campaign": false,
+    "validation_window_already_consumed": true
+  },
+  "schema_id": "EQS-FEASIBILITY-METHODOLOGY-V5",
+  "sizing": {
+    "fixed_one_btc_override_permitted": false,
+    "max_gross_leverage": "1.00",
+    "quantity_step": "0.00001",
+    "starting_equity": "10000",
+    "target_position_notional_fraction": "0.10"
+  },
+  "source_bindings": {
+    "v2_price_funding_manifest_file_sha256": "0a466c8ba272fddfcc1b92adbce3571818554f9b7af4122eef608a6deb71245f",
+    "v4_basis_manifest_file_sha256": "d6cbef12c5c6e364228fb4a8543a12d5627e7066805146d98fc87121ebc56d51",
+    "v4_data_scope_sha256": "72e57e11059f972c55bfc79a34bdd836b906e524434fb9a1a202484d44ada739",
+    "v4_programme_review_record_sha256": "beb17b67c1091e6b376fee333bf4bc04f26abf90af76b799db01a1362a24f7bb"
+  },
+  "version": "5.0.0"
+}
