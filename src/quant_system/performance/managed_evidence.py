@@ -45,6 +45,7 @@ class ManagedPaperEvidence:
     continuity_window_started_at: str | None
     last_observed_at: str
     blocker_codes: tuple[str, ...]
+    paused_gap_hours: float = 0.0
 
 
 class ManagedPaperEvidenceRecorder:
@@ -117,6 +118,26 @@ class ManagedPaperEvidenceRecorder:
                 CREATE TRIGGER IF NOT EXISTS managed_observations_no_delete
                 BEFORE DELETE ON managed_paper_observations
                 BEGIN SELECT RAISE(ABORT,'immutable managed PAPER observation'); END;
+                CREATE TABLE IF NOT EXISTS managed_paper_continuity_gaps(
+                    gap_id TEXT PRIMARY KEY,
+                    started_at TEXT NOT NULL,
+                    ended_at TEXT NOT NULL,
+                    gap_class TEXT NOT NULL CHECK(gap_class IN (
+                        'SOURCE_OUTAGE_VERIFIED','MARKET_CLOSED_VERIFIED',
+                        'HOST_RUNTIME_OUTAGE','SAFETY_PAUSE','UNKNOWN'
+                    )),
+                    clock_effect TEXT NOT NULL CHECK(clock_effect IN ('PAUSE_CLOCK','RESET_WINDOW')),
+                    evidence_ref TEXT NOT NULL,
+                    created_at TEXT NOT NULL,
+                    previous_hash TEXT,
+                    gap_hash TEXT NOT NULL UNIQUE
+                );
+                CREATE TRIGGER IF NOT EXISTS managed_gaps_no_update
+                BEFORE UPDATE ON managed_paper_continuity_gaps
+                BEGIN SELECT RAISE(ABORT,'immutable managed PAPER continuity gap'); END;
+                CREATE TRIGGER IF NOT EXISTS managed_gaps_no_delete
+                BEFORE DELETE ON managed_paper_continuity_gaps
+                BEGIN SELECT RAISE(ABORT,'immutable managed PAPER continuity gap'); END;
                 """
             )
             con.commit()
@@ -191,23 +212,118 @@ class ManagedPaperEvidenceRecorder:
             parsed = parsed.replace(tzinfo=timezone.utc)
         return parsed.astimezone(timezone.utc)
 
-    def _current_window_start(self, con: sqlite3.Connection, now: datetime) -> str | None:
+    def record_continuity_gap(
+        self,
+        *,
+        gap_id: str,
+        started_at: datetime,
+        ended_at: datetime,
+        gap_class: str,
+        evidence_ref: str,
+        created_at: datetime | None = None,
+    ) -> str:
+        allowed = {
+            "SOURCE_OUTAGE_VERIFIED": "PAUSE_CLOCK",
+            "MARKET_CLOSED_VERIFIED": "PAUSE_CLOCK",
+            "HOST_RUNTIME_OUTAGE": "RESET_WINDOW",
+            "SAFETY_PAUSE": "RESET_WINDOW",
+            "UNKNOWN": "RESET_WINDOW",
+        }
+        if gap_class not in allowed:
+            raise ValueError("unsupported continuity gap class")
+        started = started_at.astimezone(timezone.utc)
+        ended = ended_at.astimezone(timezone.utc)
+        if ended <= started:
+            raise ValueError("continuity gap end must be after start")
+        if not gap_id.strip() or not evidence_ref.strip():
+            raise ValueError("gap_id and evidence_ref are required")
+        if allowed[gap_class] == "PAUSE_CLOCK" and len(evidence_ref.strip()) < 8:
+            raise ValueError("pause-clock gap requires substantive evidence reference")
+        created = (created_at or datetime.now(timezone.utc)).astimezone(timezone.utc)
+        con = self._connect()
+        try:
+            with con:
+                prev = con.execute(
+                    "SELECT gap_hash FROM managed_paper_continuity_gaps ORDER BY created_at DESC,gap_id DESC LIMIT 1"
+                ).fetchone()
+                previous_hash = prev["gap_hash"] if prev else None
+                body = {
+                    "gap_id": gap_id,
+                    "started_at": started.isoformat().replace("+00:00", "Z"),
+                    "ended_at": ended.isoformat().replace("+00:00", "Z"),
+                    "gap_class": gap_class,
+                    "clock_effect": allowed[gap_class],
+                    "evidence_ref": evidence_ref,
+                    "created_at": created.isoformat().replace("+00:00", "Z"),
+                    "previous_hash": previous_hash,
+                }
+                gap_hash = sha256(_canonical(body)).hexdigest()
+                con.execute(
+                    """INSERT INTO managed_paper_continuity_gaps(
+                       gap_id,started_at,ended_at,gap_class,clock_effect,evidence_ref,
+                       created_at,previous_hash,gap_hash
+                       ) VALUES(?,?,?,?,?,?,?,?,?)""",
+                    (
+                        body["gap_id"], body["started_at"], body["ended_at"], body["gap_class"],
+                        body["clock_effect"], body["evidence_ref"], body["created_at"],
+                        body["previous_hash"], gap_hash,
+                    ),
+                )
+            return gap_hash
+        finally:
+            con.close()
+
+    def _gap_effect(
+        self,
+        con: sqlite3.Connection,
+        earlier: datetime,
+        later: datetime,
+    ) -> tuple[str, float]:
+        rows = con.execute(
+            """SELECT started_at,ended_at,clock_effect,evidence_ref
+               FROM managed_paper_continuity_gaps
+               WHERE ended_at>=? AND started_at<=?
+               ORDER BY started_at""",
+            (earlier.isoformat().replace("+00:00", "Z"), later.isoformat().replace("+00:00", "Z")),
+        ).fetchall()
+        tolerance = self.max_observation_gap_seconds
+        for row in rows:
+            started = self._parse_time(row["started_at"])
+            ended = self._parse_time(row["ended_at"])
+            covers_left = (started - earlier).total_seconds() <= tolerance
+            covers_right = (later - ended).total_seconds() <= tolerance
+            if covers_left and covers_right:
+                if row["clock_effect"] == "PAUSE_CLOCK" and row["evidence_ref"]:
+                    overlap_start = max(earlier, started)
+                    overlap_end = min(later, ended)
+                    paused = max(0.0, (overlap_end - overlap_start).total_seconds())
+                    return "PAUSE_CLOCK", paused
+                return "RESET_WINDOW", 0.0
+        return "RESET_WINDOW", 0.0
+
+    def _current_window_start(self, con: sqlite3.Connection, now: datetime) -> tuple[str | None, float]:
         rows = con.execute(
             """SELECT observed_at,qualifying FROM managed_paper_observations
                ORDER BY sequence DESC"""
         ).fetchall()
         if not rows or not bool(rows[0]["qualifying"]):
-            return None
+            return None, 0.0
         later = now
         start = self._parse_time(rows[0]["observed_at"])
+        paused_seconds = 0.0
         for row in rows:
             at = self._parse_time(row["observed_at"])
             gap = (later - at).total_seconds()
-            if not bool(row["qualifying"]) or gap > self.max_observation_gap_seconds:
+            if not bool(row["qualifying"]):
                 break
+            if gap > self.max_observation_gap_seconds:
+                effect, paused = self._gap_effect(con, at, later)
+                if effect != "PAUSE_CLOCK":
+                    break
+                paused_seconds += paused
             start = at
             later = at
-        return start.isoformat().replace("+00:00", "Z")
+        return start.isoformat().replace("+00:00", "Z"), paused_seconds
 
     def _trades_in_window(
         self,
@@ -294,9 +410,9 @@ class ManagedPaperEvidenceRecorder:
                     ),
                 )
 
-            window_start = self._current_window_start(con, now)
+            window_start, paused_gap_seconds = self._current_window_start(con, now)
             elapsed_hours = (
-                (now - self._parse_time(window_start)).total_seconds() / 3600.0
+                max(0.0, (now - self._parse_time(window_start)).total_seconds() - paused_gap_seconds) / 3600.0
                 if window_start is not None
                 else 0.0
             )
@@ -320,6 +436,8 @@ class ManagedPaperEvidenceRecorder:
             "elapsed_hours": elapsed_hours,
             "continuity_window_started_at": window_start,
             "maximum_observation_gap_seconds": self.max_observation_gap_seconds,
+            "continuity_policy_version": "EQS-MANAGED-CONTINUITY-V2",
+            "paused_gap_hours": paused_gap_seconds / 3600.0,
             "required_hours": self.required_hours,
             "total_attributed_trades": attributed_in_window,
             "required_attributed_trades": self.required_attributed_trades,
@@ -355,6 +473,7 @@ class ManagedPaperEvidenceRecorder:
             continuity_window_started_at=window_start,
             last_observed_at=record["created_at"],
             blocker_codes=tuple(record["blockers"]),
+            paused_gap_hours=record["paused_gap_hours"],
         )
 
     def verify_observation_hash_chain(self) -> bool:

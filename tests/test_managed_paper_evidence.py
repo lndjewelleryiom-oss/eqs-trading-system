@@ -225,3 +225,66 @@ def test_live_authority_fails_closed(tmp_path):
     result = recorder.record(now=datetime(2026,10,4,0,0,tzinfo=timezone.utc))
     assert result.status == "BLOCKED"
     assert "LIVE_AUTHORITY_NOT_FALSE" in result.blocker_codes
+
+
+def test_verified_source_outage_pauses_but_does_not_reset_clock(tmp_path):
+    _base(tmp_path)
+    recorder = ManagedPaperEvidenceRecorder(
+        tmp_path,
+        max_observation_gap_seconds=120,
+        required_hours=0.02,
+        required_attributed_trades=1,
+    )
+    t0 = datetime(2026,10,4,0,0,tzinfo=timezone.utc)
+    recorder.record(now=t0)
+    recorder.record_continuity_gap(
+        gap_id="source-1",
+        started_at=t0 + timedelta(minutes=1),
+        ended_at=t0 + timedelta(minutes=9),
+        gap_class="SOURCE_OUTAGE_VERIFIED",
+        evidence_ref="provider-status-evidence-001",
+        created_at=t0 + timedelta(minutes=9),
+    )
+    later = recorder.record(now=t0 + timedelta(minutes=10))
+    assert later.status == "PASS"
+    assert abs(later.elapsed_hours - (2/60)) < 1e-9
+    assert abs(later.paused_gap_hours - (8/60)) < 1e-9
+
+
+def test_host_runtime_outage_resets_even_when_gap_is_registered(tmp_path):
+    _base(tmp_path)
+    recorder = ManagedPaperEvidenceRecorder(
+        tmp_path,
+        max_observation_gap_seconds=120,
+        required_hours=0.01,
+        required_attributed_trades=1,
+    )
+    t0 = datetime(2026,10,4,0,0,tzinfo=timezone.utc)
+    recorder.record(now=t0)
+    recorder.record_continuity_gap(
+        gap_id="host-1",
+        started_at=t0 + timedelta(minutes=1),
+        ended_at=t0 + timedelta(minutes=9),
+        gap_class="HOST_RUNTIME_OUTAGE",
+        evidence_ref="host-watchdog-001",
+        created_at=t0 + timedelta(minutes=9),
+    )
+    later = recorder.record(now=t0 + timedelta(minutes=10))
+    assert later.status == "RUNNING"
+    assert later.elapsed_hours == 0.0
+    assert later.paused_gap_hours == 0.0
+
+
+def test_pause_clock_class_requires_substantive_evidence_reference(tmp_path):
+    _base(tmp_path)
+    recorder = ManagedPaperEvidenceRecorder(tmp_path)
+    t0 = datetime(2026,10,4,0,0,tzinfo=timezone.utc)
+    import pytest
+    with pytest.raises(ValueError, match="substantive evidence"):
+        recorder.record_continuity_gap(
+            gap_id="source-weak",
+            started_at=t0,
+            ended_at=t0 + timedelta(minutes=10),
+            gap_class="SOURCE_OUTAGE_VERIFIED",
+            evidence_ref="x",
+        )
