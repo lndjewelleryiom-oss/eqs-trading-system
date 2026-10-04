@@ -27,6 +27,56 @@ def _canonical(value: object) -> bytes:
     return json.dumps(value, sort_keys=True, separators=(",", ":"), default=str).encode("utf-8")
 
 
+class FixedFundingPersistenceContrarian:
+    """Enter against an extreme realised funding print and hold a fixed 24h horizon.
+
+    ``on_funding`` is called only when the archived funding event becomes observable.
+    The resulting target can first be acted on by ``observe`` at that bar close and
+    is therefore still filled by the simulator on the next bar.
+    """
+
+    def __init__(self, *, absolute_funding_entry_threshold: Decimal, holding_bars: int) -> None:
+        threshold = Decimal(absolute_funding_entry_threshold)
+        if threshold <= ZERO:
+            raise ValueError("funding threshold must be positive")
+        if holding_bars <= 0:
+            raise ValueError("holding_bars must be positive")
+        self.absolute_funding_entry_threshold = threshold
+        self.holding_bars = int(holding_bars)
+        self._pending_target: int | None = None
+        self._pending_rate: Decimal | None = None
+        self._bars_in_position = 0
+
+    def on_funding(self, funding_rate: Decimal) -> None:
+        rate = Decimal(funding_rate)
+        if abs(rate) >= self.absolute_funding_entry_threshold:
+            self._pending_target = -1 if rate > ZERO else 1
+            self._pending_rate = rate
+        else:
+            self._pending_target = None
+            self._pending_rate = None
+
+    def observe(self, close: Decimal, position_quantity: Decimal) -> tuple[int, str, dict[str, str]] | None:
+        del close
+        current = 1 if position_quantity > ZERO else -1 if position_quantity < ZERO else 0
+        if current != 0:
+            self._bars_in_position += 1
+            # Funding observations while already positioned cannot become stale entries.
+            self._pending_target = None
+            self._pending_rate = None
+            if self._bars_in_position >= self.holding_bars:
+                return 0, "FUNDING_HORIZON_EXIT", {"bars_held": str(self._bars_in_position)}
+            return None
+        self._bars_in_position = 0
+        if self._pending_target is None:
+            return None
+        target = self._pending_target
+        rate = self._pending_rate
+        self._pending_target = None
+        self._pending_rate = None
+        return target, "EXTREME_FUNDING_ENTRY", {"observed_funding_rate": str(rate)}
+
+
 class FixedCloseChannelBreakout:
     """Fixed close-channel breakout with separate exit lookback and hard max hold.
 

@@ -19,7 +19,7 @@ from quant_system.research.feasibility_archive_v2 import (
     FeasibilityFunding,
     validate_archive,
 )
-from quant_system.research.feasibility_strategy_v2 import FixedCloseChannelBreakout, FixedSmaCrossover
+from quant_system.research.feasibility_strategy_v2 import FixedCloseChannelBreakout, FixedFundingPersistenceContrarian, FixedSmaCrossover
 from quant_system.research.feasibility_v2 import load_and_validate
 
 
@@ -180,6 +180,11 @@ def run_fixed_campaign_replay(
             exit_lookback_bars=int(strategy_cfg["exit_lookback_bars"]),
             max_holding_bars=int(strategy_cfg["max_holding_bars"]),
         )
+    elif family == "FUNDING_PERSISTENCE_CONTRARIAN":
+        strategy = FixedFundingPersistenceContrarian(
+            absolute_funding_entry_threshold=Decimal(str(strategy_cfg["absolute_funding_entry_threshold"])),
+            holding_bars=int(strategy_cfg["holding_bars"]),
+        )
     else:
         raise ValueError(f"unsupported feasibility strategy family: {family}")
     strategy_id = uuid5(NAMESPACE_URL, str(campaign["campaign_id"]))
@@ -196,6 +201,8 @@ def run_fixed_campaign_replay(
         # Funding settles on the position that existed before a same-timestamp next-bar fill.
         while funding_index < len(funding) and funding[funding_index].funding_time <= bar.open_time:
             item = funding[funding_index]
+            if hasattr(strategy, "on_funding"):
+                strategy.on_funding(item.funding_rate)
             if previous_close is not None:
                 position = ledger.position_state("BTCUSDT")
                 if position.quantity != ZERO:
