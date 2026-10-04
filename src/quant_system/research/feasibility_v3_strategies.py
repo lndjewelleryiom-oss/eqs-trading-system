@@ -97,8 +97,43 @@ class VolatilityCompressionBreakout:
         self.breakout_lookback_bars = int(breakout_lookback_bars)
         self.exit_lookback_bars = int(exit_lookback_bars)
         self.max_holding_bars = int(max_holding_bars)
-        self._closes: deque[Decimal] = deque(maxlen=self.slow_vol_bars + 1)
+        self._closes: deque[Decimal] = deque(maxlen=self.breakout_lookback_bars)
+        self._slow_returns: deque[Decimal] = deque()
+        self._fast_returns: deque[Decimal] = deque()
+        self._slow_sum = ZERO
+        self._slow_sumsq = ZERO
+        self._fast_sum = ZERO
+        self._fast_sumsq = ZERO
+        self._last_close: Decimal | None = None
         self._bars_in_position = 0
+
+    @staticmethod
+    def _moment_std(total: Decimal, total_sq: Decimal, count: int) -> Decimal:
+        if count < 2:
+            return ZERO
+        n = Decimal(count)
+        mean = total / n
+        variance = (total_sq / n) - (mean * mean)
+        if variance <= ZERO:
+            return ZERO
+        return variance.sqrt()
+
+    def _append_return(self, value: Decimal) -> None:
+        self._slow_returns.append(value)
+        self._slow_sum += value
+        self._slow_sumsq += value * value
+        if len(self._slow_returns) > self.slow_vol_bars:
+            removed = self._slow_returns.popleft()
+            self._slow_sum -= removed
+            self._slow_sumsq -= removed * removed
+
+        self._fast_returns.append(value)
+        self._fast_sum += value
+        self._fast_sumsq += value * value
+        if len(self._fast_returns) > self.fast_vol_bars:
+            removed = self._fast_returns.popleft()
+            self._fast_sum -= removed
+            self._fast_sumsq -= removed * removed
 
     def observe(self, close: Decimal, position_quantity: Decimal):
         current_close = Decimal(close)
@@ -110,11 +145,9 @@ class VolatilityCompressionBreakout:
             self._bars_in_position = 0
 
         signal = None
-        if len(prior) >= self.slow_vol_bars + 1:
-            slow_returns = _returns(prior[-(self.slow_vol_bars + 1):])
-            fast_returns = slow_returns[-self.fast_vol_bars:]
-            slow_vol = _std(slow_returns)
-            fast_vol = _std(fast_returns)
+        if len(self._slow_returns) == self.slow_vol_bars and len(prior) >= self.breakout_lookback_bars:
+            slow_vol = self._moment_std(self._slow_sum, self._slow_sumsq, len(self._slow_returns))
+            fast_vol = self._moment_std(self._fast_sum, self._fast_sumsq, len(self._fast_returns))
             ratio = fast_vol / slow_vol if slow_vol > ZERO else Decimal("999")
             breakout = prior[-self.breakout_lookback_bars:]
             exit_window = prior[-self.exit_lookback_bars:]
@@ -137,7 +170,11 @@ class VolatilityCompressionBreakout:
                 signal = (0, "VOL_BREAKOUT_EXIT_SHORT", metrics)
             elif current_sign and self._bars_in_position >= self.max_holding_bars:
                 signal = (0, "MAX_HOLD_EXIT", metrics)
+
+        if self._last_close is not None:
+            self._append_return((current_close / self._last_close) - ONE)
         self._closes.append(current_close)
+        self._last_close = current_close
         return signal
 
 
