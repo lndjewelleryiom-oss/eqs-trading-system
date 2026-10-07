@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#080c12">
+  <meta name="color-scheme" content="dark">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="EQS Mobile">
+  <title>EQS · Mobile observer</title>
+  <link rel="manifest" href="/mobile.webmanifest">
+  <link rel="stylesheet" href="/mobile.css">
+</head>
+<body>
+  <header class="topbar">
+    <div>
+      <div class="brand">E<span>Q</span>S<span class="dot">.</span></div>
+      <div class="subtitle">MOBILE OBSERVER</div>
+    </div>
+    <div class="badges"><span class="badge cyan">READ ONLY</span><span class="badge">PAPER / SHADOW</span></div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div>
+        <p class="eyebrow">SYSTEM STATUS</p>
+        <h1 id="health">Connecting…</h1>
+        <p id="generated" class="muted">Waiting for the latest observer snapshot.</p>
+      </div>
+      <button id="refresh" type="button">Refresh</button>
+    </section>
+
+    <section class="metrics" aria-label="Key EQS status">
+      <article><span>Runtime</span><strong id="runtime">—</strong><small id="runtime-detail">—</small></article>
+      <article><span>Strategies</span><strong id="strategies">—</strong><small id="strategy-state">—</small></article>
+      <article><span>Next action</span><strong id="next-action">—</strong><small>Supervisor-selected</small></article>
+      <article><span>Managed paper</span><strong id="paper-status">—</strong><small id="paper-progress">—</small></article>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head"><div><p class="eyebrow">ATTENTION</p><h2>Alerts & blockers</h2></div><span id="alert-count" class="count">0</span></div>
+      <div id="alerts" class="list"><p class="empty">No alert data yet.</p></div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head"><div><p class="eyebrow">STRATEGIES</p><h2>Current strategy lifecycle</h2></div><span id="strategy-count" class="count">0</span></div>
+      <div id="strategy-list" class="list"><p class="empty">No strategy data yet.</p></div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head"><div><p class="eyebrow">RUNTIME</p><h2>Paper / shadow processes</h2></div></div>
+      <div id="runtime-list" class="list"><p class="empty">No runtime data yet.</p></div>
+    </section>
+
+    <section class="authority">
+      <strong>Observation only</strong>
+      <p>This mobile surface has no order submission, LIVE enablement, approval, credential, risk-limit or evidence-mutation controls.</p>
+    </section>
+  </main>
+
+  <nav class="bottom-actions" aria-label="Mobile observer actions">
+    <a href="/mobile.html" aria-current="page">Status</a>
+    <a href="/index.html#strategies">Strategies</a>
+    <a href="/index.html#jobs">Jobs</a>
+    <a href="/index.html">Full terminal</a>
+  </nav>
+
+  <div id="offline" class="offline" hidden>Observer unavailable. Showing the last rendered state.</div>
+  <script src="/mobile.js"></script>
+</body>
+</html>
