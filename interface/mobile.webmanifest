@@ -1,0 +1,11 @@
+{
+  "name": "EQS Mobile Observer",
+  "short_name": "EQS",
+  "description": "Read-only mobile observer for the EQS multi-asset trading system.",
+  "start_url": "/mobile.html",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#080c12",
+  "theme_color": "#080c12",
+  "orientation": "portrait-primary"
+}
